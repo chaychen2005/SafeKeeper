@@ -11,11 +11,7 @@
 
 ## 控制台直连密钥管理服务
 
-```mermaid
-graph LR;
-    控制台-->密钥管理服务;
-    密钥管理服务-->MySQL数据库;
-```
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/simple_depolyment.png)
 
 ### 1. 获取源码 
 

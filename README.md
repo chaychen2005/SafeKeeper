@@ -36,25 +36,11 @@ FISCO-Key-Manager作为密钥管理服务，提供身份认证基础上的私钥
 
 在业务应用场景中，我们基于安全考虑，建议将存有私钥信息的密钥管理服务部署在企业内网，并通过Nginx反向代理实现网络隔离、多活配置及负载均衡。
 
-```mermaid
-graph LR;
-    控制台-->Nginx;
-    业务应用-->Nginx;
-    Nginx-->密钥管理服务1;
-    Nginx-->密钥管理服务2;
-    Nginx-->密钥管理服务N;
-    密钥管理服务1-->MySQL数据库;
-    密钥管理服务2-->MySQL数据库;
-    密钥管理服务N-->MySQL数据库;
-```
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/recommend_deployment.png)
 
 为实现快速体验，可如下部署：
 
-```mermaid
-graph LR;
-    控制台-->密钥管理服务;
-    密钥管理服务-->MySQL数据库;
-```
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/simple_depolyment.png)
 
 ## 4. 私钥管理核心操作介绍
 
@@ -84,77 +70,19 @@ CREATE TABLE IF NOT EXISTS tb_key_info (
 - 密文1：使用该访客指定的密码进行加密的密文，可用于访客导出私钥
 - 密文2：使用创建该访客的管理员的公钥进行加密的密文，可用于访客遗失加密密码后由管理员恢复私钥
 
-```mermaid
-sequenceDiagram
-    Title: 访客上传私钥时序图
-	
-    participant console as 访客/控制台
-    participant kms as 密钥管理服务
-    participant db as 数据库
-
-    console->>console:加载私钥文件获取私钥
-    console->>kms:请求创建者公钥
-    kms->>kms:操作权限校验
-    kms->>db:查询访客信息
-    db-->>kms:返回访客信息
-    kms->>kms:获取创建该访客的管理员
-    kms->>db:查询管理员信息
-    db-->>kms:返回管理员信息
-    kms->>kms:获取该管理员的公钥
-    kms->>console:返回管理员公钥
-    console->>console:使用管理员公钥加密托管的私钥
-    console->>console:使用访客指定密码加密托管的私钥
-    console->>kms:上传托管的私钥数据
-    kms->>kms:操作权限校验，数据完整性校验，数据判重
-    kms->>db:提交私钥数据
-    kms->>db:查询私钥信息
-    db-->>kms:返回私钥信息
-    kms->>console:返回上传的私钥信息
-```
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/upload_key.png)
 
 ### 4.3 导出私钥
 
 访客在妥善保管加密密码的情况下，可自行通过控制台恢复私钥。
 
-```mermaid
-sequenceDiagram
-    Title: 访客导出私钥时序图
-	
-    participant visitor as 访客/控制台
-    participant kms as 密钥管理服务
-    participant db as 数据库
-
-    visitor->>kms:请求指定的私钥
-    kms->>kms:操作权限校验
-    kms->>db:查询私钥信息
-    db-->>kms:返回私钥信息
-    kms-->>visitor:返回私钥信息
-    visitor->>visitor:使用加密密码解密kms返回的私钥信息中的密文，获得私钥明文
-```
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/export_key.png)
 
 ### 4.4 恢复私钥
 
 访客如遗失加密私钥的密码，可通过管理员恢复该私钥。
 
-```mermaid
-sequenceDiagram
-    Title: 管理员恢复私钥时序图
-	
-    participant visitor as 访客/控制台
-    participant admin as 管理员/控制台
-    participant kms as 密钥管理服务
-    participant db as 数据库
-
-    visitor->>admin:请求恢复指定的私钥
-    admin->>admin:验证访客身份
-    admin->>kms:请求指定私钥
-    kms->>kms:操作权限校验
-    kms->>db:查询私钥信息
-    db-->>kms:返回私钥信息
-    kms-->>admin:返回私钥信息
-    admin->>admin:使用自身私钥解密kms返回的私钥信息中的密文，获得私钥明文
-    admin->>visitor:提供私钥明文
-```
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/restore_key.png)
 
 管理员恢复私钥的过程中将涉及与访客的交互及对访客信息的验证，上述的交互及验证流程在控制台外进行。
 
