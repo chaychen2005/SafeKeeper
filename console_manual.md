@@ -20,7 +20,7 @@ graph LR;
 ### 1. 获取源码 
 
 ```text
-git clone https://github.com/FISCO-BCOS/console.git && cd console && git checkout kms
+git clone https://github.com/FISCO-BCOS/console.git && cd console && git checkout feature-kms
 ```
 
 ### 2. 使用gradlew编译
