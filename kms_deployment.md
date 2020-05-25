@@ -12,15 +12,15 @@
 执行命令：
 
 ```shell
-git clone https://github.com/FISCO-BCOS/FISCO-Key-Manager.git && git checkout dev
+git clone https://github.com/FISCO-BCOS/FISCO-Key-Manager.git && cd FISCO-Key-Manager && git checkout dev
 ```
 
 ## 3. 编译代码
 
-进入项目目录，使用gradlew编译：
+使用gradlew编译：
 
 ```shell
-cd FISCO-Key-Manager && chmod +x ./gradlew && ./gradlew build
+chmod +x ./gradlew && ./gradlew build
 ```
 
 构建完成后，在根目录FISCO-Key-Manager下生成目录dist。
