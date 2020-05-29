@@ -183,6 +183,17 @@ The private key "pkey1" of account "user1" is 2d330f79e17dd4645cc69d46222d82b853
 Upload a private key "pkey1" successfully.
 ```
 
+注：如果在运行uploadPrivateKey过程中，控制台提示以下错误信息，并且日志中输出以下内容，请参考[解决方案](https://stackoverflow.com/questions/3862800/invalidkeyexception-illegal-key-size)进行处理。
+
+```text
+# 控制台提示
+[user1:visitor]> uploadPrivateKey 0x3a0371523d5eb01c1d359322bf6fca1525e6aea9.pem 123456 key_user1
+encrypt the private key by public key of creator fail.
+
+# 日志输出
+[ERROR] [2020-05-28 21:44:13] ECC.encrypt(26) | ECC.encrypt error message: Illegal key size, e: {}
+```
+
 ### **listPrivateKey**
 
 访客运行listPrivateKey，显示其托管的私钥列表。
@@ -220,7 +231,9 @@ The private key "pkey1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9
 Delete the private key "key1" successfully.
 ```
 
-### 控制台通过Nginx访问密钥管理服务
+### 控制台通过 Nginx 访问密钥管理服务
+
+注：假设当前用户安装nginx的目录为`/data/home/app/`。
 
 #### 1. 源码编译
 
@@ -254,8 +267,8 @@ make && make install
 
 ```text
 cd /data/home/app/nginx/ 
-./sbin/nginx
-ps aux | grep nginx
+/data/home/app/nginx/sbin/nginx
+ps aux | grep nginx | grep app
 ./sbin/nginx -s stop
 ```
 
@@ -289,11 +302,15 @@ openssl req -new -key nginx_kms.key -out nginx_kms.csr
 openssl x509 -req -days 365 -in nginx_kms.csr -signkey nginx_kms.key -out nginx_kms.crt
 ```
 
-过程中输入需密钥密码
+过程中输入需密钥密码，执行完毕后检查当前目录是否存在以下三个文件。
+
+```text
+nginx_kms.key nginx_kms.csr nginx_kms.crt
+```
 
 #### 3. 修改Nginx配置
 
-修改配置文件，文件中http部分增加以下内容，指定后端服务的IP与Port，以及负载均衡策略。
+修改配置文件`conf/nginx.conf`，文件中http部分增加以下内容，指定后端服务的IP与Port，以及负载均衡策略。
 
 ```text
     upstream tomcats{
@@ -306,15 +323,22 @@ openssl x509 -req -days 365 -in nginx_kms.csr -signkey nginx_kms.key -out nginx_
 
 ```text
     server {
+        #add/modify begin
         listen       5080 ssl;
         server_name  localhost;
 
-        ssl_certificate     /data/home/app/nginx-1.18.0/ssl/nginx_kms.crt;
-        ssl_certificate_key /data/home/app/nginx-1.18.0/ssl/nginx_kms.key;
-        ssl_session_cache    shared:SSL:1m;
-        ssl_session_timeout  5m;
-        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_certificate     /data/home/app/nginx/ssl/nginx_kms.crt;
+        ssl_certificate_key /data/home/app/nginx/ssl/nginx_kms.key;
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+        ssl_ciphers  HIGH:!aNULL:!MD5;
         ssl_prefer_server_ciphers  on;
+
+        #find this location to modify
+        location / {
+            proxy_pass https://tomcats;
+        }
+        #add/modify end
 
         #charset koi8-r;
 
@@ -324,11 +348,12 @@ openssl x509 -req -days 365 -in nginx_kms.csr -signkey nginx_kms.key -out nginx_
 重新加载Nginx配置文件，过程中输入需密钥密码。
 
 ```text
-    ./sbin/nginx -s reload
+./sbin/nginx -s stop
+/data/home/app/nginx/sbin/nginx
 ```
 
 #### 4. 修改控制台配置
 
 ```text
-sed -i "s/serviceIP:servicePort/127.0.0.1:5080/g" applicationContext.yml
+sed -i "s/serviceIP:servicePort/127.0.0.1:5080/g" applicationContext.xml
 ```

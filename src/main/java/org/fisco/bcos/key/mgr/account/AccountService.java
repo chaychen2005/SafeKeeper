@@ -104,6 +104,11 @@ public class AccountService {
             throw new KeyMgrException(ConstantCode.INVALID_PASSWORD_FORMAT);
         }
 
+        if (publicKey.length() != 128) {
+            log.info("fail addAccountRow. invalid public key length");
+            throw new KeyMgrException(ConstantCode.INVALID_PUBLIC_KEY_LENGTH);
+        }
+
         // check account
         accountNotExist(accountStr);
         // check role id

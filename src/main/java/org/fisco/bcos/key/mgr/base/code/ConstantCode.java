@@ -70,6 +70,8 @@ public class ConstantCode {
 
     public static final RetCode LACK_ACCESS_ACCOUNT = RetCode.mark(200110, "lack of access to the account");
 
+    public static final RetCode INVALID_PUBLIC_KEY_LENGTH = RetCode.mark(200111, "invalid public key length");
+
     public static final RetCode KEY_EXISTS = RetCode.mark(200200, "key info already exists");
 
     public static final RetCode KEY_NOT_EXISTS = RetCode.mark(200201, "key info not exists");

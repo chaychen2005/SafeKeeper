@@ -10,4 +10,4 @@ INSERT INTO `tb_account_info` (account,account_pwd,role_id,create_time,modify_ti
 -- 2、init tb_role data
 -- ----------------------------
 INSERT INTO `tb_role` (role_name,role_name_zh,create_time,modify_time) VALUES ('admin', '管理员', now(), now());
-INSERT INTO `tb_role` (role_name,role_name_zh,create_time,modify_time) VALUES ('visitor', '普通用户', now(), now());
+INSERT INTO `tb_role` (role_name,role_name_zh,create_time,modify_time) VALUES ('visitor', '访客', now(), now());

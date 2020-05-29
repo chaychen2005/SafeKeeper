@@ -109,6 +109,9 @@ public class KeyEscrowController extends BaseController {
         if (count > 0) {
             TbPKeyInfo keyInfo = keyEscrowService.queryByAccountWithKey(account, keyAlias);
             baseResponse.setData(keyInfo);
+        } else {
+            log.info("key info not exists");
+            throw new KeyMgrException(ConstantCode.KEY_NOT_EXISTS);
         }
 
         log.info("end queryKey useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),

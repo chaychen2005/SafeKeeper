@@ -139,7 +139,7 @@
         "accountPwd": null,
         "roleId": 100001,
         "roleName": "visitor",
-        "roleNameZh": "普通用户",
+        "roleNameZh": "访客",
         "accountStatus": 1,
         "description": null,
         "createTime": "2020-05-19 19:15:01",
@@ -181,7 +181,7 @@
 
 #### 1.3.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/deleteAccount/user1`
+`https://127.0.0.1:9501/FISCO-Key-Manager/account/deleteAccount/user1`
 
 #### 1.3.4 出参示例
 
@@ -254,7 +254,7 @@
             "accountPwd": null,
             "roleId": 100001,
             "roleName": "visitor",
-            "roleNameZh": "普通用户",
+            "roleNameZh": "访客",
             "accountStatus": 1,
             "description": null,
             "createTime": "2020-05-19 19:22:33",
@@ -633,6 +633,7 @@
 | 200108 | role id cannot be empty                | business exception - account  | 角色标识不能为空      |
 | 200109 | invalid role id                        | business exception - account  | 无效的角色标识        |
 | 200110 | lack of access to the account          | business exception - account  | 无访问该账号权限      |
+| 200111 | invalid public key length              | business exception - account  | 无效的公钥长度        |
 | 200200 | key info already exists                | business exception - key      | 该私钥已托管          |
 | 200201 | key info not exists                    | business exception - key      | 该私钥未托管          |
 | 200202 | key aliases empty                      | business exception - key      | 私钥标识不能为空      |
