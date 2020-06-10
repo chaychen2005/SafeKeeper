@@ -13,8 +13,6 @@
  */
 package org.fisco.bcos.key.mgr.base.tools;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.code.RetCode;
 import org.fisco.bcos.key.mgr.base.entity.BaseResponse;
@@ -114,20 +112,6 @@ public class KeyMgrTools {
     }
 
     /**
-     * is json.
-     */
-    public static boolean isJSON(String str) {
-        boolean result;
-        try {
-            JSON.parse(str);
-            result = true;
-        } catch (Exception e) {
-            result = false;
-        }
-        return result;
-    }
-
-    /**
      * response string.
      */
     public static void responseString(HttpServletResponse response, String str) {
@@ -137,12 +121,12 @@ public class KeyMgrTools {
         }
 
         RetCode retCode;
-        if (isJSON(str) && (retCode = JSONObject.parseObject(str, RetCode.class)) != null) {
+        if (JacksonUtils.isJson(str) && (retCode = JacksonUtils.stringToObj(str, RetCode.class)) != null) {
             baseResponse = new BaseResponse(retCode);
         }
 
         try {
-            response.getWriter().write(JSON.toJSONString(baseResponse));
+            response.getWriter().write(JacksonUtils.objToString(baseResponse));
         } catch (IOException e) {
             log.error("fail responseRetCodeException", e);
         }

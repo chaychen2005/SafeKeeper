@@ -15,9 +15,9 @@
  */
 package org.fisco.bcos.key.mgr.keyescrow;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.exception.KeyMgrException;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.fisco.bcos.key.mgr.keyescrow.entity.KeyListParam;
 import org.fisco.bcos.key.mgr.keyescrow.entity.PrivateKeyInfo;
 import org.fisco.bcos.key.mgr.keyescrow.entity.TbPKeyInfo;
@@ -42,7 +42,7 @@ public class KeyEscrowService {
      * add key row.
      */
     public void addKeyRow(String account, PrivateKeyInfo keyInfo) throws KeyMgrException {
-        log.debug("start addKeyRow. account:{}, key info:{}", account, JSON.toJSONString(keyInfo));
+        log.debug("start addKeyRow. account:{}, key info:{}", account, JacksonUtils.objToString(keyInfo));
 
         String keyAlias = keyInfo.getKeyAlias();
         String cipherText = keyInfo.getCipherText();
@@ -67,7 +67,7 @@ public class KeyEscrowService {
     public TbPKeyInfo queryByAccountWithKey(String account, String keyAlias) {
         log.debug("start queryByAccountWithKey. account:{}, keyAlias:{} ", account, keyAlias);
         TbPKeyInfo keyRow = keyEscrowMapper.queryByAccountWithKey(account, keyAlias);
-        log.debug("end queryByAccountWithKey. accountRow:{} ", JSON.toJSONString(keyRow));
+        log.debug("end queryByAccountWithKey. accountRow:{} ", JacksonUtils.objToString(keyRow));
         return keyRow;
     }
 
@@ -86,9 +86,9 @@ public class KeyEscrowService {
      * query key list by account.
      */
     public List<TbPKeyInfo> listOfKeyByAccount(KeyListParam param) {
-        log.debug("start listOfKeyByAccount. param:{} ", JSON.toJSONString(param));
+        log.debug("start listOfKeyByAccount. param:{} ", JacksonUtils.objToString(param));
         List<TbPKeyInfo> list = keyEscrowMapper.listOfKeyByAccount(param);
-        log.debug("end listOfKeyByAccount. list:{} ", JSON.toJSONString(list));
+        log.debug("end listOfKeyByAccount. list:{} ", JacksonUtils.objToString(list));
         return list;
     }
 

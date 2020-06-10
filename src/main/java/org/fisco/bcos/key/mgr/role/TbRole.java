@@ -26,9 +26,6 @@ public class TbRole {
 
     private Integer roleId;
     private String roleName;
-    private String roleNameZh;
-    private Integer roleStatus;
     private String description;
     private LocalDateTime createTime;
-    private LocalDateTime modifyTime;
 }

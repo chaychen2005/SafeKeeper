@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fisco.bcos.key.mgr.role;
+package org.fisco.bcos.key.mgr.data.entity;
 
 import org.fisco.bcos.key.mgr.base.entity.BaseQueryParam;
 import lombok.Data;
@@ -21,23 +21,26 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * param of query data list.
+ */
 @Data
 @NoArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class RoleListParam extends BaseQueryParam {
+public class DataListParam extends BaseQueryParam {
 
-    private Integer roleId;
-    private String roleName;
-    private String roleNameZh;
+    private String account;
+    private String dataID;
+    private String dataSubID;
+    private Integer dataStatus;
 
-    /**
-     * init by start、pateSize、roleId、roleName.
-     */
-    public RoleListParam(Integer start, Integer pageSize, Integer roleId, String roleName) {
-        super(start, pageSize,null);
-        this.roleId = roleId;
-        this.roleName = roleName;
+    public DataListParam(Integer start, Integer pageSize, String dataID, String account, String dataSubID, Integer dataStatus,
+                         String flagSortedByTime) {
+        super(start, pageSize, flagSortedByTime);
+        this.account = account;
+        this.dataID = dataID;
+        this.dataSubID = dataSubID;
+        this.dataStatus = dataStatus;
     }
-
 }

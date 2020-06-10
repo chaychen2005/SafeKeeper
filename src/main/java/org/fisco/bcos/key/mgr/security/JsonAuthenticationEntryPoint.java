@@ -15,7 +15,6 @@
  */
 package org.fisco.bcos.key.mgr.security;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.entity.BaseResponse;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import java.io.IOException;
@@ -23,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -38,7 +38,7 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
         log.debug("user not logged in");
         BaseResponse baseResponse = new BaseResponse(ConstantCode.USER_NOT_LOGGED_IN);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(baseResponse));
+        response.getWriter().write(JacksonUtils.objToString(baseResponse));
     }
 
 }

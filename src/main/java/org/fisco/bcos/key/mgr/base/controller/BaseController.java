@@ -16,9 +16,9 @@ package org.fisco.bcos.key.mgr.base.controller;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.exception.ParamException;
 
@@ -33,8 +33,8 @@ public class BaseController {
     protected void checkBindResult(BindingResult result) {
         if (result.hasErrors()) {
             String errFieldStr = result.getAllErrors().stream()
-                .map(obj -> JSON.parseObject(JSON.toJSONString(obj)))
-                .map(err -> err.getString("field"))
+                .map(obj -> JacksonUtils.stringToJsonNode(JacksonUtils.objToString(obj)))
+                .map(err -> err.findValue("field").asText())
                 .collect(Collectors.joining(","));
             StringUtils.removeEnd(errFieldStr, ",");
             String message = "these fields can not be empty:" + errFieldStr;

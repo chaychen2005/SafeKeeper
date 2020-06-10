@@ -21,11 +21,12 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.account.AccountService;
 import org.fisco.bcos.key.mgr.account.entity.TbAccountInfo;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
@@ -64,7 +65,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         baseResponse.setData(rsp);
 
-        String backStr = JSON.toJSONString(baseResponse);
+        String backStr = JacksonUtils.objToString(baseResponse);
         log.debug("login backInfo:{}", backStr);
 
         response.setContentType("application/json;charset=UTF-8");

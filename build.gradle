@@ -15,7 +15,7 @@ targetCompatibility = 1.8
 // In this section you declare where to find the dependencies of your project
 repositories {
     maven {url "http://maven.aliyun.com/nexus/content/groups/public/"}
-    
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     maven { url 'https://dl.bintray.com/ethereum/maven/' }
     mavenLocal()
     mavenCentral()
@@ -39,7 +39,7 @@ List jaxb = [
 ]
 
 List web3jsdk = [
-    "org.fisco-bcos:web3sdk:2.2.0"
+    "org.fisco-bcos:web3sdk:2.4.1-SNAPSHOT"
 ]
 
 List lombok = [
@@ -63,7 +63,6 @@ dependencies {
     compile springboot,jaxb,web3jsdk,jackson
     compile "org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.0"
     compile "org.apache.commons:commons-lang3:3.8.1"
-    compile "com.alibaba:fastjson:1.2.67"
     compile "mysql:mysql-connector-java:8.0.13"
     compile "com.zaxxer:HikariCP:3.2.0"
     compile "com.github.sgroschupf:zkclient:0.1"

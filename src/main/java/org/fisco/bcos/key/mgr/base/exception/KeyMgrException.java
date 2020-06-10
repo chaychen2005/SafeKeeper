@@ -16,8 +16,8 @@
 
 package org.fisco.bcos.key.mgr.base.exception;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.code.RetCode;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 
 /**
  * business exception.
@@ -40,7 +40,7 @@ public class KeyMgrException extends RuntimeException {
      */
     public KeyMgrException(RetCode retCode, Throwable cause) {
         super(retCode.getMessage(), cause);
-        retCode.setMessage(JSON.toJSONString(cause.getMessage()));
+        retCode.setMessage(JacksonUtils.objToString(cause.getMessage()));
         this.retCode = retCode;
     }
 

@@ -15,7 +15,6 @@
  */
 package org.fisco.bcos.key.mgr.account;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.account.entity.AccountInfo;
 import org.fisco.bcos.key.mgr.account.entity.AccountListParam;
 import org.fisco.bcos.key.mgr.account.entity.LoginInfo;
@@ -23,6 +22,7 @@ import org.fisco.bcos.key.mgr.account.entity.TbAccountInfo;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.enums.AccountStatus;
 import org.fisco.bcos.key.mgr.base.exception.KeyMgrException;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.fisco.bcos.key.mgr.base.tools.KeyMgrTools;
 import org.fisco.bcos.key.mgr.role.RoleService;
 import java.util.List;
@@ -52,7 +52,7 @@ public class AccountService {
      * login.
      */
     public TbAccountInfo login(LoginInfo loginInfo) throws KeyMgrException {
-        log.info("start login. loginInfo:{}", JSON.toJSONString(loginInfo));
+        log.info("start login. loginInfo:{}", JacksonUtils.objToString(loginInfo));
         String accountStr = loginInfo.getAccount();
         String passwordStr = loginInfo.getAccountPwd();
 
@@ -87,7 +87,7 @@ public class AccountService {
      * add account row.
      */
     public void addAccountRow(AccountInfo accountInfo, String creator) throws KeyMgrException {
-        log.debug("start addAccountRow.  AccountInfo:{}, creator:{} ", JSON.toJSONString(accountInfo), creator);
+        log.debug("start addAccountRow.  AccountInfo:{}, creator:{} ", JacksonUtils.objToString(accountInfo), creator);
 
         String accountStr = accountInfo.getAccount();
         String passwordStr = accountInfo.getAccountPwd();
@@ -174,7 +174,7 @@ public class AccountService {
     public TbAccountInfo queryByAccount(String accountStr) {
         log.debug("start queryByAccount. accountStr:{} ", accountStr);
         TbAccountInfo accountRow = accountMapper.queryByAccount(accountStr);
-        log.debug("end queryByAccount. accountRow:{} ", JSON.toJSONString(accountRow));
+        log.debug("end queryByAccount. accountRow:{} ", JacksonUtils.objToString(accountRow));
         return accountRow;
     }
 
@@ -193,9 +193,9 @@ public class AccountService {
      * query account list.
      */
     public List<TbAccountInfo> listOfAccount(AccountListParam param) {
-        log.debug("start listOfAccount. param:{} ", JSON.toJSONString(param));
+        log.debug("start listOfAccount. param:{} ", JacksonUtils.objToString(param));
         List<TbAccountInfo> list = accountMapper.listOfAccount(param);
-        log.debug("end listOfAccount. list:{} ", JSON.toJSONString(list));
+        log.debug("end listOfAccount. list:{} ", JacksonUtils.objToString(list));
         return list;
     }
 

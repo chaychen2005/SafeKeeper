@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fisco.bcos.key.mgr.data.DataMapper">
+  <resultMap id="dataMap" type="org.fisco.bcos.key.mgr.data.entity.TbDataInfo">
+    <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
+    <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataID"/>
+    <id column="data_sub_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataSubID"/>
+    <result column="data_status" javaType="java.lang.Integer" jdbcType="INTEGER" property="dataStatus"/>
+    <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="plainText"/>
+    <result column="cipher_text1" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText1"/>
+    <result column="cipher_text2" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText2"/>
+    <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="description" javaType="java.lang.String" jdbcType="INTEGER" property="description"/>
+  </resultMap>
+
+  <sql id="ROW_COLUMN">
+    account,data_id,data_sub_id,plain_text,cipher_text1,cipher_text2,create_time,description
+  </sql>
+
+  <insert id="addDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.TbDataInfo">
+    insert into tb_data_info
+    (<include refid="ROW_COLUMN"/>)
+    values(#{account},#{dataID},#{dataSubID},#{plainText},#{cipherText1},#{cipherText2},NOW(),#{description})
+  </insert>
+
+  <select id="queryData" parameterType="org.fisco.bcos.key.mgr.data.entity.SingleQueryParams" resultMap="dataMap">
+    select
+    <include refid="ROW_COLUMN"/>
+    from tb_data_info
+    where BINARY account = #{param.account}
+    and data_id = #{param.dataID}
+    and data_sub_id = #{param.dataSubID}
+    limit 1
+  </select>
+
+  <delete id="deleteDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.SingleQueryParams">
+    delete from tb_data_info
+    where BINARY account = #{param.account}
+    and data_id = #{param.dataID}
+    and data_sub_id = #{param.dataSubID}
+  </delete>
+
+  <select id="existOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.SingleQueryParams" resultType="java.lang.Integer">
+    select count(1) from tb_data_info
+    where BINARY account = #{param.account}
+    and data_id = #{param.dataID}
+    and data_sub_id = #{param.dataSubID}
+  </select>
+
+  <select id="countOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataListParam" resultType="java.lang.Integer">
+    select count(1) from tb_data_info
+    where 1=1
+    <if test="param.account != null and param.account != ''">
+      and BINARY account = #{param.account}
+    </if>
+    <if test="param.dataID != null and param.dataID != ''">
+      and data_id = #{param.dataID}
+    </if>
+    <if test="param.dataSubID != null and param.dataSubID != ''">
+      and data_sub_id = #{param.dataSubID}
+    </if>
+    <if test="param.dataStatus != null">
+      and data_status = #{param.dataStatus}
+    </if>
+  </select>
+
+  <select id="listOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataListParam" resultMap="dataMap">
+    select * from tb_data_info
+    where 1=1
+    <if test="param.account != null and param.account != ''">
+      and BINARY account = #{param.account}
+    </if>
+    <if test="param.dataID != null and param.dataID != ''">
+      and data_id = #{param.dataID}
+    </if>
+    <if test="param.dataSubID != null and param.dataSubID != ''">
+      and data_sub_id = #{param.dataSubID}
+    </if>
+    <if test="param.dataStatus != null">
+      and data_status = #{param.dataStatus}
+    </if>
+    <if test="param.flagSortedByTime != null and param.flagSortedByTime != ''">
+      order by create_time ${param.flagSortedByTime}
+    </if>
+    <if test="param.start != null and param.pageSize != null">
+      limit #{param.start},#{param.pageSize}
+    </if>
+  </select>
+
+</mapper>

@@ -15,7 +15,6 @@
  */
 package org.fisco.bcos.key.mgr.role;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.exception.KeyMgrException;
 import java.util.List;
@@ -32,37 +31,6 @@ public class RoleService {
 
     @Autowired
     private RoleMapper roleMapper;
-
-    /**
-     * query role count.
-     */
-    public int countOfRole(RoleListParam param) {
-        log.debug("start countOfRole. param:{} ", JSON.toJSONString(param));
-        Integer roleCount = roleMapper.countOfRole(param);
-        int count = roleCount == null ? 0 : roleCount.intValue();
-        log.debug("end countOfRole. count:{} ", count);
-        return count;
-    }
-
-    /**
-     * query role .
-     */
-    public List<TbRole> listOfRole(RoleListParam param) {
-        log.debug("start listOfRole. param:{} ", JSON.toJSONString(param));
-        List<TbRole> list = roleMapper.listOfRole(param);
-        log.debug("end listOfRole. list:{} ", JSON.toJSONString(list));
-        return list;
-    }
-
-    /**
-     * query role by roleId.
-     */
-    public TbRole queryRoleById(Integer roleId) {
-        log.debug("start queryRoleById. roleId:{} ", roleId);
-        TbRole roleInfo = roleMapper.queryRoleById(roleId);
-        log.debug("end queryRoleById. roleInfo:{} ", JSON.toJSONString(roleInfo));
-        return roleInfo;
-    }
 
     /**
      * check roleId.

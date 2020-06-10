@@ -24,6 +24,7 @@ import org.fisco.bcos.key.mgr.account.AccountService;
 import org.fisco.bcos.key.mgr.base.entity.BasePageResponse;
 import org.fisco.bcos.key.mgr.base.enums.SqlSortType;
 import org.fisco.bcos.key.mgr.base.properties.ConstantProperties;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.fisco.bcos.key.mgr.keyescrow.entity.KeyListParam;
 import org.fisco.bcos.key.mgr.keyescrow.entity.PrivateKeyInfo;
 import org.fisco.bcos.key.mgr.keyescrow.entity.TbPKeyInfo;
@@ -37,7 +38,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.account.entity.TbAccountInfo;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.controller.BaseController;
@@ -69,7 +69,7 @@ public class KeyEscrowController extends BaseController {
         checkBindResult(result);
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
-        log.info("start addKey. startTime:{} keyInfo:{}", startTime.toEpochMilli(), JSON.toJSONString(info));
+        log.info("start addKey. startTime:{} keyInfo:{}", startTime.toEpochMilli(), JacksonUtils.objToString(info));
 
         // current
         String currentAccount = getCurrentAccount(request);
@@ -82,7 +82,7 @@ public class KeyEscrowController extends BaseController {
         baseResponse.setData(tbKey);
 
         log.info("end addKey useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
-                JSON.toJSONString(baseResponse));
+                JacksonUtils.objToString(baseResponse));
         return baseResponse;
     }
 
@@ -115,7 +115,7 @@ public class KeyEscrowController extends BaseController {
         }
 
         log.info("end queryKey useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
-                JSON.toJSONString(baseResponse));
+                JacksonUtils.objToString(baseResponse));
         return baseResponse;
     }
 
@@ -145,7 +145,7 @@ public class KeyEscrowController extends BaseController {
         }
 
         log.info("end queryAccountList useTime:{} result:{}",
-                Duration.between(startTime, Instant.now()).toMillis(), JSON.toJSONString(pagesponse));
+                Duration.between(startTime, Instant.now()).toMillis(), JacksonUtils.objToString(pagesponse));
         return pagesponse;
     }
 
@@ -172,7 +172,7 @@ public class KeyEscrowController extends BaseController {
         keyEscrowService.deleteKeyRow(account, keyAlias);
 
         log.info("end deleteKey. useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
-                JSON.toJSONString(baseResponse));
+                JacksonUtils.objToString(baseResponse));
         return baseResponse;
     }
 

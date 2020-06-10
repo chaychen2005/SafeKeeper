@@ -15,12 +15,12 @@
  */
 package org.fisco.bcos.key.mgr.security;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.account.AccountService;
 import org.fisco.bcos.key.mgr.account.entity.TbAccountInfo;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import java.util.ArrayList;
 import java.util.List;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,10 +46,10 @@ public class AccountDetailsService implements UserDetailsService {
         try {
             accountRow = accountService.queryByAccount(account);
         } catch (Exception e) {
-            throw new UsernameNotFoundException(JSON.toJSONString(ConstantCode.DB_EXCEPTION));
+            throw new UsernameNotFoundException(JacksonUtils.objToString(ConstantCode.DB_EXCEPTION));
         }
         if (null == accountRow) {
-            throw new UsernameNotFoundException(JSON.toJSONString(ConstantCode.INVALID_ACCOUNT_NAME));
+            throw new UsernameNotFoundException(JacksonUtils.objToString(ConstantCode.INVALID_ACCOUNT_NAME));
         }
 
         // add role

@@ -17,11 +17,11 @@ package org.fisco.bcos.key.mgr.security;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.exception.KeyMgrException;
 import org.fisco.bcos.key.mgr.base.tools.KeyMgrTools;
@@ -42,13 +42,13 @@ public class JsonLogoutSuccessHandler implements LogoutSuccessHandler {
         try {
             token = KeyMgrTools.getToken(request);
         } catch (KeyMgrException ex) {
-            KeyMgrTools.responseString(response, JSON.toJSONString(ex.getRetCode()));
+            KeyMgrTools.responseString(response, JacksonUtils.objToString(ex.getRetCode()));
             return;
         }
         //remove token
         tokenService.deleteToken(token, null);
 
         log.debug("logout success");
-        KeyMgrTools.responseString(response, JSON.toJSONString(ConstantCode.SUCCESS));
+        KeyMgrTools.responseString(response, JacksonUtils.objToString(ConstantCode.SUCCESS));
     }
 }

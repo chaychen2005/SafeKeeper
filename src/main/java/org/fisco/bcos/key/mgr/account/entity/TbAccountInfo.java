@@ -28,7 +28,6 @@ public class TbAccountInfo {
     private String accountPwd;
     private Integer roleId;
     private String roleName;
-    private String roleNameZh;
     private Integer accountStatus;
     private String description;
     private LocalDateTime createTime;

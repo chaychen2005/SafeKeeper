@@ -105,14 +105,13 @@
 | 3.2  | accountPwd    | String        | 是     | 登录密码                                             |
 | 3.3  | roleId        | Integer       | 否     | 所属角色                                             |
 | 3.4  | roleName      | String        | 否     | 角色名称                                             |
-| 3.5  | roleNameZh    | String        | 否     | 角色中文名                                           |
-| 3.6  | accountStatus | Integer       | 否     | 帐号状态                                             |
-| 3.7  | description   | String        | 是     | 备注                                                 |
-| 3.8  | createTime    | LocalDateTime | 否     | 创建时间                                             |
-| 3.9  | modifyTime    | LocalDateTime | 否     | 修改时间                                             |
-| 3.10 | email         | String        | 是     | 用户邮箱                                             |
-| 3.11 | publicKey     | String        | 否     | 用于加密子账号托管的私钥                             |
-| 3.12 | creator       | String        | 否     | 创建者账号                                           |
+| 3.5  | accountStatus | Integer       | 否     | 帐号状态                                             |
+| 3.6  | description   | String        | 是     | 备注                                                 |
+| 3.7  | createTime    | LocalDateTime | 否     | 创建时间                                             |
+| 3.8  | modifyTime    | LocalDateTime | 否     | 修改时间                                             |
+| 3.9  | email         | String        | 是     | 用户邮箱                                             |
+| 3.10 | publicKey     | String        | 否     | 用于加密子账号托管的私钥                             |
+| 3.11 | creator       | String        | 否     | 创建者账号                                           |
 
 ### 1.2.3 入参示例
 
@@ -139,7 +138,6 @@
         "accountPwd": null,
         "roleId": 100001,
         "roleName": "visitor",
-        "roleNameZh": "访客",
         "accountStatus": 1,
         "description": null,
         "createTime": "2020-05-19 19:15:01",
@@ -228,14 +226,13 @@
 | 4.1.2  | accountPwd    | String        | 是     | 登录密码                   |
 | 4.1.3  | roleId        | Integer       | 否     | 所属角色                   |
 | 4.1.4  | roleName      | String        | 否     | 角色名称                   |
-| 4.1.5  | roleNameZh    | String        | 否     | 角色中文名                 |
-| 4.1.6  | accountStatus | Integer       | 否     | 帐号状态                   |
-| 4.1.7  | description   | String        | 是     | 备注                       |
-| 4.1.8  | createTime    | LocalDateTime | 否     | 创建时间                   |
-| 4.1.9  | modifyTime    | LocalDateTime | 否     | 修改时间                   |
-| 4.1.10 | email         | String        | 是     | 用户邮箱                   |
-| 4.1.11 | publicKey     | String        | 否     | 用于加密子账号托管的私钥   |
-| 4.1.12 | creator       | String        | 否     | 创建者账号                 |
+| 4.1.5  | accountStatus | Integer       | 否     | 帐号状态                   |
+| 4.1.6  | description   | String        | 是     | 备注                       |
+| 4.1.7  | createTime    | LocalDateTime | 否     | 创建时间                   |
+| 4.1.8  | modifyTime    | LocalDateTime | 否     | 修改时间                   |
+| 4.1.9  | email         | String        | 是     | 用户邮箱                   |
+| 4.1.10 | publicKey     | String        | 否     | 用于加密子账号托管的私钥   |
+| 4.1.11 | creator       | String        | 否     | 创建者账号                 |
 
 #### 1.4.3 入参示例
 
@@ -254,7 +251,6 @@
             "accountPwd": null,
             "roleId": 100001,
             "roleName": "visitor",
-            "roleNameZh": "访客",
             "accountStatus": 1,
             "description": null,
             "createTime": "2020-05-19 19:22:33",
@@ -268,7 +264,6 @@
             "accountPwd": null,
             "roleId": 100000,
             "roleName": "admin",
-            "roleNameZh": "管理员",
             "accountStatus": 1,
             "description": null,
             "createTime": "2020-05-19 10:57:24",

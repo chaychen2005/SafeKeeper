@@ -13,8 +13,6 @@
  */
 package org.fisco.bcos.key.mgr.security;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.code.RetCode;
 import org.fisco.bcos.key.mgr.base.entity.BaseResponse;
@@ -22,6 +20,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -37,11 +36,11 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
         String errorMsg = ex.getMessage();
         RetCode retCode = ConstantCode.PASSWORD_ERROR; // default password fail
         if (errorMsg.contains("code")) {
-            retCode = JSONObject.parseObject(errorMsg, RetCode.class);
+            retCode = JacksonUtils.stringToObj(errorMsg, RetCode.class);
         }
 
         BaseResponse baseResponse = new BaseResponse(retCode);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(baseResponse));
+        response.getWriter().write(JacksonUtils.objToString(baseResponse));
     }
 }

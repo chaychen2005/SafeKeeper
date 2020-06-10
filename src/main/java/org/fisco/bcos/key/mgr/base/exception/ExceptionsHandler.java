@@ -13,12 +13,12 @@
  */
 package org.fisco.bcos.key.mgr.base.exception;
 
-import com.alibaba.fastjson.JSON;
 import org.fisco.bcos.key.mgr.base.code.ConstantCode;
 import org.fisco.bcos.key.mgr.base.code.RetCode;
 import org.fisco.bcos.key.mgr.base.entity.BaseResponse;
 import java.util.Optional;
 import lombok.extern.log4j.Log4j2;
+import org.fisco.bcos.key.mgr.base.tools.JacksonUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -45,7 +45,7 @@ public class ExceptionsHandler {
             .orElse(ConstantCode.SYSTEM_EXCEPTION);
 
         BaseResponse bre = new BaseResponse(retCode);
-        log.warn("business exception return:{}", JSON.toJSONString(bre));
+        log.warn("business exception return:{}", JacksonUtils.objToString(bre));
         return bre;
     }
 
@@ -59,7 +59,7 @@ public class ExceptionsHandler {
             throws Exception {
         log.warn("catch accessDenied exception", exception);
         BaseResponse bre = new BaseResponse(ConstantCode.ACCESS_DENIED);
-        log.warn("accessDenied exception return:{}", JSON.toJSONString(bre));
+        log.warn("accessDenied exception return:{}", JacksonUtils.objToString(bre));
         return bre;
     }
 
@@ -75,7 +75,7 @@ public class ExceptionsHandler {
             .orElse(ConstantCode.SYSTEM_EXCEPTION);
 
         BaseResponse bre = new BaseResponse(retCode);
-        log.warn("param exception return:{}", JSON.toJSONString(bre));
+        log.warn("param exception return:{}", JacksonUtils.objToString(bre));
         return bre;
     }
 
@@ -91,7 +91,7 @@ public class ExceptionsHandler {
         RetCode retCode = ConstantCode.SYSTEM_EXCEPTION;
 
         BaseResponse bre = new BaseResponse(retCode);
-        log.warn("system RuntimeException return:{}", JSON.toJSONString(bre));
+        log.warn("system RuntimeException return:{}", JacksonUtils.objToString(bre));
         return bre;
     }
 }

@@ -13,15 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fisco.bcos.key.mgr.role;
+package org.fisco.bcos.key.mgr.data.entity;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
+import java.time.LocalDateTime;
+import lombok.Data;
 
 /**
- * mapper about tb_role.
+ * Entity class of query single data params.
  */
-public interface RoleMapper {
+@Data
+public class SingleQueryParams {
 
-    TbRole queryRoleById(@Param("roleId") Integer roleId);
+    private String account;
+    private String dataID;
+    private String dataSubID;
+
+
+    public SingleQueryParams() {
+        super();
+    }
+
+    public SingleQueryParams(String account, String dataID, String dataSubID) {
+        super();
+        this.account = account;
+        this.dataID = dataID;
+        this.dataSubID = dataSubID;
+    }
 }
