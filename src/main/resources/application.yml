@@ -8,7 +8,7 @@ server:
     key-store-password: 123456
     key-store-type: JKS
   servlet:
-    context-path: /FISCO-Key-Manager
+    context-path: /SafeKeeper
 
 
 #mybatis config

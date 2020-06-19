@@ -16,9 +16,10 @@
 package org.fisco.bcos.key.mgr.data;
 
 import org.fisco.bcos.key.mgr.data.entity.DataListParam;
-import org.fisco.bcos.key.mgr.data.entity.SingleQueryParams;
+import org.fisco.bcos.key.mgr.data.entity.DataQueryParam;
 import org.fisco.bcos.key.mgr.data.entity.TbDataInfo;
 import org.apache.ibatis.annotations.Param;
+import org.fisco.bcos.key.mgr.data.entity.TokenInfo;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -28,15 +29,24 @@ import java.util.List;
 @Repository
 public interface DataMapper {
 
-    Integer addDataRow(TbDataInfo tbAccount);
+    Integer addDataRow(TbDataInfo tbDataInfo);
 
-    TbDataInfo queryData(@Param("param") SingleQueryParams queryParams);
+    Integer updateDataRow(TbDataInfo tbDataInfo);
 
-    Integer deleteDataRow(@Param("param") SingleQueryParams queryParams);
+    List<TbDataInfo> queryData(@Param("param") DataQueryParam queryParams);
 
-    Integer existOfData(@Param("param") SingleQueryParams queryParams);
+    Integer deleteDataRow(@Param("param") DataQueryParam queryParams);
 
-    Integer countOfData(@Param("param") DataListParam param);
+    Integer existOfData(@Param("param") DataQueryParam queryParams);
+
+    Integer countOfData(@Param("account") String account, @Param("dataID") String dataID,
+                        @Param("dataSubID") String dataSubID, @Param("dataStatus") int dataStatus);
 
     List<TbDataInfo> listOfData(@Param("param") DataListParam param);
+
+    List<String> listOfDataID(@Param("account") String account, @Param("dataStatus") int dataStatus);
+
+    List<TokenInfo> listOfTokenWithTokenStatus(@Param("account") String account, @Param("status") String status);
+
+    List<String> listOfValueWithTokenStatus(@Param("account") String account, @Param("status") String status);
 }

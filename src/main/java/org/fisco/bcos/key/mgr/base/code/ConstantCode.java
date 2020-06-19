@@ -84,6 +84,20 @@ public class ConstantCode {
 
     public static final RetCode TOKEN_EXPIRE = RetCode.mark(200301, "token expire");
 
+    public static final RetCode INSERT_DATA_ERROR = RetCode.mark(200400, "insert data struct fail");
+
+    public static final RetCode LACK_ACCESS_DATA = RetCode.mark(200401, "lack of access to the data");
+
+    public static final RetCode DATA_ID_EMPTY = RetCode.mark(200402, "data id empty");
+
+    public static final RetCode DATA_SUB_ID_EMPTY = RetCode.mark(200403, "data sub id empty");
+
+    public static final RetCode DATA_NOT_EXISTS = RetCode.mark(200404, "data not exists");
+
+    public static final RetCode DATA_EXISTS = RetCode.mark(200405, "data already exists");
+
+    public static final RetCode NOT_SUFFICIENT_TOKENS = RetCode.mark(200406, "not sufficient tokens");
+
     /* auth */
     public static final RetCode USER_NOT_LOGGED_IN = RetCode.mark(300000, "user not logged in");
 

@@ -25,32 +25,19 @@
     values(#{account},#{dataID},#{dataSubID},#{plainText},#{cipherText1},#{cipherText2},NOW(),#{description})
   </insert>
 
-  <select id="queryData" parameterType="org.fisco.bcos.key.mgr.data.entity.SingleQueryParams" resultMap="dataMap">
-    select
-    <include refid="ROW_COLUMN"/>
-    from tb_data_info
-    where BINARY account = #{param.account}
-    and data_id = #{param.dataID}
-    and data_sub_id = #{param.dataSubID}
-    limit 1
-  </select>
+  <update id="updateDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.TbDataInfo">
+    update tb_data_info set
+    <if test="dataStatus != null and dataStatus != 0">
+      data_status=#{dataStatus},
+    </if>
+    plain_text=#{plainText},cipher_text1=#{cipherText1},cipher_text2=#{cipherText2}
+    where BINARY account=#{account}
+    and data_id = #{dataID}
+    and data_sub_id = #{dataSubID}
+  </update>
 
-  <delete id="deleteDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.SingleQueryParams">
-    delete from tb_data_info
-    where BINARY account = #{param.account}
-    and data_id = #{param.dataID}
-    and data_sub_id = #{param.dataSubID}
-  </delete>
-
-  <select id="existOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.SingleQueryParams" resultType="java.lang.Integer">
-    select count(1) from tb_data_info
-    where BINARY account = #{param.account}
-    and data_id = #{param.dataID}
-    and data_sub_id = #{param.dataSubID}
-  </select>
-
-  <select id="countOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataListParam" resultType="java.lang.Integer">
-    select count(1) from tb_data_info
+  <select id="queryData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataQueryParam" resultMap="dataMap">
+    select * from tb_data_info
     where 1=1
     <if test="param.account != null and param.account != ''">
       and BINARY account = #{param.account}
@@ -61,8 +48,35 @@
     <if test="param.dataSubID != null and param.dataSubID != ''">
       and data_sub_id = #{param.dataSubID}
     </if>
-    <if test="param.dataStatus != null">
-      and data_status = #{param.dataStatus}
+  </select>
+
+  <delete id="deleteDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.DataQueryParam">
+    delete from tb_data_info
+    where BINARY account = #{param.account}
+    and data_id = #{param.dataID}
+    and data_sub_id = #{param.dataSubID}
+  </delete>
+
+  <select id="existOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataQueryParam" resultType="java.lang.Integer">
+    select count(1) from tb_data_info
+    where BINARY account = #{param.account}
+    and data_id = #{param.dataID}
+    and data_sub_id = #{param.dataSubID}
+  </select>
+
+  <select id="countOfData" resultType="java.lang.Integer">
+    select count(1) from tb_data_info where 1=1
+    <if test="account != null and account != ''">
+      and BINARY account = #{account}
+    </if>
+    <if test="dataID != null and dataID != ''">
+      and data_id = #{dataID}
+    </if>
+    <if test="dataSubID != null and dataSubID != ''">
+      and data_sub_id = #{dataSubID}
+    </if>
+    <if test="dataStatus != 0">
+      and data_status = #{dataStatus}
     </if>
   </select>
 
@@ -78,7 +92,7 @@
     <if test="param.dataSubID != null and param.dataSubID != ''">
       and data_sub_id = #{param.dataSubID}
     </if>
-    <if test="param.dataStatus != null">
+    <if test="param.dataStatus != 0">
       and data_status = #{param.dataStatus}
     </if>
     <if test="param.flagSortedByTime != null and param.flagSortedByTime != ''">
@@ -87,6 +101,42 @@
     <if test="param.start != null and param.pageSize != null">
       limit #{param.start},#{param.pageSize}
     </if>
+  </select>
+
+  <select id="listOfDataID" resultType="java.lang.String">
+    select data_id from tb_data_info where 1=1
+    <if test="account != null and account != ''">
+      and BINARY account = #{account}
+    </if>
+    <if test="dataStatus != 0">
+      and data_status = #{dataStatus}
+    </if>
+    group by data_id
+  </select>
+
+  <resultMap id="tokenMap" type="org.fisco.bcos.key.mgr.data.entity.TokenInfo">
+    <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="key"/>
+    <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="text"/>
+  </resultMap>
+
+  <select id="listOfTokenWithTokenStatus" resultType="java.lang.String" resultMap="tokenMap">
+    select data_id,plain_text from tb_data_info
+    where data_id in
+    (select data_id from tb_data_info
+    where BINARY account = #{account}
+    and data_sub_id = "status"
+    and plain_text = #{status})
+    and data_sub_id = "value" ;
+  </select>
+
+  <select id="listOfValueWithTokenStatus" resultType="java.lang.String">
+    select plain_text from tb_data_info
+    where BINARY account = #{account} and data_sub_id="value" and data_id in
+    (select data_id from tb_data_info
+    where BINARY account = #{account}
+    and data_sub_id="status"
+    and plain_text = #{status}
+    group by data_id);
   </select>
 
 </mapper>

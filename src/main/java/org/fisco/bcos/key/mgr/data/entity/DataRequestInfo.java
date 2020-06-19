@@ -15,28 +15,30 @@
  */
 package org.fisco.bcos.key.mgr.data.entity;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
- * Entity class of query single data params.
+ * Entity class of data in request.
  */
 @Data
-public class SingleQueryParams {
+public class DataRequestInfo {
 
-    private String account;
-    private String dataID;
-    private String dataSubID;
+    @NotBlank
+    private String key;
+    @NotNull
+    private JsonNode value;
 
 
-    public SingleQueryParams() {
+    public DataRequestInfo() {
         super();
     }
 
-    public SingleQueryParams(String account, String dataID, String dataSubID) {
+    public DataRequestInfo(String key, JsonNode value) {
         super();
-        this.account = account;
-        this.dataID = dataID;
-        this.dataSubID = dataSubID;
+        this.key = key;
+        this.value = value;
     }
 }

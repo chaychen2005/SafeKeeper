@@ -1,4 +1,4 @@
-# FISCO BCOS 密钥管理服务（FISCO-Key-Manager Service）接口设计
+# FISCO BCOS 数据管理服务（SafeKeeper Service）接口设计
 
 ##  <span id="catalog_top">目录</span>
 - [1.帐号管理模块](#1)
@@ -13,7 +13,16 @@
   - [2.2.删除私钥](#2.2)
   - [2.3.查询私钥列表](#2.3)
   - [2.4.查询指定私钥](#2.4)
-- [3.错误码说明](#3)
+- [3.数据管理模块](#3)
+  - [3.1.新增数据](#3.1)
+  - [3.2.修改数据](#3.2)
+  - [3.3.查询指定数据](#3.3)
+  - [3.4.查询数据列表](#3.4)
+  - [3.5.删除数据](#3.5)
+  - [3.6.wedpr根据目标金额凑齐可用数据](#3.6)
+  - [3.7.wedpr查询尚未花费的金额总和](#3.7)
+  - [3.8.wedpr查询已花费的金额总和](#3.8)
+- [4.错误码说明](#4)
 
 ## <span id="1">1 帐号管理模块</span>  [top](#catalog_top)
 
@@ -44,7 +53,7 @@
 
 ### 1.1.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/account/login`
+`https://127.0.0.1:9501/SafeKeeper/account/login`
 
 ```
 {
@@ -115,7 +124,7 @@
 
 ### 1.2.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/account/addAccount`
+`https://127.0.0.1:9501/SafeKeeper/account/addAccount`
 
 ```
 {
@@ -179,7 +188,7 @@
 
 #### 1.3.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/account/deleteAccount/user1`
+`https://127.0.0.1:9501/SafeKeeper/account/deleteAccount/user1`
 
 #### 1.3.4 出参示例
 
@@ -236,7 +245,7 @@
 
 #### 1.4.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/account/accountList/1/10`
+`https://127.0.0.1:9501/SafeKeeper/account/accountList/1/10`
 
 #### 1.4.4 出参示例
 
@@ -309,7 +318,7 @@
 
 ### 1.5.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/account/updatePassword`
+`https://127.0.0.1:9501/SafeKeeper/account/updatePassword`
 
 ```
 {
@@ -360,7 +369,7 @@
 
 ### 1.6.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/account/getPublicKey`
+`https://127.0.0.1:9501/SafeKeeper/account/getPublicKey`
 
 #### 1.6.4 出参示例
 
@@ -409,14 +418,14 @@
 | 2    | message    | String        | 否     | 描述                       |
 | 3    | data       | object        | 否     | 返回信息实体               |
 | 3.1  | account    | String        | 否     | 帐号名称                   |
-| 3.2  | cipherText | Integer       | 否     | 经账号创建者公钥加密       |
+| 3.2  | cipherText | String        | 否     | 经账号创建者公钥加密       |
 | 3.3  | createTime | LocalDateTime | 否     | 私钥托管时间               |
 | 3.4  | keyAlias   | String        | 否     | 私钥别名                   |
 | 3.5  | privateKey | String        | 否     | 经账号提供的密码加密       |
 
 ### 1.1.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/escrow/addKey`
+`https://127.0.0.1:9501/SafeKeeper/escrow/addKey`
 ```
 {
     "cipherText":"048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
@@ -473,7 +482,7 @@
 
 #### 2.2.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/escrow/deleteKey/user1/key1`
+`https://127.0.0.1:9501/SafeKeeper/escrow/deleteKey/user1/key1`
 
 #### 2.2.4 出参示例
 
@@ -517,14 +526,14 @@
 | 4     | data       | List          | 是     | 信息列表                   |
 | 4.1   |            | Object        |        | 信息对象                   |
 | 4.1.1 | account    | String        | 否     | 帐号名称                   |
-| 4.1.2 | cipherText | Integer       | 否     | 经账号创建者公钥加密       |
+| 4.1.2 | cipherText | String        | 否     | 经账号创建者公钥加密       |
 | 4.1.3 | createTime | LocalDateTime | 否     | 私钥托管时间               |
 | 4.1.4 | keyAlias   | String        | 否     | 私钥别名                   |
 | 4.1.5 | privateKey | String        | 否     | 经账号提供的密码加密       |
 
 #### 2.3.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/escrow/keyList/1/10`
+`https://127.0.0.1:9501/SafeKeeper/escrow/keyList/1/10`
 
 #### 2.3.4 出参示例
 
@@ -575,14 +584,14 @@
 | 2    | message    | String        | 否     | 描述                       |
 | 3    | data       | object        | 否     | 返回信息实体               |
 | 3.1  | account    | String        | 否     | 帐号名称                   |
-| 3.2  | cipherText | Integer       | 否     | 经账号创建者公钥加密       |
+| 3.2  | cipherText | String        | 否     | 经账号创建者公钥加密       |
 | 3.3  | createTime | LocalDateTime | 否     | 私钥托管时间               |
 | 3.4  | keyAlias   | String        | 否     | 私钥别名                   |
 | 3.5  | privateKey | String        | 否     | 经账号提供的密码加密       |
 
 #### 2.4.3 入参示例
 
-`https://127.0.0.1:9501/FISCO-Key-Manager/escrow/queryKey/user1/key1`
+`https://127.0.0.1:9501/SafeKeeper/escrow/queryKey/user1/key1`
 
 #### 2.4.4 出参示例
 
@@ -610,7 +619,438 @@
 }
 ```
 
-## <span id="3">3 错误码说明</span>  [top](#catalog_top)
+## <span id="3">3 数据管理模块</span>  [top](#catalog_top)
+
+以下请求均带有header信息。
+
+| 序号 | 请求header         | 类型   | 可为空 | 备注                   |
+| ---- | ------------------ | ------ | ------ | ---------------------- |
+| 1    | AuthorizationToken | String | 否     | 会话标识               |
+
+### <span id="3.1">3.1 新增数据</span>  [top](#catalog_top)
+
+#### 3.1.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址：`/dataVault/insert`
+* 请求方式：POST
+* 请求头：Content-type: application/json
+* 返回格式：JSON
+
+#### 3.1.2 参数信息详情
+
+| 序号 | 请求body | 类型   | 可为空 | 备注                           |
+| ---- | -------- | ------ | ------ | ------------------------------ |
+| 1    | key      | String | 否     | 新增的数据主键                 |
+| 2    | value    | object | 否     | 新增的数据内容（Json格式）     |
+
+| 序号 | 返回body | 类型   | 可为空 | 备注                           |
+| ---- | -------- | ------ | ------ | ------------------------------ |
+| 1    | code     | Int    | 否     | 返回码，0：成功 其它：失败     |
+| 2    | message  | String | 否     | 描述                           |
+| 3    | data     | object | 是     | 返回信息实体（空）             |
+
+### 3.1.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/insert`
+
+```json
+{
+    "key":"key1",
+    "value": {
+        "value":"100",
+        "status":"0",
+        "orderID":"order_1",
+        "creditCredential":"credit_1"
+  	}
+}
+```
+
+#### 3.1.4 出参示例
+
+* 成功：
+```json
+{
+    "code": 0,
+    "message": "success",
+    "data": null
+}
+```
+
+* 失败：
+```json
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+```
+
+### <span id="3.2">3.2 修改数据</span>  [top](#catalog_top)
+
+#### 3.2.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址：`/dataVault/update`
+* 请求方式：PUT
+* 请求头：Content-type: application/json
+* 返回格式：JSON
+
+#### 3.2.2 参数信息详情
+
+| 序号 | 请求body | 类型   | 可为空 | 备注                             |
+| ---- | -------- | ------ | ------ | -------------------------------- |
+| 1    | key      | String | 否     | 修改的数据主键                   |
+| 2    | value    | object | 否     | 修改的数据内容（Json格式，增量） |
+
+| 序号 | 返回body | 类型   | 可为空 | 备注                             |
+| ---- | -------- | ------ | ------ | -------------------------------- |
+| 1    | code     | Int    | 否     | 返回码，0：成功 其它：失败       |
+| 2    | message  | String | 否     | 描述                             |
+| 3    | data     | object | 是     | 返回信息实体（空）               |
+
+### 3.2.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/update`
+
+```
+{
+    "key":"key1",
+    "value": {
+        "status":"1"
+  	}
+}
+```
+
+#### 3.2.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "success",
+    "data": null
+}
+```
+
+* 失败：
+```
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+```
+
+###  <span id="3.3">3.3 查询指定数据</span>  [top](#catalog_top)
+
+#### 3.3.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址: `/dataVault/query/`
+* 请求方式：GET
+* 返回格式：JSON
+
+#### 3.3.2 参数信息详情
+
+| 序号 | 请求body | 类型   | 可为空 | 备注                             |
+| ---- | -------- | ------ | ------ | -------------------------------- |
+| 1    | dataID   | String | 否     | 数据标识                         |
+
+| 序号 | 返回body | 类型   | 可为空 | 备注                             |
+| ---- | -------- | ------ | ------ | -------------------------------- |
+| 1    | code     | Int    | 否     | 返回码，0：成功 其它：失败       |
+| 2    | message  | String | 否     | 描述                             |
+| 3    | data     | object | 是     | 返回信息实体                     |
+
+#### 3.3.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/query?dataID=key1`
+
+#### 3.3.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "success",
+    "data": {
+        "key":"key1",
+        "value":"100",
+        "status":"1",
+        "orderID":"order_1",
+        "creditCredential":"credit_1"
+    }
+}
+```
+
+* 失败：
+```
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+```
+
+###  <span id="3.4">3.4 查询数据列表</span>  [top](#catalog_top)
+
+#### 3.4.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址: `/dataVault/list/`
+* 请求方式：GET
+* 返回格式：JSON
+
+#### 3.4.2 参数信息详情
+
+| 序号 | 请求body   | 类型   | 可为空 | 备注                       |
+| ---- | ---------- | ------ | ------ | -------------------------- |
+| 1    | pageNumber | Int    | 否     | 每页记录数                 |
+| 2    | pageSize   | Int    | 否     | 当前页码                   |
+| 序号 | 请求body   | 类型   | 可为空 | 备注                       |
+| ---- | ---------- | ------ | ------ | -------------------------- |
+| 1    | code       | Int    | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message    | String | 否     | 描述                       |
+| 3    | totalCount | Int    | 否     | 总记录数                   |
+| 4    | data       | List   | 是     | 信息列表                   |
+| 4.1  |            | Object |        | 信息对象                   |
+
+#### 3.4.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/list?pageNumber=1&pageSize=10`
+
+#### 3.4.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "success",
+    "data": [
+        {
+            "key":"key1",
+            "value":"100",
+            "status":"1",
+            "orderID":"order_1",
+            "creditCredential":"credit_1"
+        },
+        {
+            "key":"key2",
+            "value":"200",
+            "status":"0",
+            "orderID":"order_2",
+            "creditCredential":"credit_2"
+        }
+    ],
+    "totalCount": 2
+}
+```
+
+* 失败：
+```
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+```
+
+### <span id="3.5">3.5 删除数据</span>  [top](#catalog_top)
+
+#### 3.5.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址：`dataVault/delete/`
+* 请求方式：DELETE
+* 返回格式：JSON
+
+#### 3.5.2 参数信息详情
+
+| 序号 | 请求body | 类型   | 可为空 | 备注                       |
+| ---- | -------- | ------ | ------ | -------------------------- |
+| 1    | dataID   | String | 否     | 数据标识                   |
+
+| 序号 | 返回body | 类型   | 可为空 | 备注                       |
+| ---- | -------- | ------ | ------ | -------------------------- |
+| 1    | code     | Int    | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message  | String | 否     | 描述                       |
+| 3    | data     | object | 是     | 返回信息实体（空）         |
+
+#### 3.5.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/delete?dataID=key1`
+
+#### 3.5.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "Success",
+    "data": null
+}
+```
+
+###  <span id="3.6">3.6 wedpr根据目标金额凑齐可用数据</span>  [top](#catalog_top)
+
+#### 3.6.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址: `/dataVault/wedpr/vcl/getCredentialList/`
+* 请求方式：GET
+* 返回格式：JSON
+
+remove {value} to parameters
+
+#### 3.6.2 参数信息详情
+
+| 序号 | 请求body | 类型    | 可为空 | 备注                       |
+| ---- | -------- | ------- | ------ | -------------------------- |
+| 1    | value    | long    | 否     | 目标金额                   |
+
+| 序号 | 请求body | 类型    | 可为空 | 备注                       |
+| ---- | -------- | ------- | ------ | -------------------------- |
+| 1    | code     | Int     | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message  | String  | 否     | 描述                       |
+| 3    | data     | Object  | 是     | 信息列表                   |
+| 3.1  |          | Object  |        | 信息对象                   |
+
+#### 3.6.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/wedpr/vcl/getCredentialList?value=240`
+
+#### 3.6.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "success",
+    "data": [
+        {
+            "key":"key2",
+            "value":"200",
+            "status":"2",
+            "orderID":"order_2",
+            "creditCredential":"credit_2"
+        },
+        {
+            "key":"key1",
+            "value":"100",
+            "status":"0",
+            "orderID":"order_1",
+            "creditCredential":"credit_1"
+        }
+    ]
+}
+```
+
+* 失败：
+```
+// 系统异常
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+// 余额不足
+{
+    "code": 200406,
+    "message": "not sufficient tokens",
+    "data": null
+}
+```
+
+###  <span id="3.7">3.7 wedpr查询尚未花费的金额总和</span>  [top](#catalog_top)
+
+#### 3.7.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址: `/dataVault/wedpr/vcl/getUnspent`
+* 请求方式：GET
+* 返回格式：JSON
+
+#### 3.7.2 参数信息详情
+
+| 序号 | 输出body | 类型    | 可为空 | 备注                       |
+| ---- | -------- | ------- | ------ | -------------------------- |
+| 1    | code     | Int     | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message  | String  | 否     | 描述                       |
+| 3    | data     | Object  | 否     | 返回信息实体               |
+| 3.1  | unspent  | long    | 否     | 尚未花费金额总和            |
+
+#### 3.7.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/wedpr/vcl/getUnspent`
+
+#### 3.7.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "success",
+    "data": {
+        "unspent":2000
+    }
+}
+```
+
+* 失败：
+```
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+```
+
+###  <span id="3.8">3.8 wedpr查询已花费的金额总和</span>  [top](#catalog_top)
+
+#### 3.8.1 传输协议规范
+
+* 网络传输协议：使用HTTPS协议
+* 请求地址: `/dataVault/wedpr/vcl/getSpent`
+* 请求方式：GET
+* 返回格式：JSON
+
+#### 3.8.2 参数信息详情
+
+| 序号 | 输出body | 类型    | 可为空 | 备注                       |
+| ---- | -------- | ------- | ------ | -------------------------- |
+| 1    | code     | Int     | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message  | String  | 否     | 描述                       |
+| 3    | data     | Object  | 否     | 返回信息实体               |
+| 3.1  | spent    | long    | 否     | 已花费金额总和             |
+
+#### 3.8.3 入参示例
+
+`https://127.0.0.1:9501/SafeKeeper/dataVault/wedpr/vcl/getSpent`
+
+#### 3.8.4 出参示例
+
+* 成功：
+```
+{
+    "code": 0,
+    "message": "success",
+    "data": {
+        "spent":1000
+    }
+}
+```
+
+* 失败：
+```
+{
+    "code": 100000,
+    "message": "system exception",
+    "data": null
+}
+```
+
+## <span id="4">4 错误码说明</span>  [top](#catalog_top)
 
 | code   | message                                | type                          | description           |
 | ------ | -------------------------------------- | ----------------------------- | --------------------- |
@@ -635,6 +1075,13 @@
 | 200203 | lack of access to the key              | business exception - key      | 无访问该私钥权限      |
 | 200300 | invalid token                          | business exception - token    | 该Token不存在         |
 | 200301 | token expire                           | business exception - token    | 该Token超时           |
+| 200400 | insert data struct fail                | business exception - data     | 插入数据失败          |
+| 200401 | lack of access to the data             | business exception - data     | 无访问该数据权限      |
+| 200402 | data id empty                          | business exception - data     | 数据主标识不能为空    |
+| 200403 | data sub id empty                      | business exception - data     | 数据辅标识不能为空    |
+| 200404 | data not exists                        | business exception - data     | 该数据已存在          |
+| 200405 | data already exists                    | business exception - data     | 该数据尚未存在        |
+| 200406 | not sufficient tokens                  | business exception - token    | 余额不足              |
 | 300000 | user not logged in                     | auth exception                | 匿名用户无操作权限    |
 | 300001 | access denied                          | auth exception                | 管理员/账号无操作权限 |
 | 400000 | param exception                        | param exception               | 参数校验错误          |
