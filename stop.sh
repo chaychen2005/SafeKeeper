@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_MAIN=org.fisco.bcos.key.mgr.Application
+APP_MAIN=org.fisco.bcos.safekeeper.Application
 CURRENT_DIR=$(pwd)/
 CONF_DIR=${CURRENT_DIR}conf
 

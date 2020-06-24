@@ -1,4 +1,4 @@
-group = 'org.fisco.bcos.key.mgr'
+group = 'org.fisco.bcos.safekeeper'
 version = '0.0.1-SNAPSHOT'
 
 apply plugin: 'maven'

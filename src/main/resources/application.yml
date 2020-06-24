@@ -13,7 +13,7 @@ server:
 
 #mybatis config
 mybatis:
-  typeAliasesPackage: org.fisco.bcos.key.mgr
+  typeAliasesPackage: org.fisco.bcos.safekeeper
   mapperLocations: classpath:mapper/*.xml
 
 
@@ -21,7 +21,7 @@ mybatis:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://dbIP:dbPort/fisco_key_manager?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://dbIP:dbPort/fisco_safekeeper?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
     username: "defaultAccount"
     password: "defaultPassword"
 
@@ -29,7 +29,7 @@ spring:
 logging:
   config: classpath:log/log4j2.xml
   level:
-    org.fisco.bcos.key.mgr: info
+    org.fisco.bcos.safekeeper: info
 
 #constants
 constant:

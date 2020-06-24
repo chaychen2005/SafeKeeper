@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.fisco.bcos.key.mgr.role.RoleMapper">
-  <resultMap id="roleMap" type="org.fisco.bcos.key.mgr.role.TbRole">
+<mapper namespace="org.fisco.bcos.safekeeper.role.RoleMapper">
+  <resultMap id="roleMap" type="org.fisco.bcos.safekeeper.role.TbRole">
     <id column="role_id" javaType="java.lang.Integer" jdbcType="INTEGER" property="roleId"/>
     <result column="role_name" javaType="java.lang.String" jdbcType="VARCHAR" property="roleName"/>
     <result column="description" javaType="java.lang.String" jdbcType="VARCHAR" property="description"/>
@@ -15,7 +15,7 @@
 		role_id roleId,role_name roleName,description description,create_time createTime
   </sql>
 
-  <select id="queryRoleById" resultType="org.fisco.bcos.key.mgr.role.TbRole">
+  <select id="queryRoleById" resultType="org.fisco.bcos.safekeeper.role.TbRole">
     select
     <include refid="QUERY_ROW_COLUMN"/>
     from tb_role where role_id = #{roleId}

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+source safekeeper-ddl.sql;
+source safekeeper-dml.sql;

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.fisco.bcos.safekeeper.dataescrow.DataEscrowMapper">
+  <resultMap id="dataEscrowMap" type="org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo">
+    <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
+    <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataID"/>
+    <result column="data_status" javaType="java.lang.Integer" jdbcType="INTEGER" property="dataStatus"/>
+    <result column="cipher_text1" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText1"/>
+    <result column="cipher_text2" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText2"/>
+    <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="description" javaType="java.lang.String" jdbcType="INTEGER" property="description"/>
+  </resultMap>
+
+  <sql id="ROW_COLUMN">
+    account,data_id,cipher_text1,cipher_text2,create_time,description
+  </sql>
+
+  <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo">
+    insert into tb_data_escrow_info
+    (<include refid="ROW_COLUMN"/>)
+    values(#{account},#{dataID},#{cipherText1},#{cipherText2},NOW(),#{description})
+  </insert>
+
+  <select id="queryData" parameterType="java.lang.String" resultMap="dataEscrowMap">
+    select *
+    from tb_data_escrow_info where BINARY account = #{account} and data_id = #{dataID}
+    limit 1
+  </select>
+
+  <delete id="deleteDataRow" parameterType="java.lang.String">
+    delete from tb_data_escrow_info where BINARY account = #{account} and data_id = #{dataID}
+  </delete>
+
+  <select id="countOfData" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(1) from tb_data_escrow_info where BINARY account = #{account} and data_id = #{dataID}
+  </select>
+
+  <select id="countOfDataOwnedByAccount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(1) from tb_data_escrow_info where 1=1
+    <if test="account != null and account != ''">
+      and BINARY account = #{account}
+    </if>
+  </select>
+
+  <select id="listOfDataOwnedByAccount" parameterType="org.fisco.bcos.safekeeper.dataescrow.entity.DataEscrowListParam" resultMap="dataEscrowMap">
+    select * from tb_data_escrow_info
+    where 1=1
+    <if test="param.account != null and param.account != ''">
+      and BINARY account = #{param.account}
+    </if>
+    <if test="param.flagSortedByTime != null and param.flagSortedByTime != ''">
+      order by create_time ${param.flagSortedByTime}
+    </if>
+    <if test="param.start != null and param.pageSize != null">
+      limit #{param.start},#{param.pageSize}
+    </if>
+  </select>
+
+</mapper>

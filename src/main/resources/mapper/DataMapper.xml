@@ -2,41 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.fisco.bcos.key.mgr.data.DataMapper">
-  <resultMap id="dataMap" type="org.fisco.bcos.key.mgr.data.entity.TbDataInfo">
+<mapper namespace="org.fisco.bcos.safekeeper.data.DataMapper">
+  <resultMap id="dataMap" type="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
     <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataID"/>
     <id column="data_sub_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataSubID"/>
     <result column="data_status" javaType="java.lang.Integer" jdbcType="INTEGER" property="dataStatus"/>
     <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="plainText"/>
-    <result column="cipher_text1" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText1"/>
-    <result column="cipher_text2" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText2"/>
     <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
-    <result column="description" javaType="java.lang.String" jdbcType="INTEGER" property="description"/>
   </resultMap>
 
   <sql id="ROW_COLUMN">
-    account,data_id,data_sub_id,plain_text,cipher_text1,cipher_text2,create_time,description
+    account,data_id,data_sub_id,plain_text,create_time
   </sql>
 
-  <insert id="addDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.TbDataInfo">
+  <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     insert into tb_data_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataID},#{dataSubID},#{plainText},#{cipherText1},#{cipherText2},NOW(),#{description})
+    values(#{account},#{dataID},#{dataSubID},#{plainText},NOW())
   </insert>
 
-  <update id="updateDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.TbDataInfo">
+  <update id="updateDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     update tb_data_info set
     <if test="dataStatus != null and dataStatus != 0">
       data_status=#{dataStatus},
     </if>
-    plain_text=#{plainText},cipher_text1=#{cipherText1},cipher_text2=#{cipherText2}
+    plain_text=#{plainText}
     where BINARY account=#{account}
     and data_id = #{dataID}
     and data_sub_id = #{dataSubID}
   </update>
 
-  <select id="queryData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataQueryParam" resultMap="dataMap">
+  <select id="queryData" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam" resultMap="dataMap">
     select * from tb_data_info
     where 1=1
     <if test="param.account != null and param.account != ''">
@@ -50,14 +47,14 @@
     </if>
   </select>
 
-  <delete id="deleteDataRow" parameterType="org.fisco.bcos.key.mgr.data.entity.DataQueryParam">
+  <delete id="deleteDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam">
     delete from tb_data_info
     where BINARY account = #{param.account}
     and data_id = #{param.dataID}
     and data_sub_id = #{param.dataSubID}
   </delete>
 
-  <select id="existOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataQueryParam" resultType="java.lang.Integer">
+  <select id="existOfData" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam" resultType="java.lang.Integer">
     select count(1) from tb_data_info
     where BINARY account = #{param.account}
     and data_id = #{param.dataID}
@@ -80,7 +77,7 @@
     </if>
   </select>
 
-  <select id="listOfData" parameterType="org.fisco.bcos.key.mgr.data.entity.DataListParam" resultMap="dataMap">
+  <select id="listOfData" parameterType="org.fisco.bcos.safekeeper.data.entity.DataListParam" resultMap="dataMap">
     select * from tb_data_info
     where 1=1
     <if test="param.account != null and param.account != ''">
@@ -114,7 +111,7 @@
     group by data_id
   </select>
 
-  <resultMap id="tokenMap" type="org.fisco.bcos.key.mgr.data.entity.TokenInfo">
+  <resultMap id="tokenMap" type="org.fisco.bcos.safekeeper.data.entity.TokenInfo">
     <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="key"/>
     <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="text"/>
   </resultMap>

@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.fisco.bcos.key.mgr.account.AccountMapper">
-  <resultMap id="accountMap" type="org.fisco.bcos.key.mgr.account.entity.TbAccountInfo">
+<mapper namespace="org.fisco.bcos.safekeeper.account.AccountMapper">
+  <resultMap id="accountMap" type="org.fisco.bcos.safekeeper.account.entity.TbAccountInfo">
     <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
     <result column="account_pwd" javaType="java.lang.String" jdbcType="VARCHAR"
       property="accountPwd"/>
@@ -35,19 +35,19 @@
     a.description,a.email,a.create_time createTime,a.modify_time modifyTime,a.public_key publicKey,a.creator
   </sql>
 
-  <insert id="addAccountRow" parameterType="org.fisco.bcos.key.mgr.account.entity.TbAccountInfo">
+  <insert id="addAccountRow" parameterType="org.fisco.bcos.safekeeper.account.entity.TbAccountInfo">
     insert into tb_account_info
     <include refid="NEW_ROW_COLUMN"/>
     values(#{account},#{accountPwd},#{roleId},#{description},#{email},NOW(),NOW(),#{publicKey},#{creator})
   </insert>
 
-  <update id="updateAccountRow" parameterType="org.fisco.bcos.key.mgr.account.entity.TbAccountInfo">
+  <update id="updateAccountRow" parameterType="org.fisco.bcos.safekeeper.account.entity.TbAccountInfo">
     update tb_account_info set account_pwd=#{accountPwd},role_id=#{roleId},
     account_status=#{accountStatus},description=#{description},email=#{email},modify_time=now()
     where account=#{account}
   </update>
 
-  <select id="queryByAccount" resultType="org.fisco.bcos.key.mgr.account.entity.TbAccountInfo">
+  <select id="queryByAccount" resultType="org.fisco.bcos.safekeeper.account.entity.TbAccountInfo">
     select
     <include refid="QUERY_ROW_COLUMN"/>
     from tb_account_info a left join tb_role b on(a.role_id=b.role_id) where BINARY a.account =
@@ -63,7 +63,7 @@
     </if>
   </select>
 
-  <select id="listOfAccount" parameterType="org.fisco.bcos.key.mgr.account.entity.AccountListParam"
+  <select id="listOfAccount" parameterType="org.fisco.bcos.safekeeper.account.entity.AccountListParam"
     resultMap="accountMap">
     select a.*,b.role_name from tb_account_info a
     left join tb_role b on(a.role_id=b.role_id)

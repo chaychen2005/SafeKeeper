@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_MAIN=org.fisco.bcos.key.mgr.Application
+APP_MAIN=org.fisco.bcos.safekeeper.Application
 CLASSPATH='conf/:apps/*:lib/*'
 CURRENT_DIR=$(pwd)/
 LOG_DIR=${CURRENT_DIR}log
@@ -45,7 +45,7 @@ start(){
     if [ $processStatus == 1 ]; then
         echo "    server $APP_MAIN is running, pid is $processPid."
     else
-        nohup $JAVA_HOME/bin/java -Djdk.tls.namedGroups="secp256k1" $JAVA_OPTS -cp $CLASSPATH $APP_MAIN >> $LOG_DIR/key-manager.out 2>&1 &
+        nohup $JAVA_HOME/bin/java -Djdk.tls.namedGroups="secp256k1" $JAVA_OPTS -cp $CLASSPATH $APP_MAIN >> $LOG_DIR/safekeeper.out 2>&1 &
         
         count=1
         result=0
