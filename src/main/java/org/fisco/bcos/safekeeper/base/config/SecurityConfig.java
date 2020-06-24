@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.exceptionHandling().accessDeniedHandler(jsonAccessDeniedHandler);
         http.formLogin().loginPage("/login") // login page
-            .loginProcessingUrl("/account/login") // login request uri
+            .loginProcessingUrl("/accounts/v1/login") // login request uri
             .usernameParameter("account").passwordParameter("accountPwd").permitAll()
             .successHandler(loginSuccessHandler) // if login success
             .failureHandler(loginfailHandler) // if login fail

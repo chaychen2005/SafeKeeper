@@ -39,7 +39,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(value = "account")
+@RequestMapping(value = "accounts")
 public class AccountController extends BaseController {
 
     @Autowired
@@ -50,7 +50,7 @@ public class AccountController extends BaseController {
     /**
      * add account info.
      */
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/v1")
     @PreAuthorize(ConstantProperties.HAS_ROLE_ADMIN)
     public BaseResponse addAccountInfo(@RequestBody @Valid AccountInfo info, BindingResult result)
         throws SafeKeeperException {
@@ -79,7 +79,7 @@ public class AccountController extends BaseController {
     /**
      * query account list.
      */
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/v1")
     @PreAuthorize(ConstantProperties.HAS_ROLE_ADMIN)
     public BasePageResponse queryAccountList(@RequestParam(value="pageNumber") Integer pageNumber,
                                              @RequestParam(value="pageSize") Integer pageSize) throws SafeKeeperException {
@@ -110,7 +110,7 @@ public class AccountController extends BaseController {
     /**
      * get public key.
      */
-    @GetMapping(value = "/getPublicKey")
+    @GetMapping(value = "/v1/publicKey")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse getPublicKey() throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
@@ -130,9 +130,9 @@ public class AccountController extends BaseController {
     /**
      * delete account by id.
      */
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/v1/{account}")
     @PreAuthorize(ConstantProperties.HAS_ROLE_ADMIN)
-    public BaseResponse deleteAccount(@RequestParam(value="account") String account)
+    public BaseResponse deleteAccount(@PathVariable("account") String account)
         throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
@@ -158,7 +158,7 @@ public class AccountController extends BaseController {
     /**
      * update password.
      */
-    @PutMapping(value = "/updatePassword")
+    @PatchMapping(value = "/v1/password")
     public BaseResponse updatePassword(@RequestBody @Valid PasswordInfo info, HttpServletRequest request, 
             BindingResult result) throws SafeKeeperException {
         checkBindResult(result);

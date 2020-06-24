@@ -18,7 +18,6 @@ package org.fisco.bcos.safekeeper.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jdk.nashorn.internal.parser.Token;
 import org.fisco.bcos.safekeeper.base.code.ConstantCode;
 import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
 import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
@@ -28,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 /**
@@ -48,7 +46,7 @@ public class DataService {
         log.debug("start addDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
         // check data
-        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataID(), dataInfo.getDataSubID());
+        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
         dataNotExist(queryParams);
 
         // add data row
@@ -71,7 +69,7 @@ public class DataService {
             TbDataInfo dataInfo = dataInfoList.get(i);
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
             // check data
-            DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataID(), dataInfo.getDataSubID());
+            DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
             dataNotExist(queryParams);
             // add data batch
             Integer affectRow = dataMapper.addDataRow(dataInfo);
@@ -89,7 +87,7 @@ public class DataService {
         log.debug("start updateDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
         // check data
-        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataID(), dataInfo.getDataSubID());
+        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
         dataExist(queryParams);
 
         // update data row
@@ -112,7 +110,7 @@ public class DataService {
             TbDataInfo dataInfo = dataInfoList.get(i);
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
             // check data
-            DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataID(), dataInfo.getDataSubID());
+            DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
             dataExist(queryParams);
             // update data batch
             Integer affectRow = dataMapper.updateDataRow(dataInfo);
@@ -136,10 +134,10 @@ public class DataService {
     /**
      * query count of data.
      */
-    public int countOfData(String account, String dataID, String dataSubID, int dataStatus) {
-        log.debug("start countOfData. account: {} dataID: {} dataSubID: {} dataStatus: {} ",
-                account, dataID, dataSubID, dataStatus);
-        Integer dataCount = dataMapper.countOfData(account, dataID, dataSubID, dataStatus);
+    public int countOfData(String account, String dataId, String dataSubId, int dataStatus) {
+        log.debug("start countOfData. account: {} dataId: {} dataSubId: {} dataStatus: {} ",
+                account, dataId, dataSubId, dataStatus);
+        Integer dataCount = dataMapper.countOfData(account, dataId, dataSubId, dataStatus);
         int count = dataCount == null ? 0 : dataCount.intValue();
         log.debug("end countOfData. count: {} ", count);
         return count;
@@ -188,10 +186,10 @@ public class DataService {
      * boolean the data is exist.
      */
     public void dataExist(DataQueryParam queryParams) throws SafeKeeperException {
-        if (StringUtils.isBlank(queryParams.getDataID())) {
+        if (StringUtils.isBlank(queryParams.getDataId())) {
             throw new SafeKeeperException(ConstantCode.DATA_ID_EMPTY);
         }
-        if (StringUtils.isBlank(queryParams.getDataSubID())) {
+        if (StringUtils.isBlank(queryParams.getDataSubId())) {
             throw new SafeKeeperException(ConstantCode.DATA_SUB_ID_EMPTY);
         }
         int count = existOfData(queryParams);
@@ -204,10 +202,10 @@ public class DataService {
      * boolean the data is not exist.
      */
     public void dataNotExist(DataQueryParam queryParams) throws SafeKeeperException {
-        if (StringUtils.isBlank(queryParams.getDataID())) {
+        if (StringUtils.isBlank(queryParams.getDataId())) {
             throw new SafeKeeperException(ConstantCode.DATA_ID_EMPTY);
         }
-        if (StringUtils.isBlank(queryParams.getDataSubID())) {
+        if (StringUtils.isBlank(queryParams.getDataSubId())) {
             throw new SafeKeeperException(ConstantCode.DATA_SUB_ID_EMPTY);
         }
         int count = existOfData(queryParams);
@@ -226,10 +224,10 @@ public class DataService {
         }
     }
 
-    public List<String> listOfDataID(String account, int status) {
-        log.debug("start listOfDataID. account:{} status: {} ", account, status);
-        List<String> list = dataMapper.listOfDataID(account, status);
-        log.debug("end listOfDataID. list:{} ", JacksonUtils.objToString(list));
+    public List<String> listOfDataId(String account, int status) {
+        log.debug("start listOfDataId. account:{} status: {} ", account, status);
+        List<String> list = dataMapper.listOfDataId(account, status);
+        log.debug("end listOfDataId. list:{} ", JacksonUtils.objToString(list));
         return list;
     }
 
@@ -285,8 +283,8 @@ public class DataService {
         }
 
         List<JsonNode> listOfData = new ArrayList<>();
-        for (String dataID : selectedTokens) {
-            DataQueryParam queryParams = new DataQueryParam(account, dataID);
+        for (String dataId : selectedTokens) {
+            DataQueryParam queryParams = new DataQueryParam(account, dataId);
             List<TbDataInfo> dataInfoList = queryData(queryParams);
             JsonNode dateNode = rawDataListToDataNode(dataInfoList);
             listOfData.add(dateNode);
@@ -316,7 +314,7 @@ public class DataService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
         List<String> unspentList = listOfValueWithTokenStatus(account,"0");
-        ((ObjectNode) dataNode).put("unspentTotalValue", aggregateBalance(unspentList));
+        ((ObjectNode) dataNode).put("balance", aggregateBalance(unspentList));
         return dataNode;
     }
 
@@ -324,7 +322,7 @@ public class DataService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
         List<String> spentList = listOfValueWithTokenStatus(account,"1");
-        ((ObjectNode) dataNode).put("spentTotalValue", aggregateBalance(spentList));
+        ((ObjectNode) dataNode).put("expenditure", aggregateBalance(spentList));
         return dataNode;
     }
 
@@ -349,11 +347,11 @@ public class DataService {
     public List<TbDataInfo> dataJsonToRawDataList(String currentAccount, DataRequestInfo data) {
         List<TbDataInfo> dataInfoList = new ArrayList<>();
 
-        String dataID = data.getKey();
+        String dataId = data.getKey();
         Iterator<Map.Entry<String,JsonNode>> jsonNodes = data.getValue().fields();
         while (jsonNodes.hasNext()) {
             Map.Entry<String, JsonNode> node = jsonNodes.next();
-            TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataID, node.getKey(), node.getValue().asText());
+            TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataId, node.getKey(), node.getValue().asText());
             dataInfoList.add(dataInfo);
         }
         return dataInfoList;
@@ -366,11 +364,11 @@ public class DataService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
         if (dataInfoList.size() > 0) {
-            ((ObjectNode) dataNode).put("key", dataInfoList.get(0).getDataID());
+            ((ObjectNode) dataNode).put("key", dataInfoList.get(0).getDataId());
         }
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
-            ((ObjectNode) dataNode).put(dataInfo.getDataSubID(), dataInfo.getPlainText());
+            ((ObjectNode) dataNode).put(dataInfo.getDataSubId(), dataInfo.getPlainText());
         }
         return dataNode;
     }
