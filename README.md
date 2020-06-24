@@ -1,2 +1,2 @@
-# FISCO-Key-Manager
-Java service for key management
+# SafeKeeper
+Java service for data escrow
