@@ -11,8 +11,6 @@
 
 ## 控制台直连数据管理服务
 
-![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/simple_depolyment.png)
-
 ### 1. 获取源码 
 
 ```text
