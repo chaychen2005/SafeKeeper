@@ -39,12 +39,12 @@ public interface DataMapper {
 
     Integer existOfData(@Param("param") DataQueryParam queryParams);
 
-    Integer countOfData(@Param("account") String account, @Param("dataID") String dataID,
-                        @Param("dataSubID") String dataSubID, @Param("dataStatus") int dataStatus);
+    Integer countOfData(@Param("account") String account, @Param("dataId") String dataId,
+                        @Param("dataSubId") String dataSubId, @Param("dataStatus") int dataStatus);
 
     List<TbDataInfo> listOfData(@Param("param") DataListParam param);
 
-    List<String> listOfDataID(@Param("account") String account, @Param("dataStatus") int dataStatus);
+    List<String> listOfDataId(@Param("account") String account, @Param("dataStatus") int dataStatus);
 
     List<TokenInfo> listOfTokenWithTokenStatus(@Param("account") String account, @Param("status") String status);
 

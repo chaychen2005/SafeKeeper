@@ -42,7 +42,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(value = "dataEscrow")
+@RequestMapping(value = "escrow/v1/vaults")
 public class DataEscrowController extends BaseController {
 
     @Autowired
@@ -55,7 +55,7 @@ public class DataEscrowController extends BaseController {
     /**
      * add data info.
      */
-    @PostMapping(value = "/add")
+    @PostMapping(value = "")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse addData(@RequestBody @Valid EscrowedDataInfo dataInfo, BindingResult result)
             throws SafeKeeperException {
@@ -83,12 +83,12 @@ public class DataEscrowController extends BaseController {
     /**
      * query data.
      */
-    @GetMapping(value = "/query")
-    public BaseResponse queryData(@RequestParam(value="account") String account,
-                                  @RequestParam(value="dataID") String dataID) throws SafeKeeperException {
+    @GetMapping(value = "/{account}/{vaultId}")
+    public BaseResponse queryData(@PathVariable("account") String account,
+                                  @PathVariable("vaultId") String vaultId) throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
-        log.info("start queryData. startTime:{} account:{} dataID:{}", startTime.toEpochMilli(), account, dataID);
+        log.info("start queryData. startTime:{} account:{} vaultId:{}", startTime.toEpochMilli(), account, vaultId);
 
         String currentAccount = getCurrentAccount(request);
         if (!account.equals(currentAccount)) {
@@ -99,9 +99,9 @@ public class DataEscrowController extends BaseController {
             }
         }
 
-        int count = dataService.countOfData(account, dataID);
+        int count = dataService.countOfData(account, vaultId);
         if (count > 0) {
-            TbDataEscrowInfo tbDataEscrowInfo = dataService.queryDataEscrow(account, dataID);
+            TbDataEscrowInfo tbDataEscrowInfo = dataService.queryDataEscrow(account, vaultId);
             baseResponse.setData(tbDataEscrowInfo);
         } else {
             log.info("data info not exists");
@@ -116,7 +116,7 @@ public class DataEscrowController extends BaseController {
     /**
      * query data list.
      */
-    @GetMapping(value = "/list")
+    @GetMapping(value = "")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BasePageResponse dataList(@RequestParam(value="pageNumber") Integer pageNumber,
                                      @RequestParam(value="pageSize") Integer pageSize) throws SafeKeeperException {
@@ -145,16 +145,16 @@ public class DataEscrowController extends BaseController {
     /**
      * delete data.
      */
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/{vaultId}")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
-    public BaseResponse deleteData(@RequestParam(value="dataID") String dataID) throws SafeKeeperException {
+    public BaseResponse deleteData(@PathVariable("vaultId") String vaultId) throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
-        log.info("start deleteData. startTime:{} dataID:{}", startTime.toEpochMilli(), dataID);
+        log.info("start deleteData. startTime:{} vaultId:{}", startTime.toEpochMilli(), vaultId);
 
         String currentAccount = getCurrentAccount(request);
 
-        dataService.deleteDataRow(currentAccount, dataID);
+        dataService.deleteDataRow(currentAccount, vaultId);
 
         log.info("end deleteData. useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
                 JacksonUtils.objToString(baseResponse));

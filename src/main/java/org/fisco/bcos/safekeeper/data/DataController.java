@@ -28,7 +28,6 @@ import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.fisco.bcos.safekeeper.data.entity.DataQueryParam;
 import org.fisco.bcos.safekeeper.data.entity.DataRequestInfo;
 import org.fisco.bcos.safekeeper.data.entity.TbDataInfo;
-import org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -44,7 +43,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(value = "dataVault")
+@RequestMapping(value = "data")
 public class DataController extends BaseController {
 
     @Autowired
@@ -57,7 +56,7 @@ public class DataController extends BaseController {
     /**
      * add raw data.
      */
-    @PostMapping(value = "/insert")
+    @PostMapping(value = "/v1")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse addRawData(@RequestBody @Valid DataRequestInfo info, BindingResult result) throws SafeKeeperException {
         checkBindResult(result);
@@ -80,7 +79,7 @@ public class DataController extends BaseController {
         // add data row
         dataService.addDataBatch(dataInfoList);
 
-        DataQueryParam queryParams = new DataQueryParam(currentAccount, dataInfoList.get(0).getDataID());
+        DataQueryParam queryParams = new DataQueryParam(currentAccount, dataInfoList.get(0).getDataId());
         List<TbDataInfo> retDataInfoList = dataService.queryData(queryParams);
         if (retDataInfoList == null) {
             throw new SafeKeeperException(ConstantCode.INSERT_DATA_ERROR);
@@ -97,7 +96,7 @@ public class DataController extends BaseController {
     /**
      * update raw data.
      */
-    @PutMapping(value = "/update")
+    @PatchMapping(value = "/v1")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse updateRawData(@RequestBody @Valid DataRequestInfo info, BindingResult result)
             throws SafeKeeperException {
@@ -121,7 +120,7 @@ public class DataController extends BaseController {
         // update data row
         dataService.updateDataBatch(dataInfoList);
 
-        /*DataQueryParam queryParams = new DataQueryParam(currentAccount, dataInfoList.get(0).getDataID());
+        /*DataQueryParam queryParams = new DataQueryParam(currentAccount, dataInfoList.get(0).getDataId());
         List<TbDataInfo> retDataInfoList = dataService.queryData(queryParams);
         baseResponse.setData(dataService.rawDataListToDataNode(retDataInfoList));*/
 
@@ -133,14 +132,14 @@ public class DataController extends BaseController {
     /**
      * query raw data.
      */
-    @GetMapping(value = "/query")
-    public BaseResponse queryRawData(@RequestParam(value="dataID") String dataID)
+    @GetMapping(value = "/v1/{dataId}")
+    public BaseResponse queryRawData(@PathVariable("dataId") String dataId)
             throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
-        log.info("start queryRawData. startTime: {} dataID:{} ", startTime.toEpochMilli(), dataID);
+        log.info("start queryRawData. startTime: {} dataId:{} ", startTime.toEpochMilli(), dataId);
 
-        if (dataID == null || dataID.equals("")) {
+        if (dataId == null || dataId.equals("")) {
             throw new SafeKeeperException(ConstantCode.PARAM_EXCEPTION);
         }
 
@@ -148,7 +147,7 @@ public class DataController extends BaseController {
         String currentAccount = getCurrentAccount(request);
 
         // query
-        DataQueryParam queryParams = new DataQueryParam(currentAccount, dataID);
+        DataQueryParam queryParams = new DataQueryParam(currentAccount, dataId);
         List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
         if (dataInfoList.size() > 0) {
             baseResponse.setData(dataService.rawDataListToDataNode(dataInfoList));
@@ -165,16 +164,16 @@ public class DataController extends BaseController {
     /**
      * delete raw data.
      */
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "/v1/{dataId}")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
-    public BaseResponse deleteRawData(@RequestParam(value="dataID") String dataID) throws SafeKeeperException {
+    public BaseResponse deleteRawData(@RequestParam(value="dataId") String dataId) throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
         String currentAccount = getCurrentAccount(request);
-        log.info("start deleteRawData. startTime:{} account: {} dataID:{}",
-                startTime.toEpochMilli(), currentAccount, dataID);
+        log.info("start deleteRawData. startTime:{} account: {} dataId:{}",
+                startTime.toEpochMilli(), currentAccount, dataId);
 
-        DataQueryParam queryParams = new DataQueryParam(currentAccount, dataID);
+        DataQueryParam queryParams = new DataQueryParam(currentAccount, dataId);
         List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
         for (int i = 0; i < dataInfoList.size(); i++) {
             dataInfoList.get(i).setDataStatus(DataStatus.UNAVAILABLE.getValue());
@@ -189,7 +188,7 @@ public class DataController extends BaseController {
     /**
      * query raw data list.
      */
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/v1")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BasePageResponse listRawData(@RequestParam(value="pageNumber") Integer pageNumber,
                                         @RequestParam(value="pageSize") Integer pageSize) throws SafeKeeperException {
@@ -200,14 +199,14 @@ public class DataController extends BaseController {
 
         String currentAccount = getCurrentAccount(request);
 
-        List<String> dataIDList = dataService.listOfDataID(currentAccount, DataStatus.AVAILABLE.getValue());
-        int count = dataIDList.size();
+        List<String> dataIdList = dataService.listOfDataId(currentAccount, DataStatus.AVAILABLE.getValue());
+        int count = dataIdList.size();
         List<JsonNode> listOfData = new ArrayList<>();
         if (count > 0) {
             Integer start = ((pageNumber-1)*pageSize<0)?0:(pageNumber-1)*pageSize;
             Integer end = (pageNumber*pageSize>count)?count:pageNumber*pageSize;
             for (Integer i = start; i < end; i++) {
-                DataQueryParam queryParams = new DataQueryParam(currentAccount, dataIDList.get(i));
+                DataQueryParam queryParams = new DataQueryParam(currentAccount, dataIdList.get(i));
                 List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
                 listOfData.add(dataService.rawDataListToDataNode(dataInfoList));
             }
@@ -223,21 +222,21 @@ public class DataController extends BaseController {
     /**
      * get total value of unspent token .
      */
-    @GetMapping(value = "/wedpr/vcl/getUnspentAmount")
+    @GetMapping(value = "/wedpr/vcl/v1/credentials/balance")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse getUnspentAmount() throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
         // current
         String currentAccount = getCurrentAccount(request);
-        log.info("start wedpr/vcl/getUnspentAmount. account: {} startTime:{} ",
+        log.info("start wedpr/vcl/v1/credentials/balance. account: {} startTime:{} ",
                 currentAccount, startTime.toEpochMilli());
 
         // get total value
         JsonNode dataNode = dataService.getUnspentAmount(currentAccount);
         baseResponse.setData(dataNode);
 
-        log.info("end wedpr/vcl/getUnspentAmount. useTime:{} result:{}",
+        log.info("end wedpr/vcl/v1/credentials/balance. useTime:{} result:{}",
                 Duration.between(startTime, Instant.now()).toMillis(), JacksonUtils.objToString(baseResponse));
         return baseResponse;
     }
@@ -245,20 +244,21 @@ public class DataController extends BaseController {
     /**
      * get total value of spent token .
      */
-    @GetMapping(value = "/wedpr/vcl/getSpentAmount")
+    @GetMapping(value = "/wedpr/vcl/v1/credentials/expenditure")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse getSpentAmount() throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
         // current
         String currentAccount = getCurrentAccount(request);
-        log.info("start wedpr/vcl/getSpentAmount. account: {} startTime:{} ", currentAccount, startTime.toEpochMilli());
+        log.info("start wedpr/vcl/v1/credentials/expenditure. startTime:{} account: {} ",
+                startTime.toEpochMilli(), currentAccount);
 
         // get total value
         JsonNode dataNode = dataService.getSpentAmount(currentAccount);
         baseResponse.setData(dataNode);
 
-        log.info("end wedpr/vcl/getSpentAmount. useTime:{} result:{}",
+        log.info("end wedpr/vcl/v1/credentials/expenditure. useTime:{} result:{}",
                 Duration.between(startTime, Instant.now()).toMillis(), JacksonUtils.objToString(baseResponse));
         return baseResponse;
     }
@@ -266,7 +266,7 @@ public class DataController extends BaseController {
     /**
      * get token list.
      */
-    @GetMapping(value = "/wedpr/vcl/getCredentialList")
+    @GetMapping(value = "/wedpr/vcl/v1/credentials/approve")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse getCredentialList(@RequestParam(value="value") long value) throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
@@ -288,14 +288,14 @@ public class DataController extends BaseController {
     /**
      * update raw data.
      */
-    @PutMapping(value = "/spend")
+    @PutMapping(value = "/wedpr/vcl/v1/credentials/spend")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse updateRawDataBatch(@RequestBody @Valid String spendListInfo, BindingResult result)
             throws SafeKeeperException {
         checkBindResult(result);
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
-        log.info("start updateRawDataBatch. startTime:{} dataInfo:{}", startTime.toEpochMilli(), spendListInfo);
+        log.info("start wedpr/vcl/v1/credentials/spend. startTime:{} dataInfo:{}", startTime.toEpochMilli(), spendListInfo);
 
         // current
         String currentAccount = getCurrentAccount(request);
@@ -305,18 +305,19 @@ public class DataController extends BaseController {
         JsonNode dataList = JacksonUtils.stringToJsonNode(spendListInfo);
         for (int i = 0; i < dataList.size(); i++) {
             JsonNode dataNode = dataList.get(i);
-            String dataID = dataNode.get("key").asText();
+            String dataId = dataNode.get("key").asText();
             Iterator<Map.Entry<String,JsonNode>> jsonNodes = dataNode.get("value").fields();
             while (jsonNodes.hasNext()) {
                 Map.Entry<String, JsonNode> node = jsonNodes.next();
-                TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataID, node.getKey(), node.getValue().asText());
+                TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataId, node.getKey(), node.getValue().asText());
                 dataInfoList.add(dataInfo);
             }
         }
         // update data row batch
         dataService.updateDataBatch(dataInfoList);
 
-       log.info("end updateRawDataBatch. useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
+       log.info("end wedpr/vcl/v1/credentials/spend. useTime:{} result:{}",
+               Duration.between(startTime, Instant.now()).toMillis(),
                 JacksonUtils.objToString(baseResponse));
         return baseResponse;
     }

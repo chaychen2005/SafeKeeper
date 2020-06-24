@@ -5,8 +5,8 @@
 <mapper namespace="org.fisco.bcos.safekeeper.data.DataMapper">
   <resultMap id="dataMap" type="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
-    <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataID"/>
-    <id column="data_sub_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataSubID"/>
+    <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataId"/>
+    <id column="data_sub_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataSubId"/>
     <result column="data_status" javaType="java.lang.Integer" jdbcType="INTEGER" property="dataStatus"/>
     <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="plainText"/>
     <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
@@ -19,7 +19,7 @@
   <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     insert into tb_data_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataID},#{dataSubID},#{plainText},NOW())
+    values(#{account},#{dataId},#{dataSubId},#{plainText},NOW())
   </insert>
 
   <update id="updateDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
@@ -29,8 +29,8 @@
     </if>
     plain_text=#{plainText}
     where BINARY account=#{account}
-    and data_id = #{dataID}
-    and data_sub_id = #{dataSubID}
+    and data_id = #{dataId}
+    and data_sub_id = #{dataSubId}
   </update>
 
   <select id="queryData" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam" resultMap="dataMap">
@@ -39,26 +39,26 @@
     <if test="param.account != null and param.account != ''">
       and BINARY account = #{param.account}
     </if>
-    <if test="param.dataID != null and param.dataID != ''">
-      and data_id = #{param.dataID}
+    <if test="param.dataId != null and param.dataId != ''">
+      and data_id = #{param.dataId}
     </if>
-    <if test="param.dataSubID != null and param.dataSubID != ''">
-      and data_sub_id = #{param.dataSubID}
+    <if test="param.dataSubId != null and param.dataSubId != ''">
+      and data_sub_id = #{param.dataSubId}
     </if>
   </select>
 
   <delete id="deleteDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam">
     delete from tb_data_info
     where BINARY account = #{param.account}
-    and data_id = #{param.dataID}
-    and data_sub_id = #{param.dataSubID}
+    and data_id = #{param.dataId}
+    and data_sub_id = #{param.dataSubId}
   </delete>
 
   <select id="existOfData" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam" resultType="java.lang.Integer">
     select count(1) from tb_data_info
     where BINARY account = #{param.account}
-    and data_id = #{param.dataID}
-    and data_sub_id = #{param.dataSubID}
+    and data_id = #{param.dataId}
+    and data_sub_id = #{param.dataSubId}
   </select>
 
   <select id="countOfData" resultType="java.lang.Integer">
@@ -66,11 +66,11 @@
     <if test="account != null and account != ''">
       and BINARY account = #{account}
     </if>
-    <if test="dataID != null and dataID != ''">
-      and data_id = #{dataID}
+    <if test="dataId != null and dataId != ''">
+      and data_id = #{dataId}
     </if>
-    <if test="dataSubID != null and dataSubID != ''">
-      and data_sub_id = #{dataSubID}
+    <if test="dataSubId != null and dataSubId != ''">
+      and data_sub_id = #{dataSubId}
     </if>
     <if test="dataStatus != 0">
       and data_status = #{dataStatus}
@@ -83,11 +83,11 @@
     <if test="param.account != null and param.account != ''">
       and BINARY account = #{param.account}
     </if>
-    <if test="param.dataID != null and param.dataID != ''">
-      and data_id = #{param.dataID}
+    <if test="param.dataId != null and param.dataId != ''">
+      and data_id = #{param.dataId}
     </if>
-    <if test="param.dataSubID != null and param.dataSubID != ''">
-      and data_sub_id = #{param.dataSubID}
+    <if test="param.dataSubId != null and param.dataSubId != ''">
+      and data_sub_id = #{param.dataSubId}
     </if>
     <if test="param.dataStatus != 0">
       and data_status = #{param.dataStatus}
@@ -100,7 +100,7 @@
     </if>
   </select>
 
-  <select id="listOfDataID" resultType="java.lang.String">
+  <select id="listOfDataId" resultType="java.lang.String">
     select data_id from tb_data_info where 1=1
     <if test="account != null and account != ''">
       and BINARY account = #{account}

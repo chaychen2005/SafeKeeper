@@ -8,7 +8,7 @@
   - [1.4.查询子帐号列表](#1.4)
   - [1.5.更改当前密码](#1.5)
   - [1.6.获取用于加密子账号托管核心数据的公钥](#1.6)
-- [2.核心数据管理模块](#2)
+- [2.核心数据托管模块](#2)
   - [2.1.新增数据](#2.1)
   - [2.2.删除数据](#2.2)
   - [2.3.查询数据列表](#2.3)
@@ -32,7 +32,7 @@
 #### 1.1.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/account/login`
+* 请求地址：`/accounts/v1/login`
 * 请求方式：POST
 * 请求头：Content-type: application/x-www-form-urlencoded
 * 返回格式：JSON
@@ -56,7 +56,7 @@
 
 ### 1.1.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/account/login`
+`https://127.0.0.1:9501/SafeKeeper/accounts/v1/login`
 
 ```
 {
@@ -96,7 +96,7 @@
 #### 1.2.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/account/add`
+* 请求地址：`/accounts/v1`
 * 请求方式：POST
 * 请求头：Content-type: application/json
 * 返回格式：JSON
@@ -129,7 +129,7 @@
 
 ### 1.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/account/add`
+`https://127.0.0.1:9501/SafeKeeper/accounts/v1`
 
 ```
 {
@@ -177,7 +177,7 @@
 #### 1.3.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`account/delete`
+* 请求地址：`/accounts/v1/{account}`
 * 请求方式：DELETE
 * 返回格式：JSON
 
@@ -195,7 +195,7 @@
 
 #### 1.3.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/account/delete?account=user1`
+`https://127.0.0.1:9501/SafeKeeper/accounts/v1/user1`
 
 #### 1.3.4 出参示例
 
@@ -222,7 +222,7 @@
 #### 1.4.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/account/list`
+* 请求地址: `/accounts/v1`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -254,7 +254,7 @@
 
 #### 1.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/account/list?pageNumber=1&pageSize=10`
+`https://127.0.0.1:9501/SafeKeeper/accounts/v1?pageNumber=1&pageSize=10`
 
 #### 1.4.4 出参示例
 
@@ -308,8 +308,8 @@
 
 #### 1.5.1 传输协议规范
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/account/updatePassword`
-* 请求方式：PUT
+* 请求地址：`/accounts/v1/password`
+* 请求方式：PATCH
 * 请求头：Content-type: application/json
 * 返回格式：JSON
 
@@ -329,7 +329,7 @@
 
 ### 1.5.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/account/updatePassword`
+`https://127.0.0.1:9501/SafeKeeper/accounts/v1/password`
 
 ```
 {
@@ -362,7 +362,7 @@
 #### 1.6.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/account/getPublicKey`
+* 请求地址：`/accounts/v1/publicKey`
 * 请求方式：GET
 * 请求头：Content-type: application/json
 * 返回格式：JSON
@@ -379,7 +379,7 @@
 
 ### 1.6.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/account/getPublicKey`
+`https://127.0.0.1:9501/SafeKeeper/accounts/v1/publicKey`
 
 #### 1.6.4 出参示例
 
@@ -404,14 +404,14 @@
 }
 ```
 
-## <span id="2">2 核心数据管理模块</span>  [top](#catalog_top)
+## <span id="2">2 核心数据托管模块</span>  [top](#catalog_top)
 
 ### <span id="2.1">2.1 新增数据</span>  [top](#catalog_top)
 
 #### 2.1.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/dataEscrow/add`
+* 请求地址：`/escrow/v1/vaults`
 * 请求方式：POST
 * 请求头：Content-type: application/json
 * 返回格式：JSON
@@ -439,7 +439,7 @@
 
 ### 1.1.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataEscrow/add`
+`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults`
 ```
 {
     "dataID":"key1",
@@ -481,7 +481,7 @@
 #### 2.2.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/dataEscrow/delete`
+* 请求地址：`/escrow/v1/vaults/{vaultId}`
 * 请求方式：DELETE
 * 返回格式：JSON
 
@@ -489,8 +489,7 @@
 
 | 序号 | 请求body | 类型   | 可为空 | 备注     |
 | ---- | -------- | ------ | ------ | -------- |
-| 1    | account  | String | 否     | 帐号名称 |
-| 2    | dataID   | String | 否     | 数据标识 |
+| 1    | vaultId  | String | 否     | 数据标识 |
 
 | 序号 | 返回body | 类型   | 可为空 | 备注                       |
 | ---- | -------- | ------ | ------ | -------------------------- |
@@ -500,7 +499,7 @@
 
 #### 2.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataEscrow/delete?dataID=key1`
+`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/key1`
 
 #### 2.2.4 出参示例
 
@@ -527,7 +526,7 @@
 #### 2.3.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataEscrow/list`
+* 请求地址: `/escrow/v1/vaults`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -555,7 +554,7 @@
 
 #### 2.3.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataEscrow/list?pageNumber=1&pageSize=10`
+`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults?pageNumber=1&pageSize=10`
 
 #### 2.3.4 出参示例
 
@@ -593,7 +592,7 @@
 #### 2.4.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataEscrow/query`
+* 请求地址: `/escrow/v1/vaults/{account}/{vaultId}`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -602,7 +601,7 @@
 | 序号 | 输入参数   | 类型          | 可为空 | 备注                       |
 | ---- | ---------- | ------------- | ------ | -------------------------- |
 | 1    | account    | String        | 否     | 帐号名称                   |
-| 2    | dataID     | String        | 否     | 数据标识                   |
+| 2    | vaultId    | String        | 否     | 数据标识                   |
 |      | 输出参数   | 类型          |        | 备注                       |
 | 1    | code       | Int           | 否     | 返回码，0：成功 其它：失败 |
 | 2    | message    | String        | 否     | 描述                       |
@@ -615,7 +614,7 @@
 
 #### 2.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataEscrow/query?account=user1&dataID=key1`
+`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/user1/key1`
 
 #### 2.4.4 出参示例
 
@@ -658,7 +657,7 @@
 #### 3.1.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/dataVault/insert`
+* 请求地址：`/data/v1`
 * 请求方式：POST
 * 请求头：Content-type: application/json
 * 返回格式：JSON
@@ -678,7 +677,7 @@
 
 ### 3.1.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/insert`
+`https://127.0.0.1:9501/SafeKeeper/data/v1`
 
 ```json
 {
@@ -717,8 +716,8 @@
 #### 3.2.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/dataVault/update`
-* 请求方式：PUT
+* 请求地址：`/data/v1`
+* 请求方式：PATCH
 * 请求头：Content-type: application/json
 * 返回格式：JSON
 
@@ -737,7 +736,7 @@
 
 ### 3.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/update`
+`https://127.0.0.1:9501/SafeKeeper/data/v1`
 
 ```
 {
@@ -773,7 +772,7 @@
 #### 3.3.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataVault/query/`
+* 请求地址: `/data/v1/{dataId}`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -781,7 +780,7 @@
 
 | 序号 | 请求body | 类型   | 可为空 | 备注     |
 | ---- | -------- | ------ | ------ | -------- |
-| 1    | dataID   | String | 否     | 数据标识 |
+| 1    | dataId   | String | 否     | 数据标识 |
 
 | 序号 | 返回body | 类型   | 可为空 | 备注                       |
 | ---- | -------- | ------ | ------ | -------------------------- |
@@ -791,7 +790,7 @@
 
 #### 3.3.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/query?dataID=key1`
+`https://127.0.0.1:9501/SafeKeeper/data/v1/key1`
 
 #### 3.3.4 出参示例
 
@@ -824,7 +823,7 @@
 #### 3.4.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataVault/list/`
+* 请求地址: `/data/v1`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -845,7 +844,7 @@
 
 #### 3.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/list?pageNumber=1&pageSize=10`
+`https://127.0.0.1:9501/SafeKeeper/data/v1?pageNumber=1&pageSize=10`
 
 #### 3.4.4 出参示例
 
@@ -888,7 +887,7 @@
 #### 3.5.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`dataVault/delete/`
+* 请求地址：`/data/v1/{dataId}`
 * 请求方式：DELETE
 * 返回格式：JSON
 
@@ -896,7 +895,7 @@
 
 | 序号 | 请求body | 类型   | 可为空 | 备注     |
 | ---- | -------- | ------ | ------ | -------- |
-| 1    | dataID   | String | 否     | 数据标识 |
+| 1    | dataId   | String | 否     | 数据标识 |
 
 | 序号 | 返回body | 类型   | 可为空 | 备注                       |
 | ---- | -------- | ------ | ------ | -------------------------- |
@@ -906,7 +905,7 @@
 
 #### 3.5.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/delete?dataID=key1`
+`https://127.0.0.1:9501/SafeKeeper/data/v1/key1`
 
 #### 3.5.4 出参示例
 
@@ -924,7 +923,7 @@
 #### 3.6.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataVault/wedpr/vcl/getCredentialList/`
+* 请求地址: `/data/wedpr/vcl/v1/credentials/approve`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -943,7 +942,7 @@
 
 #### 3.6.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/wedpr/vcl/getCredentialList?value=240`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/approve?value=240`
 
 #### 3.6.4 出参示例
 
@@ -992,7 +991,7 @@
 #### 3.7.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataVault/wedpr/vcl/getUnspentAmount`
+* 请求地址: `/data/wedpr/vcl/v1/credentials/spend`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -1007,7 +1006,7 @@
 
 #### 3.7.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/wedpr/vcl/getUnspentAmount`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/spend`
 
 #### 3.7.4 出参示例
 
@@ -1036,7 +1035,7 @@
 #### 3.8.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/dataVault/wedpr/vcl/getSpentAmount`
+* 请求地址: `/data/wedpr/vcl/v1/credentials/balance`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -1051,7 +1050,7 @@
 
 #### 3.8.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/wedpr/vcl/getSpentAmount`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/balance`
 
 #### 3.8.4 出参示例
 
@@ -1080,8 +1079,8 @@
 #### 3.9.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/dataVault/spend`
-* 请求方式：PUT
+* 请求地址：`/data/wedpr/vcl/v1/credentials/expenditure`
+* 请求方式：PATCH
 * 请求头：Content-type: application/json
 * 返回格式：JSON
 
@@ -1101,7 +1100,7 @@
 
 ### 3.9.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/dataVault/spend`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/expenditure`
 
 ```
 [

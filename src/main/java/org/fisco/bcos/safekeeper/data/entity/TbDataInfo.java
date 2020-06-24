@@ -25,8 +25,8 @@ import lombok.Data;
 public class TbDataInfo {
 
     private String account;
-    private String dataID;
-    private String dataSubID;
+    private String dataId;
+    private String dataSubId;
     private Integer dataStatus;
     private String plainText;
     private LocalDateTime createTime;
@@ -36,11 +36,11 @@ public class TbDataInfo {
         super();
     }
 
-    public TbDataInfo(String account, String dataID, String dataSubID, String plainText) {
+    public TbDataInfo(String account, String dataId, String dataSubId, String plainText) {
         super();
         this.account = account;
-        this.dataID = dataID;
-        this.dataSubID = dataSubID;
+        this.dataId = dataId;
+        this.dataSubId = dataSubId;
         this.plainText = plainText;
     }
 }
