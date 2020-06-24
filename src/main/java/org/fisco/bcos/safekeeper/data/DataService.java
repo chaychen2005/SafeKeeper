@@ -314,7 +314,7 @@ public class DataService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
         List<String> unspentList = listOfValueWithTokenStatus(account,"0");
-        ((ObjectNode) dataNode).put("unspentTotalValue", aggregateBalance(unspentList));
+        ((ObjectNode) dataNode).put("balance", aggregateBalance(unspentList));
         return dataNode;
     }
 
@@ -322,7 +322,7 @@ public class DataService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
         List<String> spentList = listOfValueWithTokenStatus(account,"1");
-        ((ObjectNode) dataNode).put("spentTotalValue", aggregateBalance(spentList));
+        ((ObjectNode) dataNode).put("expenditure", aggregateBalance(spentList));
         return dataNode;
     }
 

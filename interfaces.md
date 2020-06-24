@@ -991,7 +991,7 @@
 #### 3.7.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/data/wedpr/vcl/v1/credentials/spend`
+* 请求地址: `/data/wedpr/vcl/v1/credentials/balance`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -1006,7 +1006,7 @@
 
 #### 3.7.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/spend`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/balance`
 
 #### 3.7.4 出参示例
 
@@ -1016,7 +1016,7 @@
     "code": 0,
     "message": "success",
     "data": {
-        "unspent":2000
+        "balance":2000
     }
 }
 ```
@@ -1035,7 +1035,7 @@
 #### 3.8.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/data/wedpr/vcl/v1/credentials/balance`
+* 请求地址: `/data/wedpr/vcl/v1/credentials/expenditure`
 * 请求方式：GET
 * 返回格式：JSON
 
@@ -1050,7 +1050,7 @@
 
 #### 3.8.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/balance`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/expenditure`
 
 #### 3.8.4 出参示例
 
@@ -1060,7 +1060,7 @@
     "code": 0,
     "message": "success",
     "data": {
-        "spent":1000
+        "expenditure":1000
     }
 }
 ```
@@ -1079,7 +1079,7 @@
 #### 3.9.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/data/wedpr/vcl/v1/credentials/expenditure`
+* 请求地址：`/data/wedpr/vcl/v1/credentials/spend`
 * 请求方式：PATCH
 * 请求头：Content-type: application/json
 * 返回格式：JSON
@@ -1100,7 +1100,7 @@
 
 ### 3.9.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/expenditure`
+`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/spend`
 
 ```
 [

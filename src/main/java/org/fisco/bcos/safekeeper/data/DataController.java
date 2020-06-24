@@ -166,7 +166,7 @@ public class DataController extends BaseController {
      */
     @DeleteMapping(value = "/v1/{dataId}")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
-    public BaseResponse deleteRawData(@RequestParam(value="dataId") String dataId) throws SafeKeeperException {
+    public BaseResponse deleteRawData(@PathVariable("dataId") String dataId) throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
         Instant startTime = Instant.now();
         String currentAccount = getCurrentAccount(request);
@@ -276,6 +276,10 @@ public class DataController extends BaseController {
         log.info("start wedpr/vcl/getCredentialList. startTime: {} account: {} value: {}",
                 startTime.toEpochMilli(), currentAccount, value);
 
+        if (value <= 0) {
+            throw new SafeKeeperException(ConstantCode.PARAM_EXCEPTION);
+        }
+
         // get token List
         List<JsonNode> listOfData = dataService.getCredentialList(currentAccount, value);
         baseResponse.setData(listOfData);
@@ -288,7 +292,7 @@ public class DataController extends BaseController {
     /**
      * update raw data.
      */
-    @PutMapping(value = "/wedpr/vcl/v1/credentials/spend")
+    @PatchMapping(value = "/wedpr/vcl/v1/credentials/spend")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse updateRawDataBatch(@RequestBody @Valid String spendListInfo, BindingResult result)
             throws SafeKeeperException {
