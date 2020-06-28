@@ -77,7 +77,7 @@ public class TokenService {
             throw new SafeKeeperException(ConstantCode.INVALID_TOKEN);
         }
         LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(tbToken.getExpireTime())) {
+        if (properties.getAuthTokenMaxAge() != 0 && now.isAfter(tbToken.getExpireTime())) {
             log.warn("fail getValueFromToken. token has expire at:{}", tbToken.getExpireTime());
             //delete token
             this.deleteToken(token, null);

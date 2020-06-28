@@ -50,20 +50,28 @@ start(){
         count=1
         result=0
         while [ $count -lt $startWaitTime ] ; do
-           checkProcess
-           if [ $processPid -ne 0 ]; then
-               result=1
-               break
-           fi
-           let count++
-           echo -n "."
-           sleep 1
-       done
-        
-       if [ $result -ne 0 ]; then
-           echo "    server $APP_MAIN start successfully."
+            checkProcess
+            if [ $processPid -ne 0 ]; then
+                result=1
+                break
+            fi
+            let count++
+            echo -n "."
+            sleep 1
+        done
+
+        sleep 5
+        checkProcess
+        if [ $processPid -ne 0 ]; then
+            result=1
         else
-           echo "    server $APP_MAIN start fail, please query logs for the cause of failure."
+            result=0
+        fi
+        
+        if [ $result -ne 0 ]; then
+            echo "    server $APP_MAIN start successfully."
+        else
+            echo "    server $APP_MAIN start fail, please query logs for the cause of failure."
         fi
     fi
 }

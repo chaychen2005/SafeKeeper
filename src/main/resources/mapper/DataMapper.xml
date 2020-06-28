@@ -111,6 +111,15 @@
     group by data_id
   </select>
 
+  <select id="listOfDataIdByCoinStatus" resultType="java.lang.String">
+    select data_id from tb_data_info where 1=1
+    <if test="account != null and account != ''">
+      and BINARY account = #{account}
+    </if>
+    and plain_text = #{plainText}
+    group by data_id
+  </select>
+
   <resultMap id="tokenMap" type="org.fisco.bcos.safekeeper.data.entity.TokenInfo">
     <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="key"/>
     <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="text"/>

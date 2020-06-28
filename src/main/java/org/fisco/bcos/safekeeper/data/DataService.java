@@ -53,7 +53,7 @@ public class DataService {
         Integer affectRow = dataMapper.addDataRow(dataInfo);
 
         // check result
-        checkDbAffectRow(affectRow);
+        // checkDbAffectRow(affectRow);
 
         log.debug("end addDataRow. affectRow:{}", affectRow);
     }
@@ -83,7 +83,7 @@ public class DataService {
     /**
      * update data row.
      */
-    public void updateDataRow(TbDataInfo dataInfo) throws SafeKeeperException {
+    public Integer updateDataRow(TbDataInfo dataInfo) throws SafeKeeperException {
         log.debug("start updateDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
         // check data
@@ -94,9 +94,11 @@ public class DataService {
         Integer affectRow = dataMapper.updateDataRow(dataInfo);
 
         // check result
-        checkDbAffectRow(affectRow);
+        // getCredentialList(affectRow);
 
         log.debug("end updateDataRow. affectRow:{}", affectRow);
+
+        return affectRow;
     }
 
     /**
@@ -217,7 +219,7 @@ public class DataService {
     /**
      * check db affect row.
      */
-    private void checkDbAffectRow(Integer affectRow) throws SafeKeeperException {
+    public void checkDbAffectRow(Integer affectRow) throws SafeKeeperException {
         if (affectRow == 0) {
             log.warn("affect 0 rows of tb_data_info");
             throw new SafeKeeperException(ConstantCode.DB_EXCEPTION);
@@ -229,6 +231,51 @@ public class DataService {
         List<String> list = dataMapper.listOfDataId(account, status);
         log.debug("end listOfDataId. list:{} ", JacksonUtils.objToString(list));
         return list;
+    }
+
+    public List<String> listOfDataIdByCoinStatus(String account, String plainText) {
+        log.debug("start listOfDataIdByCoinStatus. account:{} plainText: {} ", account, plainText);
+        List<String> list = dataMapper.listOfDataIdByCoinStatus(account, plainText);
+        log.debug("end listOfDataIdByCoinStatus. list:{} ", JacksonUtils.objToString(list));
+        return list;
+    }
+
+    public List<JsonNode> preAuthorization(String account, long target) {
+        long total = target;
+        List<JsonNode> listOfData = new ArrayList<>();
+        List<TokenInfo> tokens = listOfTokenWithTokenStatus(account, "0");
+        List<String> selected = new ArrayList<>();
+
+        for (TokenInfo token : tokens) {
+            String dataId = token.getKey();
+            TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "2");
+            Integer count = updateDataRow(dataInfo);
+
+            if (count > 0) {
+                total -= Long.parseLong(token.getText());
+                selected.add(dataId);
+                DataQueryParam queryParams = new DataQueryParam(account, token.getKey());
+                List<TbDataInfo> dataInfoList = queryData(queryParams);
+                JsonNode dateNode = rawDataListToDataNode(dataInfoList);
+                listOfData.add(dateNode);
+                if (total <= 0) {
+                    break;
+                }
+            }
+        }
+
+        if (total > 0) {
+            log.debug("the account has not sufficient tokens. target: {} total: {} ", target , target - total);
+            // roll back
+            for (String dataId : selected) {
+                TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "0");
+                Integer count = updateDataRow(dataInfo);
+                checkDbAffectRow(count);
+            }
+            throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
+        }
+
+        return listOfData;
     }
 
     public List<JsonNode> getCredentialList(String account, long target) {

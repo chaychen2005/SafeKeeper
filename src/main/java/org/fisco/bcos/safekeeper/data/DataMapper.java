@@ -46,6 +46,8 @@ public interface DataMapper {
 
     List<String> listOfDataId(@Param("account") String account, @Param("dataStatus") int dataStatus);
 
+    List<String> listOfDataIdByCoinStatus(@Param("account") String account, @Param("plainText") String plainText);
+
     List<TokenInfo> listOfTokenWithTokenStatus(@Param("account") String account, @Param("status") String status);
 
     List<String> listOfValueWithTokenStatus(@Param("account") String account, @Param("status") String status);

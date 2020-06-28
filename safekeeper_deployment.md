@@ -115,6 +115,17 @@ sed -i "s/defaultAccount/root/g" conf/application.yml
 sed -i "s/defaultPassword/123456/g" conf/application.yml
 ```
 
+
+（3）添加服务证书
+
+可使用JDK的证书管理工具keytool生成自签名证书。以下命令指定的证书名字叫server.keystore，别名叫safekeeper，密码自己设置。
+
+```shell
+keytool -genkey -alias safekeeper -keyalg RSA -keystore ./server.keystore
+```
+
+生成证书后，证书放置conf目录，并替换配置文件`conf/application.yml`的`[server.ssl]`内容。
+
 ### 5.2 服务启停及状态检查
 
 在dist目录下执行：

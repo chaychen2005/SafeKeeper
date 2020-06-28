@@ -3,9 +3,9 @@ server:
   port: servicePort
   ssl:
     key-store: classpath:server.keystore
-    key-alias: kms
+    key-alias: safekeeper
     enabled: true
-    key-store-password: 123456
+    key-store-password: Abcd1234
     key-store-type: JKS
   servlet:
     context-path: /SafeKeeper

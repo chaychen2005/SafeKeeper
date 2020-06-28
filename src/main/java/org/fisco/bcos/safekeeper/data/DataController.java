@@ -20,6 +20,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.fisco.bcos.safekeeper.account.AccountService;
 import org.fisco.bcos.safekeeper.base.entity.BasePageResponse;
 import org.fisco.bcos.safekeeper.base.enums.DataStatus;
@@ -28,6 +30,7 @@ import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.fisco.bcos.safekeeper.data.entity.DataQueryParam;
 import org.fisco.bcos.safekeeper.data.entity.DataRequestInfo;
 import org.fisco.bcos.safekeeper.data.entity.TbDataInfo;
+import org.fisco.bcos.safekeeper.data.entity.TokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -177,7 +180,8 @@ public class DataController extends BaseController {
         List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
         for (int i = 0; i < dataInfoList.size(); i++) {
             dataInfoList.get(i).setDataStatus(DataStatus.UNAVAILABLE.getValue());
-            dataService.updateDataRow(dataInfoList.get(i));
+            Integer count = dataService.updateDataRow(dataInfoList.get(i));
+            dataService.checkDbAffectRow(count);
         }
 
         log.info("end deleteRawData. useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
@@ -200,6 +204,42 @@ public class DataController extends BaseController {
         String currentAccount = getCurrentAccount(request);
 
         List<String> dataIdList = dataService.listOfDataId(currentAccount, DataStatus.AVAILABLE.getValue());
+        int count = dataIdList.size();
+        List<JsonNode> listOfData = new ArrayList<>();
+        if (count > 0) {
+            Integer start = ((pageNumber-1)*pageSize<0)?0:(pageNumber-1)*pageSize;
+            Integer end = (pageNumber*pageSize>count)?count:pageNumber*pageSize;
+            for (Integer i = start; i < end; i++) {
+                DataQueryParam queryParams = new DataQueryParam(currentAccount, dataIdList.get(i));
+                List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
+                listOfData.add(dataService.rawDataListToDataNode(dataInfoList));
+            }
+        }
+        pagesponse.setData(listOfData);
+        pagesponse.setTotalCount(count);
+
+        log.info("end listRawData. useTime:{} result:{}",
+                Duration.between(startTime, Instant.now()).toMillis(), JacksonUtils.objToString(pagesponse));
+        return pagesponse;
+    }
+
+    /**
+     * query raw data list.
+     */
+    @GetMapping(value = "/wedpr/vcl/v1/credentials")
+    @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
+    public BasePageResponse listCredentialsByStatus(@RequestParam(value="pageNumber") Integer pageNumber,
+                                                    @RequestParam(value="pageSize") Integer pageSize,
+                                                    @RequestParam(value="credentialStatus") String status)
+            throws SafeKeeperException {
+        BasePageResponse pagesponse = new BasePageResponse(ConstantCode.SUCCESS);
+        Instant startTime = Instant.now();
+        log.info("start listRawData. startTime:{} pageNumber:{} pageSize:{} status:{}",
+                startTime.toEpochMilli(), pageNumber, pageSize, status);
+
+        String currentAccount = getCurrentAccount(request);
+
+        List<String> dataIdList = dataService.listOfDataIdByCoinStatus(currentAccount, status);
         int count = dataIdList.size();
         List<JsonNode> listOfData = new ArrayList<>();
         if (count > 0) {
@@ -266,7 +306,7 @@ public class DataController extends BaseController {
     /**
      * get token list.
      */
-    @GetMapping(value = "/wedpr/vcl/v1/credentials/approve")
+    @PatchMapping(value = "/wedpr/vcl/v1/credentials/approve")
     @PreAuthorize(ConstantProperties.HAS_ROLE_VISITOR)
     public BaseResponse getCredentialList(@RequestParam(value="value") long value) throws SafeKeeperException {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
@@ -281,7 +321,7 @@ public class DataController extends BaseController {
         }
 
         // get token List
-        List<JsonNode> listOfData = dataService.getCredentialList(currentAccount, value);
+        List<JsonNode> listOfData = dataService.preAuthorization(currentAccount, value);
         baseResponse.setData(listOfData);
 
         log.info("end wedpr/vcl/getCredentialList. useTime:{} result:{}",
