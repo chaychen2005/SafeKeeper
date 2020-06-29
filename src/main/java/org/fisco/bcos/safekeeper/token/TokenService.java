@@ -40,6 +40,7 @@ public class TokenService {
     @Autowired
     private TokenMapper tokenMapper;
 
+    static final long CENTENNIAL_YEAR = 100*365*86400;
 
     /**
      * create token.
@@ -55,7 +56,12 @@ public class TokenService {
         tbToken.setToken(token);
         tbToken.setValue(value);
         if (type == TokenType.USER.getValue()) {
-            tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
+            if (properties.getAuthTokenMaxAge() != 0) {
+                tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
+            }
+            else {
+                tbToken.setExpireTime(LocalDateTime.now().plusSeconds(CENTENNIAL_YEAR));
+            }
         } else {
             log.error("fail createToken. type:{} not support", type);
             return null;
@@ -91,7 +97,11 @@ public class TokenService {
      */
     public void updateExpireTime(String token) {
         Assert.requireNonEmpty(token, "token is empty");
-        tokenMapper.update(token, LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
+        if (properties.getAuthTokenMaxAge() != 0) {
+            tokenMapper.update(token, LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
+        } else {
+            tokenMapper.update(token, LocalDateTime.now().plusSeconds(CENTENNIAL_YEAR));
+        }
     }
 
     /**

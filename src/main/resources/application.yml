@@ -35,6 +35,6 @@ logging:
 constant:
   ###http request
   isUseSecurity: true   # login's authorization
-  authTokenMaxAge: 1800
+  authTokenMaxAge: 1800 # 0 means 100 years
 
 
