@@ -241,38 +241,85 @@ public class DataService {
     }
 
     public List<JsonNode> preAuthorization(String account, long target) {
-        long total = target;
-        List<JsonNode> listOfData = new ArrayList<>();
+        boolean find = false;
         List<TokenInfo> tokens = listOfTokenWithTokenStatus(account, "0");
         List<String> selected = new ArrayList<>();
 
-        for (TokenInfo token : tokens) {
-            String dataId = token.getKey();
-            TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "2");
-            Integer count = updateDataRow(dataInfo);
-
-            if (count > 0) {
-                total -= Long.parseLong(token.getText());
-                selected.add(dataId);
-                DataQueryParam queryParams = new DataQueryParam(account, token.getKey());
-                List<TbDataInfo> dataInfoList = queryData(queryParams);
-                JsonNode dateNode = rawDataListToDataNode(dataInfoList);
-                listOfData.add(dateNode);
-                if (total <= 0) {
+        for (int i = 0; i < tokens.size(); i++) {
+            TokenInfo token = tokens.get(i);
+            token.setValue(Integer.valueOf(token.getText()));
+            log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
+            if (target == token.getValue()) {
+                String dataId = token.getKey();
+                TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "2");
+                Integer count = updateDataRow(dataInfo);
+                if (count > 0) {
+                    selected.add(token.getKey());
+                    find = true;
                     break;
                 }
             }
         }
 
-        if (total > 0) {
-            log.debug("the account has not sufficient tokens. target: {} total: {} ", target , target - total);
-            // roll back
-            for (String dataId : selected) {
-                TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "0");
-                Integer count = updateDataRow(dataInfo);
-                checkDbAffectRow(count);
+        if (!find) {
+            long totalValue = 0;
+            log.debug("after sort by value in getCredentialList. size: {} ", tokens.size());
+            for (int i = 0; i < tokens.size(); i++) {
+                TokenInfo token = tokens.get(i);
+                log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
+                totalValue += token.getValue();
             }
-            throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
+
+            if (target > totalValue) {
+                log.debug("the account has not sufficient tokens. target: {} total: {} ", target, totalValue);
+                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
+            }
+
+            // sort by value
+            TokenInfo tmp;
+            for (int i = 0; i < tokens.size() - 1; i++) {
+                for (int j = tokens.size() - 1; j > 0; j--) {
+                    if (tokens.get(j - 1).getValue() < tokens.get(j).getValue()) {
+                        tmp = tokens.get(j);
+                        tokens.set(j, tokens.get(j - 1));
+                        tokens.set(j - 1, tmp);
+                    }
+                }
+            }
+
+            long remain = target;
+            for (TokenInfo token : tokens) {
+                String dataId = token.getKey();
+                TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "2");
+                Integer count = updateDataRow(dataInfo);
+
+                if (count > 0) {
+                    remain -= Long.parseLong(token.getText());
+                    selected.add(dataId);
+                    if (remain <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (remain > 0) {
+                log.debug("the account has not sufficient tokens. target: {} total: {} ", target , target - remain);
+                // roll back
+                for (String dataId : selected) {
+                    TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "0");
+                    Integer count = updateDataRow(dataInfo);
+                    checkDbAffectRow(count);
+                }
+                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
+            }
+        }
+
+        List<JsonNode> listOfData = new ArrayList<>();
+        for (String dataId : selected) {
+            DataQueryParam queryParams = new DataQueryParam(account, dataId);
+            List<TbDataInfo> dataInfoList = queryData(queryParams);
+            JsonNode dateNode = rawDataListToDataNode(dataInfoList);
+            listOfData.add(dateNode);
         }
 
         return listOfData;
