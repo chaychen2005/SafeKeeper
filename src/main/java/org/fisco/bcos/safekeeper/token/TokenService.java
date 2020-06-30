@@ -56,7 +56,7 @@ public class TokenService {
         tbToken.setToken(token);
         tbToken.setValue(value);
         if (type == TokenType.USER.getValue()) {
-            if (properties.getAuthTokenMaxAge() != 0) {
+            if (!properties.getWedpr()) {
                 tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
             }
             else {
@@ -83,7 +83,7 @@ public class TokenService {
             throw new SafeKeeperException(ConstantCode.INVALID_TOKEN);
         }
         LocalDateTime now = LocalDateTime.now();
-        if (properties.getAuthTokenMaxAge() != 0 && now.isAfter(tbToken.getExpireTime())) {
+        if (!properties.getWedpr() && now.isAfter(tbToken.getExpireTime())) {
             log.warn("fail getValueFromToken. token has expire at:{}", tbToken.getExpireTime());
             //delete token
             this.deleteToken(token, null);
@@ -97,7 +97,7 @@ public class TokenService {
      */
     public void updateExpireTime(String token) {
         Assert.requireNonEmpty(token, "token is empty");
-        if (properties.getAuthTokenMaxAge() != 0) {
+        if (!properties.getWedpr()) {
             tokenMapper.update(token, LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
         } else {
             tokenMapper.update(token, LocalDateTime.now().plusSeconds(CENTENNIAL_YEAR));

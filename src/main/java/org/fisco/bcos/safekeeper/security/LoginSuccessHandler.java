@@ -22,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.fisco.bcos.safekeeper.base.properties.ConstantProperties;
 import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -42,6 +43,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private AccountService accountService;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private ConstantProperties properties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -51,7 +54,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String accountName = authentication.getName();
         //delete old token and save new
-        tokenService.deleteToken(null, accountName);
+        if (!properties.getWedpr()) {
+            tokenService.deleteToken(null, accountName);
+        }
         String token = tokenService.createToken(accountName, 1);
 
         // response account info

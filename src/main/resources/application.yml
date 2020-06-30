@@ -35,6 +35,7 @@ logging:
 constant:
   ###http request
   isUseSecurity: true   # login's authorization
-  authTokenMaxAge: 1800 # 0 means 100 years
+  authTokenMaxAge: 1800
+  wedpr: false          # if wedpr is true, authTokenMaxAge above will be set to 0 to indicate long time login status.
 
 

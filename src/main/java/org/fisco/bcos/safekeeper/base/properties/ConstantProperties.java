@@ -37,5 +37,5 @@ public class ConstantProperties {
     //receive http request
     private Integer authTokenMaxAge = 900; // seconds
     private Boolean isUseSecurity = true;
-
+    private Boolean wedpr = false;
 }
