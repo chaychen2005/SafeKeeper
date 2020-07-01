@@ -30,7 +30,7 @@ public class TbDataInfo {
     private Integer dataStatus;
     private String plainText;
     private LocalDateTime createTime;
-
+    private LocalDateTime modifyTime;
 
     public TbDataInfo() {
         super();

@@ -68,13 +68,8 @@ public class DataService {
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
-            // check data
-            DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
-            dataNotExist(queryParams);
-            // add data batch
-            Integer affectRow = dataMapper.addDataRow(dataInfo);
-            // check result
-            checkDbAffectRow(affectRow);
+            // add data
+            dataMapper.addDataRow(dataInfo);
         }
 
         log.debug("end addDataBatch. affectRow:{}", dataInfoList.size());
@@ -86,15 +81,8 @@ public class DataService {
     public Integer updateDataRow(TbDataInfo dataInfo) throws SafeKeeperException {
         log.debug("start updateDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
-        // check data
-        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
-        dataExist(queryParams);
-
         // update data row
         Integer affectRow = dataMapper.updateDataRow(dataInfo);
-
-        // check result
-        // getCredentialList(affectRow);
 
         log.debug("end updateDataRow. affectRow:{}", affectRow);
 
@@ -111,13 +99,12 @@ public class DataService {
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
-            // check data
-            DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
-            dataExist(queryParams);
             // update data batch
             Integer affectRow = dataMapper.updateDataRow(dataInfo);
             // check result
-            checkDbAffectRow(affectRow);
+            if (affectRow == 0) {
+                throw new SafeKeeperException(ConstantCode.DATA_NOT_EXISTS);
+            }
         }
 
         log.debug("end addDataBatch. affectRow:{}", dataInfoList.size());

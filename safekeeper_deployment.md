@@ -90,7 +90,7 @@ bash safekeeper.sh 127.0.0.1 3306
 （1）在dist目录，根据配置模板生成一份实际配置conf。
 
 ```shell
-cd .. && cp -r conf_template conf
+cp -r conf_template conf
 ```
 
 （2）修改服务配置，注意需与`4.2 修改脚本配置`的数据库信息保持一致：
@@ -115,8 +115,9 @@ sed -i "s/defaultAccount/root/g" conf/application.yml
 sed -i "s/defaultPassword/123456/g" conf/application.yml
 ```
 
-
 （3）添加服务证书
+
+注意：服务已内置证书，但基于安全考虑，建议添加自设置密码的证书。
 
 可使用JDK的证书管理工具keytool生成自签名证书。以下命令指定的证书名字叫server.keystore，别名叫safekeeper，密码自己设置。
 

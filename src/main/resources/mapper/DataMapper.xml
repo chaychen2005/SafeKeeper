@@ -10,25 +10,26 @@
     <result column="data_status" javaType="java.lang.Integer" jdbcType="INTEGER" property="dataStatus"/>
     <result column="plain_text" javaType="java.lang.String" jdbcType="VARCHAR" property="plainText"/>
     <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="modify_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="modifyTime"/>
   </resultMap>
 
   <sql id="ROW_COLUMN">
-    account,data_id,data_sub_id,plain_text,create_time
+    account,data_id,data_sub_id,plain_text,create_time,modify_time
   </sql>
 
   <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     insert into tb_data_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataId},#{dataSubId},#{plainText},NOW())
+    values(#{account},#{dataId},#{dataSubId},#{plainText},NOW(),NOW())
   </insert>
 
   <update id="updateDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
-    update tb_data_info set
+    update tb_data_info set modify_time=NOW(),
     <if test="dataStatus != null and dataStatus != 0">
       data_status=#{dataStatus},
     </if>
     plain_text=#{plainText}
-    where BINARY account=#{account}
+    where account=#{account}
     and data_id = #{dataId}
     and data_sub_id = #{dataSubId}
   </update>
@@ -37,7 +38,7 @@
     select * from tb_data_info
     where 1=1
     <if test="param.account != null and param.account != ''">
-      and BINARY account = #{param.account}
+      and account = #{param.account}
     </if>
     <if test="param.dataId != null and param.dataId != ''">
       and data_id = #{param.dataId}
@@ -49,14 +50,14 @@
 
   <delete id="deleteDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam">
     delete from tb_data_info
-    where BINARY account = #{param.account}
+    where account = #{param.account}
     and data_id = #{param.dataId}
     and data_sub_id = #{param.dataSubId}
   </delete>
 
   <select id="existOfData" parameterType="org.fisco.bcos.safekeeper.data.entity.DataQueryParam" resultType="java.lang.Integer">
     select count(1) from tb_data_info
-    where BINARY account = #{param.account}
+    where account = #{param.account}
     and data_id = #{param.dataId}
     and data_sub_id = #{param.dataSubId}
   </select>
@@ -64,7 +65,7 @@
   <select id="countOfData" resultType="java.lang.Integer">
     select count(1) from tb_data_info where 1=1
     <if test="account != null and account != ''">
-      and BINARY account = #{account}
+      and account = #{account}
     </if>
     <if test="dataId != null and dataId != ''">
       and data_id = #{dataId}
@@ -81,7 +82,7 @@
     select * from tb_data_info
     where 1=1
     <if test="param.account != null and param.account != ''">
-      and BINARY account = #{param.account}
+      and account = #{param.account}
     </if>
     <if test="param.dataId != null and param.dataId != ''">
       and data_id = #{param.dataId}
@@ -103,7 +104,7 @@
   <select id="listOfDataId" resultType="java.lang.String">
     select data_id from tb_data_info where 1=1
     <if test="account != null and account != ''">
-      and BINARY account = #{account}
+      and account = #{account}
     </if>
     <if test="dataStatus != 0">
       and data_status = #{dataStatus}
@@ -114,7 +115,7 @@
   <select id="listOfDataIdByCoinStatus" resultType="java.lang.String">
     select data_id from tb_data_info where 1=1
     <if test="account != null and account != ''">
-      and BINARY account = #{account}
+      and account = #{account}
     </if>
     and plain_text = #{plainText}
     group by data_id
@@ -129,7 +130,7 @@
     select data_id,plain_text from tb_data_info
     where data_id in
     (select data_id from tb_data_info
-    where BINARY account = #{account}
+    where account = #{account}
     and data_sub_id = "status"
     and plain_text = #{status})
     and data_sub_id = "value" ;
@@ -137,9 +138,9 @@
 
   <select id="listOfValueWithTokenStatus" resultType="java.lang.String">
     select plain_text from tb_data_info
-    where BINARY account = #{account} and data_sub_id="value" and data_id in
+    where account = #{account} and data_sub_id="value" and data_id in
     (select data_id from tb_data_info
-    where BINARY account = #{account}
+    where account = #{account}
     and data_sub_id="status"
     and plain_text = #{status}
     group by data_id);

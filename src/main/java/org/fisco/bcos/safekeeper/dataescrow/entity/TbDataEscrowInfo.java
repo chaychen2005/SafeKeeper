@@ -30,8 +30,8 @@ public class TbDataEscrowInfo {
     private String cipherText1;
     private String cipherText2;
     private LocalDateTime createTime;
+    private LocalDateTime modifyTime;
     private String description;
-
 
     public TbDataEscrowInfo() {
         super();

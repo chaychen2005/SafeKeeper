@@ -10,37 +10,38 @@
     <result column="cipher_text1" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText1"/>
     <result column="cipher_text2" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText2"/>
     <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="modify_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="modifyTime"/>
     <result column="description" javaType="java.lang.String" jdbcType="INTEGER" property="description"/>
   </resultMap>
 
   <sql id="ROW_COLUMN">
-    account,data_id,cipher_text1,cipher_text2,create_time,description
+    account,data_id,cipher_text1,cipher_text2,create_time,modify_time,description
   </sql>
 
   <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo">
     insert into tb_data_escrow_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataID},#{cipherText1},#{cipherText2},NOW(),#{description})
+    values(#{account},#{dataID},#{cipherText1},#{cipherText2},NOW(),NOW(),#{description})
   </insert>
 
   <select id="queryData" parameterType="java.lang.String" resultMap="dataEscrowMap">
     select *
-    from tb_data_escrow_info where BINARY account = #{account} and data_id = #{dataID}
+    from tb_data_escrow_info where account = #{account} and data_id = #{dataID}
     limit 1
   </select>
 
   <delete id="deleteDataRow" parameterType="java.lang.String">
-    delete from tb_data_escrow_info where BINARY account = #{account} and data_id = #{dataID}
+    delete from tb_data_escrow_info where account = #{account} and data_id = #{dataID}
   </delete>
 
   <select id="countOfData" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select count(1) from tb_data_escrow_info where BINARY account = #{account} and data_id = #{dataID}
+    select count(1) from tb_data_escrow_info where account = #{account} and data_id = #{dataID}
   </select>
 
   <select id="countOfDataOwnedByAccount" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(1) from tb_data_escrow_info where 1=1
     <if test="account != null and account != ''">
-      and BINARY account = #{account}
+      and account = #{account}
     </if>
   </select>
 
@@ -48,7 +49,7 @@
     select * from tb_data_escrow_info
     where 1=1
     <if test="param.account != null and param.account != ''">
-      and BINARY account = #{param.account}
+      and account = #{param.account}
     </if>
     <if test="param.flagSortedByTime != null and param.flagSortedByTime != ''">
       order by create_time ${param.flagSortedByTime}
