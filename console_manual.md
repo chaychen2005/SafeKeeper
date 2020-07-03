@@ -50,12 +50,12 @@ sed -i "s/serviceIP:servicePort/127.0.0.1:9501/g" applicationContext.xml
 在运行数据管理服务的情况下，用户在dist目录以内置管理员身份（admin）启动控制台，并查询管理员可使用的命令：
 
 ```text
-[app@VM_0_1_centos dist]$ ./start.sh -sk admin Abcd1234
+[app@VM_0_1_centos dist]$ ./start.sh -safekeeper admin Abcd1234
 =============================================================================================
-Welcome to SafeKeeper Service console(1.0.9)!
+Welcome to safekeeper Service console(1.0.9)!
 Type 'help' or 'h' for help. Type 'quit' or 'q' to quit console.
 =============================================================================================
-[admin:admin]> help 
+[admin:admin]> help
 The following commands can be called by the admin
 ---------------------------------------------------------------------------------------------
 addAdminAccount                          Add an admin account.
@@ -63,7 +63,7 @@ addVisitorAccount                        Add a visitor account.
 deleteAccount                            Delete admin or visitor account.
 listAccount                              Display a list of accounts created by yourself.
 updatePassword                           Update the password of your own account.
-restoreData                              Restore account's core data by alias.
+restoreData                              Restore account's escrow data by dataID.
 quit(q)                                  Quit console.
 
 ---------------------------------------------------------------------------------------------
@@ -72,19 +72,19 @@ quit(q)                                  Quit console.
 管理员新建访客后，用户也可以访客身份启动控制台，并查询访客可使用的命令：
 
 ```text
-[app@VM_0_1_centos dist]$ ./start.sh -sk user1 123456
+[app@VM_0_1_centos dist]$ ./start.sh -safekeeper user3 12345678
 =============================================================================================
-Welcome to SafeKeeper console(1.0.9)!
+Welcome to safekeeper Service console(1.0.9)!
 Type 'help' or 'h' for help. Type 'quit' or 'q' to quit console.
 =============================================================================================
-[user1:visitor]> help 
+[user3:visitor]> help
 The following commands can be called by the visitor
 ---------------------------------------------------------------------------------------------
 updatePassword                           Update the password of your own account.
-uploadData                               Upload the core data to safekeeper service.
-listData                                 Display a list of core data owned by yourself.
-exportData                               Export your own core data by alias.
-deleteData                               Delete your own core data by alias.
+uploadData                               Upload the escrow data to safekeeper service.
+listData                                 Display a list of private keys owned by yourself.
+exportData                               Export your own escrow data by dataID.
+deleteData                               Delete your own escrow data by dataID.
 quit(q)                                  Quit console.
 
 ---------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ Update password successfully.
   
 ```text
 [admin:admin]> restoreData user1 pkey1 56edd4d56db20ad3b7b387fb8963a639c020282c6a4195f7a699b1b487fb6567
-The core data "pkey1" of account "user1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d69930380be.
+The escrow data "pkey1" of account "user1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d69930380be.
 ```
 
 ### **uploadData**
@@ -178,7 +178,7 @@ The core data "pkey1" of account "user1" is 2d330f79e17dd4645cc69d46222d82b85328
   
 ```text
 [user1:visitor]> uploadData 0xa424aa0a388e47bde6fb55c98ec2d6ba92e30f6b.p12 123456 pkey1
-Upload a core data "pkey1" successfully.
+Upload a escrow data "pkey1" successfully.
 ```
 
 注：如果在运行uploadData过程中，控制台提示以下错误信息，并且日志中输出以下内容，请参考[解决方案](https://stackoverflow.com/questions/3862800/invalidkeyexception-illegal-key-size)进行处理。
@@ -186,7 +186,7 @@ Upload a core data "pkey1" successfully.
 ```text
 # 控制台提示
 [user1:visitor]> uploadData 0x3a0371523d5eb01c1d359322bf6fca1525e6aea9.pem 123456 key_user1
-encrypt the core data by public key of creator fail.
+encrypt the escrow data by public key of creator fail.
 
 # 日志输出
 [ERROR] [2020-05-28 21:44:13] ECC.encrypt(26) | ECC.encrypt error message: Illegal key size, e: {}
@@ -198,7 +198,7 @@ encrypt the core data by public key of creator fail.
   
 ```text
 [user1:visitor]> listData
-The count of data uploaded by "user1" is 2.
+The count of escrow data uploaded by "user1" is 2.
 ---------------------------------------------------------------------------------------------
 |                    dataID                   |                 createTime                  |
 | 0xe6396f0a6b2ae72a17562cccfeb3cac770806e39  |             2020-05-19 21:34:00             |
@@ -215,7 +215,7 @@ The count of data uploaded by "user1" is 2.
   
 ```text
 [user1:visitor]> exportData pkey1 123456
-The core data "pkey1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d69930380be.
+The escrow data "pkey1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d69930380be.
 ```
 
 ### **deleteData**
@@ -226,7 +226,7 @@ The core data "pkey1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d6
   
 ```text
 [user1:visitor]> deleteData key1
-Delete the core data "key1" successfully.
+Delete the escrow data "key1" successfully.
 ```
 
 ### 控制台通过 Nginx 访问数据管理服务

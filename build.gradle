@@ -45,7 +45,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    compileOnly lombok
+    compile lombok
 
     testCompile test
 }
