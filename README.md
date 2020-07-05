@@ -37,7 +37,11 @@ SafeKeeper作为数据管理服务，提供基于身份认证的对核心数据�
 
 在业务应用场景中，我们基于安全考虑，建议将存有核心数据信息的数据管理服务部署在企业内网，并通过Nginx反向代理实现网络隔离、多活配置及负载均衡。
 
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/recommend_deployment.png)
+
 为实现快速体验，可如下部署：
+
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/simple_depolyment.png)
 
 ## 4. 数据管理核心操作介绍
 
@@ -48,15 +52,16 @@ SafeKeeper作为数据管理服务，提供基于身份认证的对核心数据�
 -- Table structure for tb_data_escrow_info
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_data_escrow_info (
-  account varchar(50) binary NOT NULL COMMENT '系统账号，数据归属标识',
-  data_id varchar(512) NOT NULL COMMENT '数据标识',
+  account varchar(32) NOT NULL COMMENT '系统账号，数据归属标识',
+  data_id varchar(128) NOT NULL COMMENT '数据标识',
   data_status int(1) NOT NULL DEFAULT '1' COMMENT '状态（1-正常 2-不可用） 默认1',
   cipher_text1 text NOT NULL COMMENT '用户托管的数据密文（可为经账号创建者公钥加密的数据密文）',
   cipher_text2 text NOT NULL COMMENT '用户托管的数据密文（可为经账号自身加密密码加密的数据密文）',
   create_time datetime DEFAULT NULL COMMENT '托管数据的时间',
+  modify_time datetime DEFAULT NULL COMMENT '数据修改时间',
   description text COMMENT '备注',
   PRIMARY KEY (account,data_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='托管数据信息表';
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT='托管数据信息表';
 ```
 
 ### 4.2 上传数据
@@ -69,13 +74,19 @@ CREATE TABLE IF NOT EXISTS tb_data_escrow_info (
 - 密文1：使用该访客指定的密码进行加密的密文，可用于访客导出数据
 - 密文2：使用创建该访客的管理员的公钥进行加密的密文，可用于访客遗失加密密码后由管理员恢复数据
 
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/upload_data.png)
+
 ### 4.3 导出数据
 
 访客在妥善保管加密密码的情况下，可自行通过控制台恢复数据。
 
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/export_data.png)
+
 ### 4.4 恢复数据
 
 访客如遗失加密数据的密码，可通过管理员恢复该数据。
+
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/restore_data.png)
 
 管理员恢复数据的过程中将涉及与访客的交互及对访客信息的验证，上述的交互及验证流程在控制台外进行。
 

@@ -4,7 +4,7 @@
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_role (
   role_id int(11) NOT NULL AUTO_INCREMENT COMMENT '角色编号',
-  role_name varchar(120) DEFAULT NULL COMMENT '角色名称（英文）',
+  role_name varchar(32) DEFAULT NULL COMMENT '角色名称（英文）',
   description text COMMENT '备注',
   create_time datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (role_id),
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS tb_role (
 -- Table structure for tb_account_info
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_account_info (
-  account varchar(50) binary NOT NULL COMMENT '系统账号',
+  account varchar(32) binary NOT NULL COMMENT '系统账号',
   account_pwd varchar(250) NOT NULL COMMENT '登录密码',
   role_id int(11) NOT NULL COMMENT '所属角色编号',
   account_status int(1) NOT NULL DEFAULT '1' COMMENT '状态（1-未更新密码 2-正常 3-冻结） 默认1',
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS tb_token (
 -- Table structure for tb_data_escrow_info
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_data_escrow_info (
-  account varchar(50) NOT NULL COMMENT '系统账号，数据归属标识',
-  data_id varchar(512) NOT NULL COMMENT '数据标识',
+  account varchar(32) NOT NULL COMMENT '系统账号，数据归属标识',
+  data_id varchar(128) NOT NULL COMMENT '数据标识',
   data_status int(1) NOT NULL DEFAULT '1' COMMENT '状态（1-正常 2-不可用） 默认1',
   cipher_text1 text NOT NULL COMMENT '用户托管的数据密文（可为经账号创建者公钥加密的数据密文）',
   cipher_text2 text NOT NULL COMMENT '用户托管的数据密文（可为经账号自身加密密码加密的数据密文）',
@@ -59,9 +59,9 @@ CREATE TABLE IF NOT EXISTS tb_data_escrow_info (
 -- Table structure for tb_data_info
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_data_info (
-  account varchar(50) NOT NULL COMMENT '系统账号，数据归属标识',
-  data_id varchar(256) NOT NULL COMMENT '数据标识',
-  data_sub_id varchar(256) NOT NULL COMMENT '数据副标识',
+  account varchar(32) NOT NULL COMMENT '系统账号，数据归属标识',
+  data_id varchar(128) NOT NULL COMMENT '数据标识',
+  data_sub_id varchar(64) NOT NULL COMMENT '数据副标识',
   data_status int(1) NOT NULL DEFAULT '1' COMMENT '状态（1-正常 2-不可用） 默认1',
   plain_text text NOT NULL COMMENT '用户上传的数据',
   create_time datetime DEFAULT NULL COMMENT '上传数据的时间',

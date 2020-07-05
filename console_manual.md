@@ -1,6 +1,6 @@
 # 数据管理服务控制台使用手册
 
-[控制台](https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/manual/console.html)在原有连接区块链节点的基础上增加访问数据管理服务的功能，实现对核心数据的托管及找回操作。控制台原有连接区块链的命令可继续使用，本文档单独给出用于数据管理服务的命令的使用说明。
+[控制台](https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/manual/console.html)在原有连接区块链节点的基础上增加访问数据管理服务的功能，实现对核心数据的托管及找回操作。控制台原有连接区块链的命令可继续使用，本文档以托管区块链根证书`ca.crt`为例，单独给出用于数据管理服务的命令的使用说明。
 
 用户在启动控制台时，可选地连接区块链或者访问数据管理服务。控制台目前尚未提供同时连接区块链与访问数据管理服务的功能。
 
@@ -10,6 +10,8 @@
 - 搭建Nginx（可选）
 
 ## 控制台直连数据管理服务
+
+![](https://fisco-bcos-doc-chaychen.readthedocs.io/en/feature-kms/_images/restore_data.png)
 
 ### 1. 获取源码 
 
@@ -164,8 +166,8 @@ Update password successfully.
 - 管理员私钥：管理员自身妥善保管的私钥，用于解密托管的密码密文，长度64，不区分大小写
   
 ```text
-[admin:admin]> restoreData user1 pkey1 56edd4d56db20ad3b7b387fb8963a639c020282c6a4195f7a699b1b487fb6567
-The escrow data "pkey1" of account "user1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d69930380be.
+[admin:admin]> restoreData user1 ca_crt 56edd4d56db20ad3b7b387fb8963a639c020282c6a4195f7a699b1b487fb6567
+The escrow data "ca_crt" of account "user1" has been recorded in data/ca_crt.txt.
 ```
 
 ### **uploadData**
@@ -177,15 +179,15 @@ The escrow data "pkey1" of account "user1" is 2d330f79e17dd4645cc69d46222d82b853
 - 数据标识：用于唯一标识该访客下的核心数据
   
 ```text
-[user1:visitor]> uploadData 0xa424aa0a388e47bde6fb55c98ec2d6ba92e30f6b.p12 123456 pkey1
-Upload a escrow data "pkey1" successfully.
+[user1:visitor]> uploadData ca.crt 12345678 ca_crt
+Upload a escrow data "ca_crt" successfully.
 ```
 
 注：如果在运行uploadData过程中，控制台提示以下错误信息，并且日志中输出以下内容，请参考[解决方案](https://stackoverflow.com/questions/3862800/invalidkeyexception-illegal-key-size)进行处理。
 
 ```text
 # 控制台提示
-[user1:visitor]> uploadData 0x3a0371523d5eb01c1d359322bf6fca1525e6aea9.pem 123456 key_user1
+[user1:visitor]> uploadData ca.crt 12345678 ca_crt
 encrypt the escrow data by public key of creator fail.
 
 # 日志输出
@@ -200,9 +202,9 @@ encrypt the escrow data by public key of creator fail.
 [user1:visitor]> listData
 The count of escrow data uploaded by "user1" is 2.
 ---------------------------------------------------------------------------------------------
-|                    dataID                   |                 createTime                  |
-| 0xe6396f0a6b2ae72a17562cccfeb3cac770806e39  |             2020-05-19 21:34:00             |
-|                    pkey1                    |             2020-05-19 21:20:22             |
+|                   dataID                    |                 createTime                  |
+|                   ca_crt                    |             2020-07-05T19:10:04             |
+|                   nodeID1                   |             2020-07-05T19:00:19             |
 ---------------------------------------------------------------------------------------------
 ```
 
@@ -214,8 +216,8 @@ The count of escrow data uploaded by "user1" is 2.
 - 加密密码：由访客提供用于对托管的核心数据进行对称加密的密码
   
 ```text
-[user1:visitor]> exportData pkey1 123456
-The escrow data "pkey1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9d69930380be.
+[user1:visitor]> exportData ca_crt 12345678
+The escrow data "ca_crt" has been recorded in data/ca_crt.txt.
 ```
 
 ### **deleteData**
@@ -225,8 +227,8 @@ The escrow data "pkey1" is 2d330f79e17dd4645cc69d46222d82b8532894d82bb14449da5f9
 - 数据标识：用于唯一标识该访客下的核心数据
   
 ```text
-[user1:visitor]> deleteData key1
-Delete the escrow data "key1" successfully.
+[user1:visitor]> deleteData ca_crt
+Delete the escrow data "ca_crt" successfully.
 ```
 
 ### 控制台通过 Nginx 访问数据管理服务
