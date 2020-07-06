@@ -238,8 +238,8 @@ public class DataService {
             log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
             if (target == token.getValue()) {
                 String dataId = token.getKey();
-                TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "2");
-                Integer count = updateDataRow(dataInfo);
+                DataQueryParam dataQueryParam = new DataQueryParam(account, dataId, "status");
+                Integer count = updateDataStatus(dataQueryParam, "0", "2");
                 if (count > 0) {
                     selected.add(token.getKey());
                     find = true;
@@ -277,8 +277,8 @@ public class DataService {
             long remain = target;
             for (TokenInfo token : tokens) {
                 String dataId = token.getKey();
-                TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "2");
-                Integer count = updateDataRow(dataInfo);
+                DataQueryParam dataQueryParam = new DataQueryParam(account, dataId, "status");
+                Integer count = updateDataStatus(dataQueryParam, "0", "2");
 
                 if (count > 0) {
                     remain -= Long.parseLong(token.getText());
@@ -293,8 +293,8 @@ public class DataService {
                 log.debug("the account has not sufficient tokens. target: {} total: {} ", target , target - remain);
                 // roll back
                 for (String dataId : selected) {
-                    TbDataInfo dataInfo = new TbDataInfo(account, dataId, "status", "0");
-                    Integer count = updateDataRow(dataInfo);
+                    DataQueryParam dataQueryParam = new DataQueryParam(account, dataId, "status");
+                    Integer count = updateDataStatus(dataQueryParam, "2", "0");
                     checkDbAffectRow(count);
                 }
                 throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
@@ -303,68 +303,6 @@ public class DataService {
 
         List<JsonNode> listOfData = new ArrayList<>();
         for (String dataId : selected) {
-            DataQueryParam queryParams = new DataQueryParam(account, dataId);
-            List<TbDataInfo> dataInfoList = queryData(queryParams);
-            JsonNode dateNode = rawDataListToDataNode(dataInfoList);
-            listOfData.add(dateNode);
-        }
-
-        return listOfData;
-    }
-
-    public List<JsonNode> getCredentialList(String account, long target) {
-        List<TokenInfo> tokens = listOfTokenWithTokenStatus(account, "0");
-        List<String> selectedTokens  = new ArrayList<>();
-        boolean find = false;
-
-        for (int i = 0; i < tokens.size(); i++) {
-            TokenInfo token = tokens.get(i);
-            token.setValue(Integer.valueOf(token.getText()));
-            log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
-            if (target == token.getValue()) {
-                selectedTokens.add(token.getKey());
-                find = true;
-                break;
-            }
-        }
-
-        if (!find) {
-            // sort by value
-            TokenInfo tmp;
-            for (int i = 0; i < tokens.size() - 1; i++) {
-                for (int j = tokens.size() - 1; j > 0; j--) {
-                    if (tokens.get(j - 1).getValue() < tokens.get(j).getValue()) {
-                        tmp = tokens.get(j);
-                        tokens.set(j, tokens.get(j - 1));
-                        tokens.set(j - 1, tmp);
-                    }
-                }
-            }
-
-            long totalValue = 0;
-            log.debug("after sort by value in getCredentialList. size: {} ", tokens.size());
-            for (int i = 0; i < tokens.size(); i++) {
-                TokenInfo token = tokens.get(i);
-                log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
-                totalValue += token.getValue();
-            }
-
-            if (target > totalValue) {
-                log.debug("the account has not sufficient tokens. target: {} total: {} ", target, totalValue);
-                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
-            }
-
-            for (TokenInfo token : tokens) {
-                selectedTokens.add(token.getKey());
-                target -= token.getValue();
-                if (target <= 0) {
-                    break;
-                }
-            }
-        }
-
-        List<JsonNode> listOfData = new ArrayList<>();
-        for (String dataId : selectedTokens) {
             DataQueryParam queryParams = new DataQueryParam(account, dataId);
             List<TbDataInfo> dataInfoList = queryData(queryParams);
             JsonNode dateNode = rawDataListToDataNode(dataInfoList);
@@ -452,5 +390,14 @@ public class DataService {
             ((ObjectNode) dataNode).put(dataInfo.getDataSubId(), dataInfo.getPlainText());
         }
         return dataNode;
+    }
+
+    private  Integer updateDataStatus(DataQueryParam accountInfo, String srcDataStatus, String desDataStatus) {
+        log.debug("start updateDataStatus. accountInfo:{} status:{}->{} ",
+                JacksonUtils.objToString(accountInfo), srcDataStatus, desDataStatus);
+        Integer count = dataMapper.updateDataStatus(accountInfo.getAccount(), accountInfo.getDataId(),
+                accountInfo.getDataSubId(), srcDataStatus, desDataStatus);
+        log.debug("end updateDataStatus. count:{} ", count);
+        return count;
     }
 }

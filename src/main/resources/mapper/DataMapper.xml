@@ -146,4 +146,9 @@
     group by data_id);
   </select>
 
+  <update id="updateDataStatus" parameterType="java.lang.String">
+    update tb_data_info set plain_text=#{desDataStatus}, modify_time=NOW()
+    where account=#{account} and data_id = #{dataId} and data_sub_id = #{dataSubId} and plain_text = #{srcDataStatus}
+  </update>
+
 </mapper>

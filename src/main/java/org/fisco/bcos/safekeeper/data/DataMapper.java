@@ -51,4 +51,8 @@ public interface DataMapper {
     List<TokenInfo> listOfTokenWithTokenStatus(@Param("account") String account, @Param("status") String status);
 
     List<String> listOfValueWithTokenStatus(@Param("account") String account, @Param("status") String status);
+
+    Integer updateDataStatus(@Param("account") String account, @Param("dataId") String dataId,
+                             @Param("dataSubId") String dataSubId, @Param("srcDataStatus") String srcDataStatus,
+                             @Param("desDataStatus") String desDataStatus);
 }
