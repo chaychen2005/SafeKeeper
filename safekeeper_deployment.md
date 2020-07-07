@@ -51,20 +51,15 @@ CREATE DATABASE IF NOT EXISTS my_safekeeper DEFAULT CHARSET utf8 COLLATE utf8_ge
 cd dist/script
 ```
 
-修改数据库连接信息：
+修改`safekeeper.sh`脚本的数据库连接信息，修改后的数据库连接部分配置如下：
 
-```shell
-修改数据库名称：sed -i "s/fisco_safekeeper/${your_db_name}/g" safekeeper.sh
-修改数据库用户名：sed -i "s/defaultAccount/${your_db_account}/g" safekeeper.sh
-修改数据库密码：sed -i "s/defaultPassword/${your_db_password}/g" safekeeper.sh
-```
-
-例如：
-
-```shell
-sed -i "s/fisco_safekeeper/my_safekeeper/g" safekeeper.sh
-sed -i "s/defaultAccount/root/g" safekeeper.sh
-sed -i "s/defaultPassword/123456/g" safekeeper.sh
+```text
+#dbUser
+DBUSER="root"                       # dbIP -> 127.0.0.1
+#dbPass
+PASSWD="123456"                     # dbPort -> 3306
+#dbName
+DBNAME="my_safekeeper"              # fisco_safekeeper -> my_safekeeper
 ```
 
 ### 4.3 运行数据库脚本
@@ -93,26 +88,53 @@ bash safekeeper.sh 127.0.0.1 3306
 cp -r conf_template conf
 ```
 
-（2）修改服务配置，注意需与`4.2 修改脚本配置`的数据库信息保持一致：
+（2）修改服务配置`application.yml`，注意需与`4.2 修改脚本配置`的数据库信息保持一致，修改后内容如下：
 
-```shell
-修改服务端口：sed -i "s/servicePort/${your_server_port}/g" conf/application.yml
-修改数据库IP：sed -i "s/dbIP/${your_db_ip}/g" conf/application.yml
-修改数据库端口：sed -i "s/dbPort/${your_db_port}/g" conf/application.yml
-修改数据库名称：sed -i "s/fisco_safekeeper/${your_db_name}/g" conf/application.yml
-修改数据库用户：sed -i "s/defaultAccount/${your_db_account}/g" conf/application.yml
-修改数据库密码：sed -i "s/defaultPassword/${your_db_password}/g" conf/application.yml
-```
+```text
+#server config
+server:
+  port: 9501                                    # servicePort -> 9501
+  ssl:
+    key-store: classpath:server.keystore
+    key-alias: safekeeper
+    enabled: true
+    key-store-password: Abcd1234
+    key-store-type: JKS
+  servlet:
+    context-path: /SafeKeeper
 
-例如：
 
-```shell
-sed -i "s/servicePort/9501/g" conf/application.yml
-sed -i "s/dbIP/127.0.0.1/g" conf/application.yml
-sed -i "s/dbPort/3306/g" conf/application.yml
-sed -i "s/fisco_safekeeper/my_safekeeper/g" conf/application.yml
-sed -i "s/defaultAccount/root/g" conf/application.yml
-sed -i "s/defaultPassword/123456/g" conf/application.yml
+#mybatis config
+mybatis:
+  typeAliasesPackage: org.fisco.bcos.safekeeper
+  mapperLocations: classpath:mapper/*.xml
+
+
+# database connection configuration
+# dbIP -> 127.0.0.1
+# dbPort -> 3306
+# fisco_safekeeper -> my_safekeeper
+# defaultAccount -> root
+# defaultPassword -> 123456
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/my_safekeeper?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+    username: "root"
+    password: "123456"
+
+#log config
+logging:
+  config: classpath:log/log4j2.xml
+  level:
+    org.fisco.bcos.safekeeper: info
+
+#constants
+constant:
+  ###http request
+  isUseSecurity: true   # login's authorization
+  authTokenMaxAge: 1800
+  wedpr: false          # if wedpr is true, authTokenMaxAge indicates long time login status.
 ```
 
 （3）添加服务证书

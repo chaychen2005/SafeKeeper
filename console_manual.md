@@ -38,13 +38,10 @@ cd dist/conf && cp applicationContext-sample.xml applicationContext.xml
 修改数据管理服务的IP和Port
 
 ```text
-sed -i "s/serviceIP:servicePort/${your_server_ip}:${your_server_port}/g" applicationContext.xml
-```
-
-例如：
-
-```text
-sed -i "s/serviceIP:servicePort/127.0.0.1:9501/g" applicationContext.xml
+    <bean id="safeKeeperUrl" class="console.data.tools.SafeKeeperUrl">
+        <constructor-arg index="0" value="127.0.0.1:9501" />    # serviceIP:servicePort -> 127.0.0.1:9501
+        <constructor-arg index="1" value="/SafeKeeper/" />
+    </bean>
 ```
 
 ### 4. 启动控制台
@@ -355,5 +352,8 @@ nginx_sk.key nginx_sk.csr nginx_sk.crt
 #### 4. 修改控制台配置
 
 ```text
-sed -i "s/serviceIP:servicePort/127.0.0.1:5080/g" applicationContext.xml
+    <bean id="safeKeeperUrl" class="console.data.tools.SafeKeeperUrl">
+        <constructor-arg index="0" value="127.0.0.1:5080" />    # serviceIP:servicePort -> 127.0.0.1:5080
+        <constructor-arg index="1" value="/SafeKeeper/" />
+    </bean>
 ```
