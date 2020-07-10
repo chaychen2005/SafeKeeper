@@ -29,11 +29,11 @@ public interface DataEscrowMapper {
 
     Integer addDataRow(TbDataEscrowInfo tbDataEscrowInfo);
 
-    TbDataEscrowInfo queryData(@Param("account") String account, @Param("dataID") String dataID);
+    TbDataEscrowInfo queryData(@Param("account") String account, @Param("dataEntityId") String dataEntityId);
 
-    Integer deleteDataRow(@Param("account") String account, @Param("dataID") String dataID);
+    Integer deleteDataRow(@Param("account") String account, @Param("dataEntityId") String dataEntityId);
 
-    Integer countOfData(@Param("account") String account, @Param("dataID") String dataID);
+    Integer countOfData(@Param("account") String account, @Param("dataEntityId") String dataEntityId);
 
     Integer countOfDataOwnedByAccount(@Param("account") String account);
 

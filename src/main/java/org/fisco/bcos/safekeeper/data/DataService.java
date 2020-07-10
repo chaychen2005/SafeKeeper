@@ -39,6 +39,10 @@ public class DataService {
     @Autowired
     private DataMapper dataMapper;
 
+    static final String CREDIT_STATUS_AVAILABLE = "0";
+    static final String CREDIT_STATUS_USED = "1";
+    static final String CREDIT_STATUS_FROZEN = "2";
+
     /**
      * add data row.
      */
@@ -46,7 +50,8 @@ public class DataService {
         log.debug("start addDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
         // check data
-        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataId(), dataInfo.getDataSubId());
+        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataEntityId(),
+                dataInfo.getDataFieldId());
         dataNotExist(queryParams);
 
         // add data row
@@ -65,11 +70,15 @@ public class DataService {
     public void addDataBatch(List<TbDataInfo> dataInfoList) throws SafeKeeperException {
         log.debug("start addDataBatch.");
 
+        Integer affectRow = 0;
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
             // add data
-            dataMapper.addDataRow(dataInfo);
+            affectRow += dataMapper.addDataRow(dataInfo);
+        }
+        if (affectRow != dataInfoList.size()) {
+            throw new SafeKeeperException(ConstantCode.INSERT_DATA_ERROR);
         }
 
         log.debug("end addDataBatch. affectRow:{}", dataInfoList.size());
@@ -123,10 +132,10 @@ public class DataService {
     /**
      * query count of data.
      */
-    public int countOfData(String account, String dataId, String dataSubId, int dataStatus) {
-        log.debug("start countOfData. account: {} dataId: {} dataSubId: {} dataStatus: {} ",
-                account, dataId, dataSubId, dataStatus);
-        Integer dataCount = dataMapper.countOfData(account, dataId, dataSubId, dataStatus);
+    public int countOfData(String account, String dataEntityId, String dataFieldId, int dataStatus) {
+        log.debug("start countOfData. account: {} dataEntityId: {} dataFieldId: {} dataStatus: {} ",
+                account, dataEntityId, dataFieldId, dataStatus);
+        Integer dataCount = dataMapper.countOfData(account, dataEntityId, dataFieldId, dataStatus);
         int count = dataCount == null ? 0 : dataCount.intValue();
         log.debug("end countOfData. count: {} ", count);
         return count;
@@ -175,11 +184,11 @@ public class DataService {
      * boolean the data is exist.
      */
     public void dataExist(DataQueryParam queryParams) throws SafeKeeperException {
-        if (StringUtils.isBlank(queryParams.getDataId())) {
-            throw new SafeKeeperException(ConstantCode.DATA_ID_EMPTY);
+        if (StringUtils.isBlank(queryParams.getDataEntityId())) {
+            throw new SafeKeeperException(ConstantCode.EMPTY_DATA_ENTITY_ID);
         }
-        if (StringUtils.isBlank(queryParams.getDataSubId())) {
-            throw new SafeKeeperException(ConstantCode.DATA_SUB_ID_EMPTY);
+        if (StringUtils.isBlank(queryParams.getDataFieldId())) {
+            throw new SafeKeeperException(ConstantCode.EMPTY_DATA_FIELD_ID);
         }
         int count = existOfData(queryParams);
         if (count == 0) {
@@ -191,11 +200,11 @@ public class DataService {
      * boolean the data is not exist.
      */
     public void dataNotExist(DataQueryParam queryParams) throws SafeKeeperException {
-        if (StringUtils.isBlank(queryParams.getDataId())) {
-            throw new SafeKeeperException(ConstantCode.DATA_ID_EMPTY);
+        if (StringUtils.isBlank(queryParams.getDataEntityId())) {
+            throw new SafeKeeperException(ConstantCode.EMPTY_DATA_ENTITY_ID);
         }
-        if (StringUtils.isBlank(queryParams.getDataSubId())) {
-            throw new SafeKeeperException(ConstantCode.DATA_SUB_ID_EMPTY);
+        if (StringUtils.isBlank(queryParams.getDataFieldId())) {
+            throw new SafeKeeperException(ConstantCode.EMPTY_DATA_FIELD_ID);
         }
         int count = existOfData(queryParams);
         if (count > 0) {
@@ -220,28 +229,29 @@ public class DataService {
         return list;
     }
 
-    public List<String> listOfDataIdByCoinStatus(String account, String plainText) {
-        log.debug("start listOfDataIdByCoinStatus. account:{} plainText: {} ", account, plainText);
-        List<String> list = dataMapper.listOfDataIdByCoinStatus(account, plainText);
+    public List<String> listOfDataIdByCoinStatus(String account, String status) {
+        log.debug("start listOfDataIdByCoinStatus. account:{} status: {} ", account, status);
+        List<String> list = dataMapper.listOfDataIdByCreditStatus(account, status);
         log.debug("end listOfDataIdByCoinStatus. list:{} ", JacksonUtils.objToString(list));
         return list;
     }
 
+    @Transactional
     public List<JsonNode> preAuthorization(String account, long target) {
         boolean find = false;
-        List<TokenInfo> tokens = listOfTokenWithTokenStatus(account, "0");
+        List<CreditInfo> credits = listOfCreditWithCreditStatus(account, CREDIT_STATUS_AVAILABLE);
         List<String> selected = new ArrayList<>();
 
-        for (int i = 0; i < tokens.size(); i++) {
-            TokenInfo token = tokens.get(i);
-            token.setValue(Integer.valueOf(token.getText()));
-            log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
-            if (target == token.getValue()) {
-                String dataId = token.getKey();
-                DataQueryParam dataQueryParam = new DataQueryParam(account, dataId, "status");
-                Integer count = updateDataStatus(dataQueryParam, "0", "2");
+        for (int i = 0; i < credits.size(); i++) {
+            CreditInfo credit = credits.get(i);
+            credit.setValue(Long.parseLong(credit.getText()));
+            log.debug(credit.getKey() + " " + credit.getValue());
+            if (target == credit.getValue()) {
+                String dataEntityId = credit.getKey();
+                DataQueryParam dataQueryParam = new DataQueryParam(account, dataEntityId, "status");
+                Integer count = updateCreditStatus(dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
                 if (count > 0) {
-                    selected.add(token.getKey());
+                    selected.add(dataEntityId);
                     find = true;
                     break;
                 }
@@ -250,105 +260,97 @@ public class DataService {
 
         if (!find) {
             long totalValue = 0;
-            log.debug("after sort by value in getCredentialList. size: {} ", tokens.size());
-            for (int i = 0; i < tokens.size(); i++) {
-                TokenInfo token = tokens.get(i);
-                log.debug(token.getKey() + " " + token.getText() + " " + token.getValue());
-                totalValue += token.getValue();
+            log.debug("credentialList sorted by value. size: {} ", credits.size());
+            for (int i = 0; i < credits.size(); i++) {
+                CreditInfo credit = credits.get(i);
+                log.debug(credit.getKey() + " " + credit.getValue());
+                totalValue += credit.getValue();
             }
 
             if (target > totalValue) {
-                log.debug("the account has not sufficient tokens. target: {} total: {} ", target, totalValue);
-                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
+                log.debug("the account has not sufficient credits. target: {} only: {} ", target, totalValue);
+                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_CREDITS);
             }
 
             // sort by value
-            TokenInfo tmp;
-            for (int i = 0; i < tokens.size() - 1; i++) {
-                for (int j = tokens.size() - 1; j > 0; j--) {
-                    if (tokens.get(j - 1).getValue() < tokens.get(j).getValue()) {
-                        tmp = tokens.get(j);
-                        tokens.set(j, tokens.get(j - 1));
-                        tokens.set(j - 1, tmp);
+            CreditInfo tmp;
+            for (int i = 0; i < credits.size() - 1; i++) {
+                for (int j = credits.size() - 1; j > 0; j--) {
+                    if (credits.get(j - 1).getValue() < credits.get(j).getValue()) {
+                        tmp = credits.get(j);
+                        credits.set(j, credits.get(j - 1));
+                        credits.set(j - 1, tmp);
                     }
                 }
             }
 
             long remain = target;
-            for (TokenInfo token : tokens) {
-                String dataId = token.getKey();
-                DataQueryParam dataQueryParam = new DataQueryParam(account, dataId, "status");
-                Integer count = updateDataStatus(dataQueryParam, "0", "2");
+            for (CreditInfo credit : credits) {
+                String dataEntityId = credit.getKey();
+                DataQueryParam dataQueryParam = new DataQueryParam(account, dataEntityId, "status");
+                Integer count = updateCreditStatus(dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
 
                 if (count > 0) {
-                    remain -= Long.parseLong(token.getText());
-                    selected.add(dataId);
+                    remain -= credit.getValue();
+                    selected.add(dataEntityId);
                     if (remain <= 0) {
                         break;
                     }
                 }
             }
 
+            // 多人竞争可能在这里都失败
             if (remain > 0) {
-                log.debug("the account has not sufficient tokens. target: {} total: {} ", target , target - remain);
-                // roll back
-                for (String dataId : selected) {
-                    DataQueryParam dataQueryParam = new DataQueryParam(account, dataId, "status");
-                    Integer count = updateDataStatus(dataQueryParam, "2", "0");
+                log.debug("the account has not sufficient credits. target: {} only: {} ", target , target - remain);
+                // use @Transactional to roll back
+                /*for (String dataEntityId : selected) {
+                    DataQueryParam dataQueryParam = new DataQueryParam(account, dataEntityId, "status");
+                    Integer count = updateCreditStatus(dataQueryParam, CREDIT_STATUS_FROZEN, CREDIT_STATUS_AVAILABLE);
                     checkDbAffectRow(count);
-                }
-                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_TOKENS);
+                }*/
+                throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_CREDITS);
             }
         }
 
         List<JsonNode> listOfData = new ArrayList<>();
-        for (String dataId : selected) {
-            DataQueryParam queryParams = new DataQueryParam(account, dataId);
+        for (String dataEntityId : selected) {
+            DataQueryParam queryParams = new DataQueryParam(account, dataEntityId);
             List<TbDataInfo> dataInfoList = queryData(queryParams);
             JsonNode dateNode = rawDataListToDataNode(dataInfoList);
             listOfData.add(dateNode);
         }
 
+        // TODO: return total of credits
         return listOfData;
     }
 
-    public List<TokenInfo> listOfTokenWithTokenStatus(String account, String status) {
-        log.debug("start listOfTokenWithTokenStatus. account:{} status:{} ", account, status);
-        List<TokenInfo> list = dataMapper.listOfTokenWithTokenStatus(account, status);
-        log.debug("end listOfTokenWithTokenStatus. list:{} ", JacksonUtils.objToString(list));
+    public List<CreditInfo> listOfCreditWithCreditStatus(String account, String status) {
+        log.debug("start listOfCreditWithCreditStatus. account:{} status:{} ", account, status);
+        List<CreditInfo> list = dataMapper.listOfCreditWithCreditStatus(account, status);
+        log.debug("end listOfCreditWithCreditStatus. list:{} ", JacksonUtils.objToString(list));
         return list;
     }
 
-    public JsonNode getBalance(String account) {
+    public JsonNode balance(String account) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
-        List<String> unspentList = listOfValueWithTokenStatus(account,"0");
-        ((ObjectNode) dataNode).put("unspent", aggregateBalance(unspentList));
-        List<String> spentList = listOfValueWithTokenStatus(account, "1");
-        ((ObjectNode) dataNode).put("spent", aggregateBalance(spentList));
-        return dataNode;
-    }
-
-    public JsonNode getUnspentAmount(String account) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode dataNode = objectMapper.createObjectNode();
-        List<String> unspentList = listOfValueWithTokenStatus(account,"0");
+        List<String> unspentList = listOfValueWithCreditStatus(account, CREDIT_STATUS_AVAILABLE);
         ((ObjectNode) dataNode).put("balance", aggregateBalance(unspentList));
         return dataNode;
     }
 
-    public JsonNode getSpentAmount(String account) {
+    public JsonNode expenditure(String account) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
-        List<String> spentList = listOfValueWithTokenStatus(account,"1");
+        List<String> spentList = listOfValueWithCreditStatus(account,CREDIT_STATUS_USED);
         ((ObjectNode) dataNode).put("expenditure", aggregateBalance(spentList));
         return dataNode;
     }
 
-    private List<String> listOfValueWithTokenStatus(String account, String status) {
-        log.debug("start listOfValueWithTokenStatus. account:{} status:{} ", account, status);
-        List<String> list = dataMapper.listOfValueWithTokenStatus(account, status);
-        log.debug("end listOfValueWithTokenStatus. list:{} ", JacksonUtils.objToString(list));
+    private List<String> listOfValueWithCreditStatus(String account, String status) {
+        log.debug("start listOfValueWithCreditStatus. account:{} status:{} ", account, status);
+        List<String> list = dataMapper.listOfValueWithCreditStatus(account, status);
+        log.debug("end listOfValueWithCreditStatus. list:{} ", JacksonUtils.objToString(list));
         return list;
     }
 
@@ -366,11 +368,11 @@ public class DataService {
     public List<TbDataInfo> dataJsonToRawDataList(String currentAccount, DataRequestInfo data) {
         List<TbDataInfo> dataInfoList = new ArrayList<>();
 
-        String dataId = data.getKey();
+        String dataEntityId = data.getKey();
         Iterator<Map.Entry<String,JsonNode>> jsonNodes = data.getValue().fields();
         while (jsonNodes.hasNext()) {
             Map.Entry<String, JsonNode> node = jsonNodes.next();
-            TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataId, node.getKey(), node.getValue().asText());
+            TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataEntityId, node.getKey(), node.getValue().asText());
             dataInfoList.add(dataInfo);
         }
         return dataInfoList;
@@ -383,21 +385,21 @@ public class DataService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
         if (dataInfoList.size() > 0) {
-            ((ObjectNode) dataNode).put("key", dataInfoList.get(0).getDataId());
+            ((ObjectNode) dataNode).put("key", dataInfoList.get(0).getDataEntityId());
         }
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
-            ((ObjectNode) dataNode).put(dataInfo.getDataSubId(), dataInfo.getPlainText());
+            ((ObjectNode) dataNode).put(dataInfo.getDataFieldId(), dataInfo.getDataFieldValue());
         }
         return dataNode;
     }
 
-    private  Integer updateDataStatus(DataQueryParam accountInfo, String srcDataStatus, String desDataStatus) {
-        log.debug("start updateDataStatus. accountInfo:{} status:{}->{} ",
+    private  Integer updateCreditStatus(DataQueryParam accountInfo, String srcDataStatus, String desDataStatus) {
+        log.debug("start updateCreditStatus. accountInfo:{} status:{}->{} ",
                 JacksonUtils.objToString(accountInfo), srcDataStatus, desDataStatus);
-        Integer count = dataMapper.updateDataStatus(accountInfo.getAccount(), accountInfo.getDataId(),
-                accountInfo.getDataSubId(), srcDataStatus, desDataStatus);
-        log.debug("end updateDataStatus. count:{} ", count);
+        Integer count = dataMapper.updateCreditStatus(accountInfo.getAccount(), accountInfo.getDataEntityId(),
+                accountInfo.getDataFieldId(), srcDataStatus, desDataStatus);
+        log.debug("end updateCreditStatus. count:{} ", count);
         return count;
     }
 }

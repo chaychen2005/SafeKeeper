@@ -31,16 +31,16 @@ import lombok.ToString;
 public class DataListParam extends BaseQueryParam {
 
     private String account;
-    private String dataId;
-    private String dataSubId;
+    private String dataEntityId;
+    private String dataFieldId;
     private Integer dataStatus;
 
-    public DataListParam(Integer start, Integer pageSize, String account, String dataId, String dataSubId, Integer dataStatus,
-                         String flagSortedByTime) {
+    public DataListParam(Integer start, Integer pageSize, String account, String dataEntityId, String dataFieldId,
+                         Integer dataStatus, String flagSortedByTime) {
         super(start, pageSize, flagSortedByTime);
         this.account = account;
-        this.dataId = dataId;
-        this.dataSubId = dataSubId;
+        this.dataEntityId = dataEntityId;
+        this.dataFieldId = dataFieldId;
         this.dataStatus = dataStatus;
     }
 }

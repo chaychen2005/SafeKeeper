@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Data
 public class TbToken {
     private String token;
-    private String value;
+    private String account;
     private LocalDateTime expireTime;
     private LocalDateTime createTime;
 }

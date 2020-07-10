@@ -25,10 +25,10 @@ import lombok.Data;
 public class TbDataEscrowInfo {
 
     private String account;
-    private String dataID;
+    private String dataEntityId;
     private Integer dataStatus;
-    private String cipherText1;
-    private String cipherText2;
+    private String creatorCipherText;
+    private String userCipherText;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private String description;
@@ -37,12 +37,13 @@ public class TbDataEscrowInfo {
         super();
     }
 
-    public TbDataEscrowInfo(String account, String dataID, String cipherText1, String cipherText2, String description) {
+    public TbDataEscrowInfo(String account, String dataEntityId, String creatorCipherText, String userCipherText,
+                            String description) {
         super();
         this.account = account;
-        this.dataID = dataID;
-        this.cipherText1 = cipherText1;
-        this.cipherText2 = cipherText2;
+        this.dataEntityId = dataEntityId;
+        this.creatorCipherText = creatorCipherText;
+        this.userCipherText = userCipherText;
         this.description = description;
     }
 }

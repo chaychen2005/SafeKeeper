@@ -5,37 +5,37 @@
 <mapper namespace="org.fisco.bcos.safekeeper.dataescrow.DataEscrowMapper">
   <resultMap id="dataEscrowMap" type="org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo">
     <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
-    <id column="data_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataID"/>
+    <id column="data_entity_id" javaType="java.lang.String" jdbcType="VARCHAR" property="dataEntityId"/>
     <result column="data_status" javaType="java.lang.Integer" jdbcType="INTEGER" property="dataStatus"/>
-    <result column="cipher_text1" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText1"/>
-    <result column="cipher_text2" javaType="java.lang.String" jdbcType="VARCHAR" property="cipherText2"/>
+    <result column="creator_cipher_text" javaType="java.lang.String" jdbcType="VARCHAR" property="creatorCipherText"/>
+    <result column="user_cipher_text" javaType="java.lang.String" jdbcType="VARCHAR" property="userCipherText"/>
     <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="modify_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="modifyTime"/>
     <result column="description" javaType="java.lang.String" jdbcType="INTEGER" property="description"/>
   </resultMap>
 
   <sql id="ROW_COLUMN">
-    account,data_id,cipher_text1,cipher_text2,create_time,modify_time,description
+    account,data_entity_id,creator_cipher_text,user_cipher_text,create_time,modify_time,description
   </sql>
 
   <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo">
     insert into tb_data_escrow_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataID},#{cipherText1},#{cipherText2},NOW(),NOW(),#{description})
+    values(#{account},#{dataEntityId},#{creatorCipherText},#{userCipherText},NOW(),NOW(),#{description})
   </insert>
 
   <select id="queryData" parameterType="java.lang.String" resultMap="dataEscrowMap">
     select *
-    from tb_data_escrow_info where account = #{account} and data_id = #{dataID}
+    from tb_data_escrow_info where account = #{account} and data_entity_id = #{dataEntityId}
     limit 1
   </select>
 
   <delete id="deleteDataRow" parameterType="java.lang.String">
-    delete from tb_data_escrow_info where account = #{account} and data_id = #{dataID}
+    delete from tb_data_escrow_info where account = #{account} and data_entity_id = #{dataEntityId}
   </delete>
 
   <select id="countOfData" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select count(1) from tb_data_escrow_info where account = #{account} and data_id = #{dataID}
+    select count(1) from tb_data_escrow_info where account = #{account} and data_entity_id = #{dataEntityId}
   </select>
 
   <select id="countOfDataOwnedByAccount" parameterType="java.lang.String" resultType="java.lang.Integer">

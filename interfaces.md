@@ -26,6 +26,12 @@
   - [3.10 wedpr查询特定状态的数据](#3.10)
 - [4.错误码说明](#4)
 
+以下除登录`/accounts/v1/login`之外的请求均带有header信息。
+
+| 序号 | 请求header         | 类型   | 可为空 | 备注     |
+| ---- | ------------------ | ------ | ------ | -------- |
+| 1    | AuthorizationToken | String | 否     | 会话标识 |
+
 ## <span id="1">1 帐号管理模块</span>  [top](#catalog_top)
 
 ### <span id="1.1">1.1 账号登录</span>  [top](#catalog_top)
@@ -419,33 +425,33 @@
 
 #### 2.1.2 参数信息详情
 
-| 序号 | 请求body    | 类型   | 可为空 | 备注                       |
-| ---- | ----------- | ------ | ------ | -------------------------- |
-| 1    | dataID      | String | 否     | 数据标识                   |
-| 2    | cipherText1 | String | 否     | 经账号创建者公钥加密的内容 |
-| 3    | cipherText2 | String | 否     | 经账号提供的密码加密的内容 |
+| 序号 | 请求body          | 类型   | 可为空 | 备注                       |
+| ---- | ----------------- | ------ | ------ | -------------------------- |
+| 1    | dataEntityId      | String | 否     | 数据标识                   |
+| 2    | creatorCipherText | String | 否     | 经账号创建者公钥加密的内容 |
+| 3    | userCipherText    | String | 否     | 经账号提供的密码加密的内容 |
 
-| 序号 | 返回body    | 类型          | 可为空 | 备注                       |
-| ---- | ----------- | ------------- | ------ | -------------------------- |
-| 1    | code        | Int           | 否     | 返回码，0：成功 其它：失败 |
-| 2    | message     | String        | 否     | 描述                       |
-| 3    | data        | object        | 否     | 返回信息实体               |
-| 3.1  | account     | String        | 否     | 帐号名称                   |
-| 3.2  | dataID      | String        | 否     | 数据标识                   |
-| 3.3  | dataStatus  | String        | 否     | 数据状态                   |
-| 3.4  | cipherText1 | String        | 否     | 经账号创建者公钥加密的内容 |
-| 3.5  | cipherText2 | String        | 否     | 经账号提供的密码加密的内容 |
-| 3.6  | createTime  | LocalDateTime | 否     | 数据托管时间               |
-| 3.7  | description | String        | 是     | 数据备注信息               |
+| 序号 | 返回body          | 类型          | 可为空 | 备注                       |
+| ---- | ----------------- | ------------- | ------ | -------------------------- |
+| 1    | code              | Int           | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message           | String        | 否     | 描述                       |
+| 3    | data              | object        | 否     | 返回信息实体               |
+| 3.1  | account           | String        | 否     | 帐号名称                   |
+| 3.2  | dataEntityId      | String        | 否     | 数据标识                   |
+| 3.3  | dataStatus        | String        | 否     | 数据状态                   |
+| 3.4  | creatorCipherText | String        | 否     | 经账号创建者公钥加密的内容 |
+| 3.5  | userCipherText    | String        | 否     | 经账号提供的密码加密的内容 |
+| 3.6  | createTime        | LocalDateTime | 否     | 数据托管时间               |
+| 3.7  | description       | String        | 是     | 数据备注信息               |
 
 ### 1.1.3 入参示例
 
 `https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults`
 ```
 {
-    "dataID":"key1",
-    "cipherText1":"048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
-    "cipherText2":"F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7"
+    "dataEntityId":"key1",
+    "creatorCipherText":"048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
+    "userCipherText":"F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7"
 }
 ```
 
@@ -458,10 +464,10 @@
     "message": "success",
     "data": {
         "account": "user1",
-        "dataID": "key1",
+        "dataEntityId": "key1",
         "dataStatus": 1,
-        "cipherText1": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
-        "cipherText2": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
+        "creatorCipherText": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
+        "userCipherText": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
         "createTime": "2020-06-22T17:03:08",
         "description": null
     }
@@ -538,20 +544,20 @@
 | 1    | pageSize   | Int  | 否     | 每页记录数 |
 | 2    | pageNumber | Int  | 否     | 当前页码   |
 
-| 序号  | 返回body    | 类型          | 可为空 | 备注                       |
-| ----- | ----------- | ------------- | ------ | -------------------------- |
-| 1     | code        | Int           | 否     | 返回码，0：成功 其它：失败 |
-| 2     | message     | String        | 否     | 描述                       |
-| 3     | totalCount  | Int           | 否     | 总记录数                   |
-| 4     | data        | List          | 是     | 信息列表                   |
-| 4.1   |             | Object        |        | 信息对象                   |
-| 4.1.1 | account     | String        | 否     | 帐号名称                   |
-| 4.1.2 | dataID      | String        | 否     | 数据标识                   |
-| 4.1.3 | dataStatus  | String        | 否     | 数据状态                   |
-| 4.1.4 | cipherText1 | String        | 否     | 经账号创建者公钥加密的内容 |
-| 4.1.5 | cipherText2 | String        | 否     | 经账号提供的密码加密的内容 |
-| 4.1.6 | createTime  | LocalDateTime | 否     | 数据托管时间               |
-| 4.1.7 | description | String        | 是     | 数据备注信息               |
+| 序号  | 返回body          | 类型          | 可为空 | 备注                       |
+| ----- | ----------------- | ------------- | ------ | -------------------------- |
+| 1     | code              | Int           | 否     | 返回码，0：成功 其它：失败 |
+| 2     | message           | String        | 否     | 描述                       |
+| 3     | totalCount        | Int           | 否     | 总记录数                   |
+| 4     | data              | List          | 是     | 信息列表                   |
+| 4.1   |                   | Object        |        | 信息对象                   |
+| 4.1.1 | account           | String        | 否     | 帐号名称                   |
+| 4.1.2 | dataEntityId      | String        | 否     | 数据标识                   |
+| 4.1.3 | dataStatus        | String        | 否     | 数据状态                   |
+| 4.1.4 | creatorCipherText | String        | 否     | 经账号创建者公钥加密的内容 |
+| 4.1.5 | userCipherText    | String        | 否     | 经账号提供的密码加密的内容 |
+| 4.1.6 | createTime        | LocalDateTime | 否     | 数据托管时间               |
+| 4.1.7 | description       | String        | 是     | 数据备注信息               |
 
 #### 2.3.3 入参示例
 
@@ -567,10 +573,10 @@
     "data": [
         {
             "account": "user1",
-            "dataID": "key1",
+            "dataEntityId": "key1",
             "dataStatus": 1,
-            "cipherText1": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
-            "cipherText2": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
+            "creatorCipherText": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
+            "userCipherText": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
             "createTime": "2020-06-22T17:03:08",
             "description": null
         }
@@ -599,19 +605,22 @@
 
 #### 2.4.2 参数信息详情
 
-| 序号 | 输入参数   | 类型          | 可为空 | 备注                       |
-| ---- | ---------- | ------------- | ------ | -------------------------- |
-| 1    | account    | String        | 否     | 帐号名称                   |
-| 2    | vaultId    | String        | 否     | 数据标识                   |
-|      | 输出参数   | 类型          |        | 备注                       |
-| 1    | code       | Int           | 否     | 返回码，0：成功 其它：失败 |
-| 2    | message    | String        | 否     | 描述                       |
-| 3    | data       | object        | 否     | 返回信息实体               |
-| 3.1  | account    | String        | 否     | 帐号名称                   |
-| 3.2  | cipherText | String        | 否     | 经账号创建者公钥加密       |
-| 3.3  | createTime | LocalDateTime | 否     | 核心数据托管时间           |
-| 3.4  | dataID     | String        | 否     | 数据标识                   |
-| 3.5  | privateKey | String        | 否     | 经账号提供的密码加密       |
+| 序号 | 输入参数          | 类型          | 可为空 | 备注                       |
+| ---- | ----------------- | ------------- | ------ | -------------------------- |
+| 1    | account           | String        | 否     | 帐号名称                   |
+| 2    | vaultId           | String        | 否     | 数据标识                   |
+|      | 输出参数          | 类型          |        | 备注                       |
+| 1    | code              | Int           | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message           | String        | 否     | 描述                       |
+| 3    | data              | object        | 否     | 返回信息实体               |
+| 3.1  | account           | String        | 否     | 帐号名称                   |
+| 3.2  | dataEntityId      | String        | 否     | 数据标识                   |
+| 3.3  | dataStatus        | String        | 否     | 数据状态                   |
+| 3.4  | creatorCipherText | String        | 否     | 经账号创建者公钥加密       |
+| 3.5  | userCipherText    | String        | 否     | 经账号提供的密码加密       |
+| 3.6  | createTime        | LocalDateTime | 否     | 核心数据托管时间           |
+| 3.7  | description       | String        | 是     | 数据备注信息               |
+
 
 #### 2.4.3 入参示例
 
@@ -626,10 +635,10 @@
     "message": "success",
     "data": {
         "account": "user1",
-        "dataID": "key1",
+        "dataEntityId": "key1",
         "dataStatus": 1,
-        "cipherText1": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
-        "cipherText2": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
+        "creatorCipherText": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
+        "userCipherText": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
         "createTime": "2020-06-22T17:03:08",
         "description": null
     }
@@ -646,12 +655,6 @@
 ```
 
 ## <span id="3">3 数据存储模块</span>  [top](#catalog_top)
-
-以下请求均带有header信息。
-
-| 序号 | 请求header         | 类型   | 可为空 | 备注     |
-| ---- | ------------------ | ------ | ------ | -------- |
-| 1    | AuthorizationToken | String | 否     | 会话标识 |
 
 ### <span id="3.1">3.1 新增数据</span>  [top](#catalog_top)
 
@@ -773,15 +776,15 @@
 #### 3.3.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址: `/data/v1/{dataId}`
+* 请求地址: `/data/v1/{dataEntityId}`
 * 请求方式：GET
 * 返回格式：JSON
 
 #### 3.3.2 参数信息详情
 
-| 序号 | 请求body | 类型   | 可为空 | 备注     |
-| ---- | -------- | ------ | ------ | -------- |
-| 1    | dataId   | String | 否     | 数据标识 |
+| 序号 | 请求body       | 类型   | 可为空 | 备注     |
+| ---- | -------------- | ------ | ------ | -------- |
+| 1    | dataEntityId   | String | 否     | 数据标识 |
 
 | 序号 | 返回body | 类型   | 可为空 | 备注                       |
 | ---- | -------- | ------ | ------ | -------------------------- |
@@ -888,15 +891,15 @@
 #### 3.5.1 传输协议规范
 
 * 网络传输协议：使用HTTPS协议
-* 请求地址：`/data/v1/{dataId}`
+* 请求地址：`/data/v1/{dataEntityId}`
 * 请求方式：DELETE
 * 返回格式：JSON
 
 #### 3.5.2 参数信息详情
 
-| 序号 | 请求body | 类型   | 可为空 | 备注     |
-| ---- | -------- | ------ | ------ | -------- |
-| 1    | dataId   | String | 否     | 数据标识 |
+| 序号 | 请求body       | 类型   | 可为空 | 备注     |
+| ---- | -------------- | ------ | ------ | -------- |
+| 1    | dataEntityId   | String | 否     | 数据标识 |
 
 | 序号 | 返回body | 类型   | 可为空 | 备注                       |
 | ---- | -------- | ------ | ------ | -------------------------- |

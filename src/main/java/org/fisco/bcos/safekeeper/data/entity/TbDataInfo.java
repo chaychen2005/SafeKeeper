@@ -25,22 +25,18 @@ import lombok.Data;
 public class TbDataInfo {
 
     private String account;
-    private String dataId;
-    private String dataSubId;
+    private String dataEntityId;
+    private String dataFieldId;
     private Integer dataStatus;
-    private String plainText;
+    private String dataFieldValue;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
 
-    public TbDataInfo() {
-        super();
-    }
-
-    public TbDataInfo(String account, String dataId, String dataSubId, String plainText) {
+    public TbDataInfo(String account, String dataEntityId, String dataFieldId, String dataFieldValue) {
         super();
         this.account = account;
-        this.dataId = dataId;
-        this.dataSubId = dataSubId;
-        this.plainText = plainText;
+        this.dataEntityId = dataEntityId;
+        this.dataFieldId = dataFieldId;
+        this.dataFieldValue = dataFieldValue;
     }
 }

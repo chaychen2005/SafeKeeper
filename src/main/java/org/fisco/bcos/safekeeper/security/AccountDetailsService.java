@@ -49,7 +49,7 @@ public class AccountDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(JacksonUtils.objToString(ConstantCode.DB_EXCEPTION));
         }
         if (null == accountRow) {
-            throw new UsernameNotFoundException(JacksonUtils.objToString(ConstantCode.INVALID_ACCOUNT_NAME));
+            throw new UsernameNotFoundException(JacksonUtils.objToString(ConstantCode.ACCOUNT_NOT_EXISTS));
         }
 
         // add role

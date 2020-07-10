@@ -25,8 +25,8 @@ import lombok.Data;
 public class DataQueryParam {
 
     private String account;
-    private String dataId;
-    private String dataSubId;
+    private String dataEntityId;
+    private String dataFieldId;
 
     public DataQueryParam() {
         super();
@@ -37,16 +37,16 @@ public class DataQueryParam {
         this.account = account;
     }
 
-    public DataQueryParam(String account, String dataId) {
+    public DataQueryParam(String account, String dataEntityId) {
         super();
         this.account = account;
-        this.dataId = dataId;
+        this.dataEntityId = dataEntityId;
     }
 
-    public DataQueryParam(String account, String dataId, String dataSubId) {
+    public DataQueryParam(String account, String dataEntityId, String dataFieldId) {
         super();
         this.account = account;
-        this.dataId = dataId;
-        this.dataSubId = dataSubId;
+        this.dataEntityId = dataEntityId;
+        this.dataFieldId = dataFieldId;
     }
 }

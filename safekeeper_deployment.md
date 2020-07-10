@@ -33,14 +33,14 @@ chmod +x ./gradlew && ./gradlew build
 #登录MySQL:
 mysql -u ${your_db_account} -p${your_db_password}  
 #新建数据库：
-CREATE DATABASE IF NOT EXISTS {your_db_name} DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS {your_db_name} DEFAULT CHARSET utf8 COLLATE utf8_bin;
 ```
 
 例如：
 
 ```bash
 mysql -u root -p123456
-CREATE DATABASE IF NOT EXISTS my_safekeeper DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS my_safekeeper DEFAULT CHARSET utf8 COLLATE utf8_bin;
 ```
 
 ### 4.2 修改脚本配置
@@ -139,15 +139,13 @@ constant:
 
 （3）添加服务证书
 
-注意：服务已内置证书，但基于安全考虑，建议添加自设置密码的证书。
-
 可使用JDK的证书管理工具keytool生成自签名证书。以下命令指定的证书名字叫server.keystore，别名叫safekeeper，密码自己设置。
 
 ```shell
 keytool -genkey -alias safekeeper -keyalg RSA -keystore ./server.keystore
 ```
 
-生成证书后，证书放置conf目录，并替换配置文件`conf/application.yml`的`[server.ssl]`内容。
+生成证书后，证书放置conf目录，并替换配置文件`conf/application.yml`的`[server.ssl]`内容，如上节示例。
 
 ### 5.2 服务启停及状态检查
 

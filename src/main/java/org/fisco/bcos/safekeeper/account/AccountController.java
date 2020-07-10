@@ -145,7 +145,7 @@ public class AccountController extends BaseController {
         }
         if (currentAccount == account || !currentAccount.equals(tbCurAccount.getCreator())) {
             log.info("lack of access to delete account");
-            throw new SafeKeeperException(ConstantCode.LACK_ACCESS_ACCOUNT);
+            throw new SafeKeeperException(ConstantCode.ACCOUNT_ACCESS_DENIAL);
         }
 
         accountService.deleteAccountRow(account);
