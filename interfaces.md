@@ -77,14 +77,14 @@
 * 成功：
 ```
 {
-    "code": 0,
-    "data": {
-        "accountStatus": 1,
-        "roleName": "admin",
-        "account": "admin",
-        "token": "c3348a56159739dde190a622830e892bea05e9d2206c43fc1bdcdd07fdc79eb4"
-    },
-    "message": "success"
+  "code": 0,
+  "message": "success",
+  "data": {
+    "accountStatus": 1,
+    "roleName": "admin",
+    "account": "admin",
+    "token": "c3348a56159739dde190a622830e892bea05e9d2206c43fc1bdcdd07fdc79eb4"
+  }
 }
 ```
 
@@ -161,8 +161,8 @@
         "roleName": "visitor",
         "accountStatus": 1,
         "description": null,
-        "createTime": "2020-05-19 19:15:01",
-        "modifyTime": "2020-05-19 19:15:01",
+        "createTime": "2020-07-12T22:08:34",
+        "modifyTime": "2020-07-12T22:08:34",
         "email": null,
         "publicKey": "8d83963610117ed59cf2011d5b7434dca7bb570d4a16e63c66f0803f4c4b1c03a1125500e5ca699dfbb6b48d450a82a5020fcb3b43165b508c10cb1479c6ee49",
         "creator": "admin"
@@ -210,7 +210,7 @@
 ```
 {
     "code": 0,
-    "message": "Success",
+    "message": "success",
     "data": null
 }
 ```
@@ -272,14 +272,14 @@
     "message": "success",
     "data": [
         {
-            "account": "user12",
+            "account": "user1",
             "accountPwd": null,
             "roleId": 100001,
             "roleName": "visitor",
             "accountStatus": 1,
             "description": null,
-            "createTime": "2020-05-19 19:22:33",
-            "modifyTime": "2020-05-19 19:22:33",
+            "createTime": "2020-07-12T22:08:34",
+            "modifyTime": "2020-07-12T22:08:34",
             "email": null,
             "publicKey": "8d83963610117ed59cf2011d5b7434dca7bb570d4a16e63c66f0803f4c4b1c03a1125500e5ca699dfbb6b48d450a82a5020fcb3b43165b508c10cb1479c6ee49",
             "creator": "admin"
@@ -291,8 +291,8 @@
             "roleName": "admin",
             "accountStatus": 1,
             "description": null,
-            "createTime": "2020-05-19 10:57:24",
-            "modifyTime": "2020-05-19 10:57:24",
+            "createTime": "2020-07-12T21:58:16",
+            "modifyTime": "2020-07-12T21:58:16",
             "email": null,
             "publicKey": "8d83963610117ed59cf2011d5b7434dca7bb570d4a16e63c66f0803f4c4b1c03a1125500e5ca699dfbb6b48d450a82a5020fcb3b43165b508c10cb1479c6ee49",
             "creator": null
@@ -449,7 +449,7 @@
 `https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults`
 ```
 {
-    "dataEntityId":"key1",
+    "dataEntityId":"data1",
     "creatorCipherText":"048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
     "userCipherText":"F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7"
 }
@@ -464,11 +464,12 @@
     "message": "success",
     "data": {
         "account": "user1",
-        "dataEntityId": "key1",
+        "dataEntityId": "data1",
         "dataStatus": 1,
         "creatorCipherText": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
         "userCipherText": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
-        "createTime": "2020-06-22T17:03:08",
+        "createTime": "2020-07-12T22:16:23",
+        "modifyTime": "2020-07-12T22:16:23",
         "description": null
     }
 }
@@ -506,7 +507,7 @@
 
 #### 2.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/key1`
+`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/data1`
 
 #### 2.2.4 出参示例
 
@@ -514,7 +515,7 @@
 ```
 {
     "code": 0,
-    "message": "Success",
+    "message": "success",
     "data": null
 }
 ```
@@ -573,11 +574,12 @@
     "data": [
         {
             "account": "user1",
-            "dataEntityId": "key1",
+            "dataEntityId": "data1",
             "dataStatus": 1,
             "creatorCipherText": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
             "userCipherText": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
-            "createTime": "2020-06-22T17:03:08",
+            "createTime": "2020-07-12T22:16:23",
+            "modifyTime": "2020-07-12T22:16:23",
             "description": null
         }
     ],
@@ -624,7 +626,7 @@
 
 #### 2.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/user1/key1`
+`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/user1/data1`
 
 #### 2.4.4 出参示例
 
@@ -635,11 +637,12 @@
     "message": "success",
     "data": {
         "account": "user1",
-        "dataEntityId": "key1",
+        "dataEntityId": "data1",
         "dataStatus": 1,
         "creatorCipherText": "048A292A94A6DDF84006C074B63627A7FAC1CD4B84EFC556124C1258CFEDC402285A66F9AB27310FA5E253D65038A664A649C35F259882E9678034928158AA90DD518C78A6B81F3A7075E74DC9320E32DB25596249EB1AC404955AC715E3812C0B61204939E8AE5CE430DBBDD014F96DA42B824C994266B2CD7A49AC92254EC2534D6AAB79F4E36367EB3EDEE6461A7A26A1A7038B",
         "userCipherText": "F2764D0F7118080EABC9236830BC714B2B249AE209C6D969E9E953D7283B42E9C9600DA7F5447158C83410CC5E91514C05B8234003465978C924D7F505221CFACB53B966BB008522E33737F44C63B4E7",
-        "createTime": "2020-06-22T17:03:08",
+        "createTime": "2020-07-12T22:16:23",
+        "modifyTime": "2020-07-12T22:16:23",
         "description": null
     }
 }
@@ -804,11 +807,11 @@
     "code": 0,
     "message": "success",
     "data": {
-        "key":"key1",
-        "value":"100",
-        "status":"1",
-        "orderID":"order_1",
-        "creditCredential":"credit_1"
+        "key": "key1",
+        "creditCredential": "credit_1",
+        "orderID": "order_1",
+        "status": "0",
+        "value": "100"
     }
 }
 ```
@@ -842,9 +845,9 @@
 | ---- | ---------- | ------ | ------ | -------------------------- |
 | 1    | code       | Int    | 否     | 返回码，0：成功 其它：失败 |
 | 2    | message    | String | 否     | 描述                       |
-| 3    | totalCount | Int    | 否     | 总记录数                   |
-| 4    | data       | List   | 是     | 信息列表                   |
-| 4.1  |            | Object |        | 信息对象                   |
+| 3    | data       | List   | 是     | 信息列表                   |
+| 3.1  |            | Object |        | 信息对象                   |
+| 4    | totalCount | Int    | 否     | 总记录数                   |
 
 #### 3.4.3 入参示例
 
@@ -859,18 +862,18 @@
     "message": "success",
     "data": [
         {
-            "key":"key1",
-            "value":"100",
-            "status":"1",
-            "orderID":"order_1",
-            "creditCredential":"credit_1"
+            "key": "key1",
+            "creditCredential": "credit_1",
+            "orderID": "order_1",
+            "status": "0",
+            "value": "100"
         },
         {
-            "key":"key2",
-            "value":"200",
-            "status":"0",
-            "orderID":"order_2",
-            "creditCredential":"credit_2"
+            "key": "key2",
+            "creditCredential": "credit_2",
+            "orderID": "order_2",
+            "status": "0",
+            "value": "200"
         }
     ],
     "totalCount": 2
@@ -957,18 +960,18 @@
     "message": "success",
     "data": [
         {
-            "key":"key2",
-            "value":"200",
-            "status":"2",
-            "orderID":"order_2",
-            "creditCredential":"credit_2"
+            "key": "key2",
+            "creditCredential": "credit_2",
+            "orderID": "order_2",
+            "status": "2",
+            "value": "200"
         },
         {
-            "key":"key1",
-            "value":"100",
-            "status":"0",
-            "orderID":"order_1",
-            "creditCredential":"credit_1"
+            "key": "key1",
+            "creditCredential": "credit_1",
+            "orderID": "order_1",
+            "status": "2",
+            "value": "100"
         }
     ]
 }
@@ -1020,7 +1023,7 @@
     "code": 0,
     "message": "success",
     "data": {
-        "balance":2000
+        "balance": 2000
     }
 }
 ```
@@ -1064,7 +1067,7 @@
     "code": 0,
     "message": "success",
     "data": {
-        "expenditure":1000
+        "expenditure": 1000
     }
 }
 ```
@@ -1164,9 +1167,9 @@
 | ---- | ---------- | ------ | ------ | -------------------------- |
 | 1    | code       | Int    | 否     | 返回码，0：成功 其它：失败 |
 | 2    | message    | String | 否     | 描述                       |
-| 3    | totalCount | Int    | 否     | 总记录数                   |
-| 4    | data       | List   | 是     | 信息列表                   |
-| 4.1  |            | Object |        | 信息对象                   |
+| 3    | data       | List   | 是     | 信息列表                   |
+| 3.1  |            | Object |        | 信息对象                   |
+| 4    | totalCount | Int    | 否     | 总记录数                   |
 
 #### 3.10.3 入参示例
 
@@ -1181,18 +1184,18 @@
     "message": "success",
     "data": [
         {
-            "key":"key1",
-            "value":"100",
-            "status":"1",
-            "orderID":"order_1",
-            "creditCredential":"credit_1"
+            "key": "key1",
+            "creditCredential": "credit_1",
+            "orderID": "order_1",
+            "status": "1",
+            "value": "100"
         },
         {
-            "key":"key2",
-            "value":"200",
-            "status":"1",
-            "orderID":"order_2",
-            "creditCredential":"credit_2"
+            "key": "key2",
+            "creditCredential": "credit_2",
+            "orderID": "order_2",
+            "status": "1",
+            "value": "200"
         }
     ],
     "totalCount": 2

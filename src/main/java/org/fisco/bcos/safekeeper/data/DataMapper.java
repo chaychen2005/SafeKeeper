@@ -46,7 +46,7 @@ public interface DataMapper {
 
     List<String> listOfDataId(@Param("account") String account, @Param("dataStatus") int dataStatus);
 
-    List<String> listOfDataIdByCreditStatus(@Param("account") String account, @Param("plainText") String plainText);
+    List<String> listOfDataIdByCreditStatus(@Param("account") String account, @Param("dataFieldValue") String dataFieldValue);
 
     List<CreditInfo> listOfCreditWithCreditStatus(@Param("account") String account, @Param("status") String status);
 
