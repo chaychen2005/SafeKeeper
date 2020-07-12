@@ -45,15 +45,15 @@ public class DataEscrowService {
         log.debug("start addDataEscrowRow. account:{}, data info:{}",
                 account, JacksonUtils.objToString(dataInfo));
 
-        String dataID = dataInfo.getDataID();
-        String cipherText1 = dataInfo.getCipherText1();
-        String cipherText2 = dataInfo.getCipherText2();
+        String dataEntityId = dataInfo.getDataEntityId();
+        String creatorCipherText = dataInfo.getCreatorCipherText();
+        String userCipherText = dataInfo.getUserCipherText();
 
         // check data no exist
-        dataNotExist(account, dataID);
+        dataNotExist(account, dataEntityId);
 
         // add data row
-        TbDataEscrowInfo rowInfo = new TbDataEscrowInfo(account, dataID, cipherText1, cipherText2, null);
+        TbDataEscrowInfo rowInfo = new TbDataEscrowInfo(account, dataEntityId, creatorCipherText, userCipherText, null);
         Integer affectRow = dataEscrowMapper.addDataRow(rowInfo);
 
         // check result
@@ -65,9 +65,9 @@ public class DataEscrowService {
     /**
      * query the data.
      */
-    public TbDataEscrowInfo queryDataEscrow(String account, String dataID) {
-        log.debug("start queryDataEscrow. account:{}, dataID:{} ", account, dataID);
-        TbDataEscrowInfo dataRow = dataEscrowMapper.queryData(account, dataID);
+    public TbDataEscrowInfo queryDataEscrow(String account, String dataEntityId) {
+        log.debug("start queryDataEscrow. account:{}, dataEntityId:{} ", account, dataEntityId);
+        TbDataEscrowInfo dataRow = dataEscrowMapper.queryData(account, dataEntityId);
         log.debug("end queryDataEscrow. accountRow:{} ", JacksonUtils.objToString(dataRow));
         return dataRow;
     }
@@ -96,14 +96,14 @@ public class DataEscrowService {
     /**
      * delete escrow data info.
      */
-    public void deleteDataRow(String account, String dataID) throws SafeKeeperException {
-        log.debug("start deleteDataRow. account:{}, dataID:{} ", account, dataID);
+    public void deleteDataRow(String account, String dataEntityId) throws SafeKeeperException {
+        log.debug("start deleteDataRow. account:{}, dataEntityId:{} ", account, dataEntityId);
 
         // check data
-        dataExist(account, dataID);
+        dataExist(account, dataEntityId);
 
         // delete account row
-        Integer affectRow = dataEscrowMapper.deleteDataRow(account, dataID);
+        Integer affectRow = dataEscrowMapper.deleteDataRow(account, dataEntityId);
 
         // check result
         checkDbAffectRow(affectRow);
@@ -114,9 +114,9 @@ public class DataEscrowService {
     /**
      * query count of data.
      */
-    public int countOfData(String account, String dataID) {
-        log.debug("start countOfData. account:{} dataID:{} ", account, dataID);
-        Integer accountCount = dataEscrowMapper.countOfData(account, dataID);
+    public int countOfData(String account, String dataEntityId) {
+        log.debug("start countOfData. account:{} dataEntityId:{} ", account, dataEntityId);
+        Integer accountCount = dataEscrowMapper.countOfData(account, dataEntityId);
         int count = accountCount == null ? 0 : accountCount.intValue();
         log.debug("end countOfData. count:{} ", count);
         return count;
@@ -125,14 +125,14 @@ public class DataEscrowService {
     /**
      * boolean the data is exist.
      */
-    public void dataExist(String account, String dataID) throws SafeKeeperException {
+    public void dataExist(String account, String dataEntityId) throws SafeKeeperException {
         if (StringUtils.isBlank(account)) {
-            throw new SafeKeeperException(ConstantCode.ACCOUNT_NAME_EMPTY);
+            throw new SafeKeeperException(ConstantCode.EMPTY_ACCOUNT_NAME);
         }
-        if (StringUtils.isBlank(dataID)) {
-            throw new SafeKeeperException(ConstantCode.DATA_ID_ESCROW_EMPTY);
+        if (StringUtils.isBlank(dataEntityId)) {
+            throw new SafeKeeperException(ConstantCode.EMPTY_DATA_ESCROW_ID);
         }
-        int count = countOfData(account, dataID);
+        int count = countOfData(account, dataEntityId);
         if (count == 0) {
             throw new SafeKeeperException(ConstantCode.DATA_ESCROW_NOT_EXISTS);
         }
@@ -141,14 +141,14 @@ public class DataEscrowService {
     /**
      * boolean the data is not exist.
      */
-    public void dataNotExist(String account, String dataID) throws SafeKeeperException {
+    public void dataNotExist(String account, String dataEntityId) throws SafeKeeperException {
         if (StringUtils.isBlank(account)) {
-            throw new SafeKeeperException(ConstantCode.ACCOUNT_NAME_EMPTY);
+            throw new SafeKeeperException(ConstantCode.EMPTY_ACCOUNT_NAME);
         }
-        if (StringUtils.isBlank(dataID)) {
-            throw new SafeKeeperException(ConstantCode.DATA_ID_ESCROW_EMPTY);
+        if (StringUtils.isBlank(dataEntityId)) {
+            throw new SafeKeeperException(ConstantCode.EMPTY_DATA_ESCROW_ID);
         }
-        int count = countOfData(account, dataID);
+        int count = countOfData(account, dataEntityId);
         if (count > 0) {
             throw new SafeKeeperException(ConstantCode.DATA_ESCROW_EXISTS);
         }

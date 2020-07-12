@@ -5,19 +5,19 @@
 <mapper namespace="org.fisco.bcos.safekeeper.token.TokenMapper">
     <resultMap id="accountMap" type="org.fisco.bcos.safekeeper.token.TbToken">
         <id column="token" javaType="java.lang.String" jdbcType="VARCHAR" property="token"/>
-        <id column="value" javaType="java.lang.String" jdbcType="VARCHAR" property="value"/>
+        <id column="account" javaType="java.lang.String" jdbcType="VARCHAR" property="account"/>
         <result column="expire_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="expireTime"/>
         <result column="create_time" javaType="java.time.LocalDateTime" jdbcType="TIMESTAMP" property="createTime"/>
     </resultMap>
 
     <insert id="add" parameterType="org.fisco.bcos.safekeeper.token.TbToken">
-         insert into tb_token (token,value,expire_time,create_time)values(#{token},#{value},#{expireTime},now())
+         insert into tb_token (token,account,expire_time,create_time)values(#{token},#{account},#{expireTime},now())
    </insert>
 
     <delete id="delete" parameterType="java.lang.String">
 		 delete from tb_token where expire_time &lt;= NOW()
-        <if test="value != null">
-            or value = #{value}
+        <if test="account != null">
+            or account = #{account}
         </if>
         <if test="token != null">
             or token = #{token}

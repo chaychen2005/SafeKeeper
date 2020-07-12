@@ -148,7 +148,7 @@ public class AccountService {
 
         if (StringUtils.equals(oldAccountPwd, newAccountPwd)) {
             log.warn("fail updatePassword. the new password cannot be same as old ");
-            throw new SafeKeeperException(ConstantCode.NOW_PWD_EQUALS_OLD);
+            throw new SafeKeeperException(ConstantCode.REUSED_PASSWORD);
         }
 
         // check old password
@@ -224,7 +224,7 @@ public class AccountService {
     public void accountExist(String account) throws SafeKeeperException {
         if (StringUtils.isBlank(account)) {
             log.warn("fail isAccountExit. account:{}", account);
-            throw new SafeKeeperException(ConstantCode.ACCOUNT_NAME_EMPTY);
+            throw new SafeKeeperException(ConstantCode.EMPTY_ACCOUNT_NAME);
         }
         int count = countOfAccount(account);
         if (count == 0) {
@@ -238,7 +238,7 @@ public class AccountService {
     public void accountNotExist(String account) throws SafeKeeperException {
         if (StringUtils.isBlank(account)) {
             log.warn("fail isAccountExit. account:{}", account);
-            throw new SafeKeeperException(ConstantCode.ACCOUNT_NAME_EMPTY);
+            throw new SafeKeeperException(ConstantCode.EMPTY_ACCOUNT_NAME);
         }
         int count = countOfAccount(account);
         if (count > 0) {

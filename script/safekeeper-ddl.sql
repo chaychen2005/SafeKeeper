@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS tb_role (
   create_time datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (role_id),
   UNIQUE KEY (role_name)
-) ENGINE=InnoDB AUTO_INCREMENT=100000 DEFAULT CHARSET=utf8 COMMENT='角色信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=100000 COMMENT='角色信息表';
 
 -- ----------------------------
 -- Table structure for tb_account_info
@@ -27,46 +27,46 @@ CREATE TABLE IF NOT EXISTS tb_account_info (
   creator varchar(50) binary COMMENT '创建该账号的账号',
   PRIMARY KEY (account),
   FOREIGN KEY(role_id) REFERENCES tb_role(role_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统账号信息表';
+) ENGINE=InnoDB COMMENT='系统账号信息表';
 
 -- ----------------------------
 -- Table structure for tb_token
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_token (
   token varchar(120) NOT NULL COMMENT '会话标识',
-  value varchar(50) NOT NULL COMMENT '用户编号',
+  account varchar(50) NOT NULL COMMENT '用户编号',
   expire_time datetime DEFAULT NULL COMMENT '失效时间',
   create_time datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (token)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='token信息表';
+) ENGINE=InnoDB COMMENT='token信息表';
 
 -- ----------------------------
 -- Table structure for tb_data_escrow_info
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_data_escrow_info (
   account varchar(32) NOT NULL COMMENT '系统账号，数据归属标识',
-  data_id varchar(128) NOT NULL COMMENT '数据标识',
+  data_entity_id varchar(128) NOT NULL COMMENT '数据标识',
   data_status int(1) NOT NULL DEFAULT '1' COMMENT '状态（1-正常 2-不可用） 默认1',
-  cipher_text1 text NOT NULL COMMENT '用户托管的数据密文（可为经账号创建者公钥加密的数据密文）',
-  cipher_text2 text NOT NULL COMMENT '用户托管的数据密文（可为经账号自身加密密码加密的数据密文）',
+  creator_cipher_text text NOT NULL COMMENT '用户托管的数据密文（可为经账号创建者公钥加密的数据密文）',
+  user_cipher_text text NOT NULL COMMENT '用户托管的数据密文（可为经账号自身加密密码加密的数据密文）',
   create_time datetime DEFAULT NULL COMMENT '托管数据的时间',
   modify_time datetime DEFAULT NULL COMMENT '数据修改时间',
   description text COMMENT '备注',
-  PRIMARY KEY (account,data_id)
-) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT='托管数据信息表';
+  PRIMARY KEY (account,data_entity_id)
+) ENGINE=InnoDB COMMENT='托管数据信息表';
 
 -- ----------------------------
 -- Table structure for tb_data_info
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS tb_data_info (
   account varchar(32) NOT NULL COMMENT '系统账号，数据归属标识',
-  data_id varchar(128) NOT NULL COMMENT '数据标识',
-  data_sub_id varchar(64) NOT NULL COMMENT '数据副标识',
+  data_entity_id varchar(128) NOT NULL COMMENT '数据实体标识',
+  data_field_id varchar(64) NOT NULL COMMENT '数据字段标识',
   data_status int(1) NOT NULL DEFAULT '1' COMMENT '状态（1-正常 2-不可用） 默认1',
-  plain_text text NOT NULL COMMENT '用户上传的数据',
+  data_field_value text NOT NULL COMMENT '数据字段值',
   create_time datetime DEFAULT NULL COMMENT '上传数据的时间',
   modify_time datetime DEFAULT NULL COMMENT '数据修改时间',
-  PRIMARY KEY (account,data_id,data_sub_id)
-) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT='数据信息表';
+  PRIMARY KEY (account,data_entity_id,data_field_id)
+) ENGINE=InnoDB COMMENT='数据信息表';
 
 

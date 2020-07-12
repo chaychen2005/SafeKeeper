@@ -18,23 +18,12 @@ package org.fisco.bcos.safekeeper.data.entity;
 import lombok.Data;
 
 /**
- * Entity class of token info.
+ * Entity class of credit info.
  */
 @Data
-public class TokenInfo {
+public class CreditInfo {
 
     private String key;
     private String text;
     private long value;
-
-
-    public TokenInfo() {
-        super();
-    }
-
-    public TokenInfo(String key, String text) {
-        super();
-        this.key = key;
-        this.text = text;
-    }
 }

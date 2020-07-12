@@ -39,7 +39,7 @@ public class RoleService {
         log.debug("start roleIdExist. roleId:{} ", roleId);
         if (roleId == null) {
             log.info("fail roleIdExist. roleId is null ");
-            throw new SafeKeeperException(ConstantCode.ROLE_ID_EMPTY);
+            throw new SafeKeeperException(ConstantCode.EMPTY_ROLE_ID);
         }
         TbRole roleInfo = roleMapper.queryRoleById(roleId);
         if (roleInfo == null) {

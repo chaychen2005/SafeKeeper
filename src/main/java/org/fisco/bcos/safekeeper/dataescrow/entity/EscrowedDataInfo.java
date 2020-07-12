@@ -22,9 +22,9 @@ import lombok.Data;
 @Data
 public class EscrowedDataInfo {
     @NotBlank
-    private String dataID;
+    private String dataEntityId;
     @NotBlank
-    private String cipherText1;
+    private String creatorCipherText;
     @NotBlank
-    private String cipherText2;
+    private String userCipherText;
 }

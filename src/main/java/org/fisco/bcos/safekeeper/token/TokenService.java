@@ -42,19 +42,21 @@ public class TokenService {
 
     static final long CENTENNIAL_YEAR = 100*365*86400;
 
+    // TODO：长时间连接，多用户登录，定时任务清理
+
     /**
      * create token.
      */
-    public String createToken(String value, int type) {
-        if (StringUtils.isBlank(value)) {
+    public String createToken(String account, int type) {
+        if (StringUtils.isBlank(account)) {
             log.error("fail createToken. param is null");
             return null;
         }
-        String token = SafeKeeperTools.shaEncode(UUID.randomUUID() + value);
+        String token = SafeKeeperTools.shaEncode(UUID.randomUUID() + account);
         //save token
         TbToken tbToken = new TbToken();
         tbToken.setToken(token);
-        tbToken.setValue(value);
+        tbToken.setAccount(account);
         if (type == TokenType.USER.getValue()) {
             if (!properties.getWedpr()) {
                 tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
@@ -71,7 +73,7 @@ public class TokenService {
     }
 
     /**
-     * get value from token.
+     * get account from token.
      */
     public String getValueFromToken(String token) {
         Assert.requireNonEmpty(token, "token is empty");
@@ -87,9 +89,9 @@ public class TokenService {
             log.warn("fail getValueFromToken. token has expire at:{}", tbToken.getExpireTime());
             //delete token
             this.deleteToken(token, null);
-            throw new SafeKeeperException(ConstantCode.TOKEN_EXPIRE);
+            throw new SafeKeeperException(ConstantCode.EXPIRED_TOKEN);
         }
-        return tbToken.getValue();
+        return tbToken.getAccount();
     }
 
     /**
@@ -107,7 +109,7 @@ public class TokenService {
     /**
      * delete token.
      */
-    public void deleteToken(String token, String value) {
-        tokenMapper.delete(token, value);
+    public void deleteToken(String token, String account) {
+        tokenMapper.delete(token, account);
     }
 }

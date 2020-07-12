@@ -19,7 +19,7 @@ import org.fisco.bcos.safekeeper.data.entity.DataListParam;
 import org.fisco.bcos.safekeeper.data.entity.DataQueryParam;
 import org.fisco.bcos.safekeeper.data.entity.TbDataInfo;
 import org.apache.ibatis.annotations.Param;
-import org.fisco.bcos.safekeeper.data.entity.TokenInfo;
+import org.fisco.bcos.safekeeper.data.entity.CreditInfo;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -39,20 +39,20 @@ public interface DataMapper {
 
     Integer existOfData(@Param("param") DataQueryParam queryParams);
 
-    Integer countOfData(@Param("account") String account, @Param("dataId") String dataId,
-                        @Param("dataSubId") String dataSubId, @Param("dataStatus") int dataStatus);
+    Integer countOfData(@Param("account") String account, @Param("dataEntityId") String dataEntityId,
+                        @Param("dataFieldId") String dataFieldId, @Param("dataStatus") int dataStatus);
 
     List<TbDataInfo> listOfData(@Param("param") DataListParam param);
 
     List<String> listOfDataId(@Param("account") String account, @Param("dataStatus") int dataStatus);
 
-    List<String> listOfDataIdByCoinStatus(@Param("account") String account, @Param("plainText") String plainText);
+    List<String> listOfDataIdByCreditStatus(@Param("account") String account, @Param("dataFieldValue") String dataFieldValue);
 
-    List<TokenInfo> listOfTokenWithTokenStatus(@Param("account") String account, @Param("status") String status);
+    List<CreditInfo> listOfCreditWithCreditStatus(@Param("account") String account, @Param("status") String status);
 
-    List<String> listOfValueWithTokenStatus(@Param("account") String account, @Param("status") String status);
+    List<String> listOfValueWithCreditStatus(@Param("account") String account, @Param("status") String status);
 
-    Integer updateDataStatus(@Param("account") String account, @Param("dataId") String dataId,
-                             @Param("dataSubId") String dataSubId, @Param("srcDataStatus") String srcDataStatus,
-                             @Param("desDataStatus") String desDataStatus);
+    Integer updateCreditStatus(@Param("account") String account, @Param("dataEntityId") String dataEntityId,
+                               @Param("dataFieldId") String dataFieldId, @Param("srcCreditStatus") String srcCreditStatus,
+                               @Param("desCreditStatus") String desCreditStatus);
 }

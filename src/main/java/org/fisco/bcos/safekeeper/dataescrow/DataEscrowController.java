@@ -72,7 +72,7 @@ public class DataEscrowController extends BaseController {
         dataService.addDataEscrowRow(currentAccount, dataInfo);
 
         // query row
-        TbDataEscrowInfo tbDataEscrowInfo = dataService.queryDataEscrow(currentAccount, dataInfo.getDataID());
+        TbDataEscrowInfo tbDataEscrowInfo = dataService.queryDataEscrow(currentAccount, dataInfo.getDataEntityId());
         baseResponse.setData(tbDataEscrowInfo);
 
         log.info("end addData useTime:{} result:{}", Duration.between(startTime, Instant.now()).toMillis(),
@@ -94,8 +94,8 @@ public class DataEscrowController extends BaseController {
         if (!account.equals(currentAccount)) {
             TbAccountInfo tbCurAccount = accountService.queryByAccount(account);
             if (tbCurAccount == null || !currentAccount.equals(tbCurAccount.getCreator())) {
-                log.info("lack of access to the data");
-                throw new SafeKeeperException(ConstantCode.LACK_ACCESS_DATA_ESCROW);
+                log.info("lack of access to the escrow data");
+                throw new SafeKeeperException(ConstantCode.DATA_ESCROW_ACCESS_DENIAL);
             }
         }
 
