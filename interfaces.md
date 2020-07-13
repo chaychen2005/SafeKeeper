@@ -693,7 +693,7 @@
         "value":"100",
         "status":"0",
         "orderID":"order_1",
-        "creditCredential":"credit_1"
+        "creditCredential":"credit_1",
         "lastModifyTime": "2020-07-13T19:56:55"
   	}
 }
@@ -812,7 +812,7 @@
         "creditCredential": "credit_1",
         "orderID": "order_1",
         "status": "0",
-        "value": "100"
+        "value": "100",
         "lastModifyTime": "2020-07-13T19:56:55"
     }
 }
@@ -868,7 +868,7 @@
             "creditCredential": "credit_1",
             "orderID": "order_1",
             "status": "0",
-            "value": "100"
+            "value": "100",
             "lastModifyTime": "2020-07-13T19:56:55"
         },
         {
@@ -876,7 +876,7 @@
             "creditCredential": "credit_2",
             "orderID": "order_2",
             "status": "0",
-            "value": "200"
+            "value": "200",
             "lastModifyTime": "2020-07-13T19:56:55"
         }
     ],
@@ -969,7 +969,7 @@
                 "creditCredential": "credit_2",
                 "orderID": "order_2",
                 "status": "2",
-                "value": "200"
+                "value": "200",
                 "lastModifyTime": "2020-07-13T19:56:55"
             },
             {
@@ -977,12 +977,12 @@
                 "creditCredential": "credit_1",
                 "orderID": "order_1",
                 "status": "2",
-                "value": "100"
+                "value": "100",
                 "lastModifyTime": "2020-07-13T19:56:55"
             }
         ],
         "creditValue": 300
-    ]
+    }
 }
 ```
 
@@ -1197,7 +1197,7 @@
             "creditCredential": "credit_1",
             "orderID": "order_1",
             "status": "1",
-            "value": "100"
+            "value": "100",
             "lastModifyTime": "2020-07-13T19:56:55"
         },
         {
@@ -1205,7 +1205,7 @@
             "creditCredential": "credit_2",
             "orderID": "order_2",
             "status": "1",
-            "value": "200"
+            "value": "200",
             "lastModifyTime": "2020-07-13T19:56:55"
         }
     ],
