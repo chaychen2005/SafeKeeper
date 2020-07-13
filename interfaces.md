@@ -694,6 +694,7 @@
         "status":"0",
         "orderID":"order_1",
         "creditCredential":"credit_1"
+        "lastModifyTime": "2020-07-13T19:56:55"
   	}
 }
 ```
@@ -812,6 +813,7 @@
         "orderID": "order_1",
         "status": "0",
         "value": "100"
+        "lastModifyTime": "2020-07-13T19:56:55"
     }
 }
 ```
@@ -867,6 +869,7 @@
             "orderID": "order_1",
             "status": "0",
             "value": "100"
+            "lastModifyTime": "2020-07-13T19:56:55"
         },
         {
             "key": "key2",
@@ -874,6 +877,7 @@
             "orderID": "order_2",
             "status": "0",
             "value": "200"
+            "lastModifyTime": "2020-07-13T19:56:55"
         }
     ],
     "totalCount": 2
@@ -958,21 +962,26 @@
 {
     "code": 0,
     "message": "success",
-    "data": [
-        {
-            "key": "key2",
-            "creditCredential": "credit_2",
-            "orderID": "order_2",
-            "status": "2",
-            "value": "200"
-        },
-        {
-            "key": "key1",
-            "creditCredential": "credit_1",
-            "orderID": "order_1",
-            "status": "2",
-            "value": "100"
-        }
+    "data": {
+        "creditList": [
+            {
+                "key": "key2",
+                "creditCredential": "credit_2",
+                "orderID": "order_2",
+                "status": "2",
+                "value": "200"
+                "lastModifyTime": "2020-07-13T19:56:55"
+            },
+            {
+                "key": "key1",
+                "creditCredential": "credit_1",
+                "orderID": "order_1",
+                "status": "2",
+                "value": "100"
+                "lastModifyTime": "2020-07-13T19:56:55"
+            }
+        ],
+        "creditValue": 300
     ]
 }
 ```
@@ -1189,6 +1198,7 @@
             "orderID": "order_1",
             "status": "1",
             "value": "100"
+            "lastModifyTime": "2020-07-13T19:56:55"
         },
         {
             "key": "key2",
@@ -1196,6 +1206,7 @@
             "orderID": "order_2",
             "status": "1",
             "value": "200"
+            "lastModifyTime": "2020-07-13T19:56:55"
         }
     ],
     "totalCount": 2
@@ -1220,29 +1231,29 @@
 | 200000 | database exception                     | business exception - database    | 数据库操作异常        |
 | 200100 | account info already exists            | business exception - account     | 该账号已注册          |
 | 200101 | account info not exists                | business exception - account     | 该账号未注册          |
-| 200102 | account name empty                     | business exception - account     | 账号名称为空          |
-| 200103 | invalid account name                   | business exception - account     | 该账号不存在          |
-| 200104 | invalid account format                 | business exception - account     | 账号名称格式错误      |
-| 200105 | invalid password format                | business exception - account     | 登录密码格式错误      |
-| 200106 | password error                         | business exception - account     | 登录密码错误          |
-| 200107 | the new password cannot be same as old | business exception - account     | 新旧密码不能一致      |
-| 200108 | role id cannot be empty                | business exception - account     | 角色标识不能为空      |
-| 200109 | invalid role id                        | business exception - account     | 无效的角色标识        |
-| 200110 | lack of access to the account          | business exception - account     | 无访问该账号权限      |
+| 200102 | account name cannot be empty           | business exception - account     | 账号名称为空          |
+| 200103 | password error                         | business exception - account     | 登录密码错误          |
+| 200104 | the new password cannot be same as old | business exception - account     | 新旧密码不能一致      |
+| 200105 | role id cannot be empty                | business exception - account     | 角色标识不能为空      |
+| 200106 | invalid role id                        | business exception - account     | 无效的角色标识        |
+| 200107 | invalid account format                 | business exception - account     | 账号名称格式错误      |
+| 200108 | invalid password format                | business exception - account     | 登录密码格式错误      |
+| 200119 | lack of access to the account          | business exception - account     | 无访问该账号权限      |
 | 200111 | invalid public key length              | business exception - account     | 无效的公钥长度        |
 | 200200 | data info already exists               | business exception - data escrow | 该数据已托管          |
 | 200201 | data info not exists                   | business exception - data escrow | 该数据未托管          |
-| 200202 | data id empty                          | business exception - data escrow | 数据标识不能为空      |
-| 200203 | lack of access to the data             | business exception - data escrow | 无访问该数据权限      |
+| 200202 | data id cannot be empty                | business exception - data escrow | 数据标识不能为空      |
+| 200203 | lack of access to the escrow data      | business exception - data escrow | 无访问该数据权限      |
 | 200300 | invalid token                          | business exception - token       | 该Token不存在         |
-| 200301 | token expire                           | business exception - token       | 该Token超时           |
-| 200400 | insert data struct fail                | business exception - data vault  | 插入数据失败          |
-| 200401 | lack of access to the data             | business exception - data vault  | 无访问该数据权限      |
-| 200402 | data id empty                          | business exception - data vault  | 数据主标识不能为空    |
-| 200403 | data sub id empty                      | business exception - data vault  | 数据辅标识不能为空    |
-| 200404 | data not exists                        | business exception - data vault  | 该数据已存在          |
-| 200405 | data already exists                    | business exception - data vault  | 该数据尚未存在        |
-| 200900 | not sufficient tokens                  | business exception - other       | 余额不足              |
-| 300000 | user not logged in                     | auth exception                   | 匿名用户无操作权限    |
-| 300001 | access denied                          | auth exception                   | 管理员/账号无操作权限 |
+| 200301 | expired token                          | business exception - token       | 该Token超时           |
+| 200400 | insert data struct fail                | business exception - data        | 插入数据失败          |
+| 200401 | lack of access to the data             | business exception - data        | 无访问该数据权限      |
+| 200402 | data entity id cannot be empty         | business exception - data        | 数据实体标识不能为空  |
+| 200403 | data field id cannot be empty          | business exception - data        | 数据字段标识不能为空  |
+| 200404 | data not exists                        | business exception - data        | 该数据已存在          |
+| 200405 | data already exists                    | business exception - data        | 该数据尚未存在        |
+| 200900 | not sufficient credit                  | business exception - credit      | 余额不足              |
+| 300000 | access denied                          | auth exception                   | 无操作权限            |
+| 300001 | the operation requires admin privileges| auth exception                   | 该操作需管理员权限    |
+| 300002 | the operation requires user privileges | auth exception                   | 该操作需业务员权限    |
 | 400000 | param exception                        | param exception                  | 参数校验错误          |

@@ -181,9 +181,8 @@ public class DataController extends BaseController {
         int count = dataEntityIdList.size();
         List<JsonNode> listOfData = new ArrayList<>();
         if (count > 0) {
-            Integer start = ((pageNumber-1)*pageSize<0)?0:(pageNumber-1)*pageSize;
-            Integer end = (pageNumber*pageSize>count)?count:pageNumber*pageSize;
-            for (Integer i = start; i < end; i++) {
+            Map<String, Integer> map = getQueryRange(pageNumber, pageSize, count);
+            for (Integer i = map.get("start"); i < map.get("end"); i++) {
                 DataQueryParam queryParams = new DataQueryParam(currentAccount, dataEntityIdList.get(i));
                 List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
                 listOfData.add(dataService.rawDataListToDataNode(dataInfoList));
@@ -217,9 +216,8 @@ public class DataController extends BaseController {
         int count = dataEntityIdList.size();
         List<JsonNode> listOfData = new ArrayList<>();
         if (count > 0) {
-            Integer start = ((pageNumber-1)*pageSize<0)?0:(pageNumber-1)*pageSize;
-            Integer end = (pageNumber*pageSize>count)?count:pageNumber*pageSize;
-            for (Integer i = start; i < end; i++) {
+            Map<String, Integer> map = getQueryRange(pageNumber, pageSize, count);
+            for (Integer i = map.get("start"); i < map.get("end"); i++) {
                 DataQueryParam queryParams = new DataQueryParam(currentAccount, dataEntityIdList.get(i));
                 List<TbDataInfo> dataInfoList = dataService.queryData(queryParams);
                 listOfData.add(dataService.rawDataListToDataNode(dataInfoList));
@@ -294,9 +292,9 @@ public class DataController extends BaseController {
             throw new SafeKeeperException(ConstantCode.PARAM_EXCEPTION);
         }
 
-        //  approve and return credit List
-        List<JsonNode> listOfData = dataService.preAuthorization(currentAccount, value);
-        baseResponse.setData(listOfData);
+        //  approve and return credit list/value
+        JsonNode result = dataService.preAuthorization(currentAccount, value);
+        baseResponse.setData(result);
 
         log.info("end wedpr/vcl/v1/credentials/approve. useTime:{} result:{}",
                 Duration.between(startTime, Instant.now()).toMillis(), JacksonUtils.objToString(baseResponse));
@@ -346,6 +344,21 @@ public class DataController extends BaseController {
     private String getCurrentAccount(HttpServletRequest request) {
         String token = SafeKeeperTools.getToken(request);
         log.debug("getCurrentAccount account:{}", token);
-        return tokenService.getValueFromToken(token);
+        return tokenService.getAccountFromToken(token);
+    }
+
+    private Map<String, Integer> getQueryRange(Integer pageNumber, Integer pageSize, Integer totalCount) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        Integer start = (pageNumber - 1) * pageSize;
+        if (start < 0) {
+            start = 0;
+        }
+        Integer end = pageNumber * pageSize;
+        if (end > totalCount) {
+            end = totalCount;
+        }
+        map.put("start", start);
+        map.put("end", end);
+        return map;
     }
 }

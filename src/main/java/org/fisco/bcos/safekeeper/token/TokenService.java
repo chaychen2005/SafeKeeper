@@ -40,10 +40,6 @@ public class TokenService {
     @Autowired
     private TokenMapper tokenMapper;
 
-    static final long CENTENNIAL_YEAR = 100*365*86400;
-
-    // TODO：长时间连接，多用户登录，定时任务清理
-
     /**
      * create token.
      */
@@ -58,12 +54,7 @@ public class TokenService {
         tbToken.setToken(token);
         tbToken.setAccount(account);
         if (type == TokenType.USER.getValue()) {
-            if (!properties.getWedpr()) {
-                tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
-            }
-            else {
-                tbToken.setExpireTime(LocalDateTime.now().plusSeconds(CENTENNIAL_YEAR));
-            }
+            tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
         } else {
             log.error("fail createToken. type:{} not support", type);
             return null;
@@ -75,18 +66,18 @@ public class TokenService {
     /**
      * get account from token.
      */
-    public String getValueFromToken(String token) {
+    public String getAccountFromToken(String token) {
         Assert.requireNonEmpty(token, "token is empty");
 
         //query by token
-        TbToken tbToken = tokenMapper.query(token);
+        TbToken tbToken = tokenMapper.queryToken(token);
         if (Objects.isNull(tbToken)) {
-            log.warn("fail getValueFromToken. tbToken is null");
+            log.warn("fail getAccountFromToken. tbToken is null");
             throw new SafeKeeperException(ConstantCode.INVALID_TOKEN);
         }
         LocalDateTime now = LocalDateTime.now();
-        if (!properties.getWedpr() && now.isAfter(tbToken.getExpireTime())) {
-            log.warn("fail getValueFromToken. token has expire at:{}", tbToken.getExpireTime());
+        if (now.isAfter(tbToken.getExpireTime())) {
+            log.warn("fail getAccountFromToken. token has expire at:{}", tbToken.getExpireTime());
             //delete token
             this.deleteToken(token, null);
             throw new SafeKeeperException(ConstantCode.EXPIRED_TOKEN);
@@ -99,11 +90,7 @@ public class TokenService {
      */
     public void updateExpireTime(String token) {
         Assert.requireNonEmpty(token, "token is empty");
-        if (!properties.getWedpr()) {
-            tokenMapper.update(token, LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
-        } else {
-            tokenMapper.update(token, LocalDateTime.now().plusSeconds(CENTENNIAL_YEAR));
-        }
+        tokenMapper.update(token, LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
     }
 
     /**
@@ -111,5 +98,29 @@ public class TokenService {
      */
     public void deleteToken(String token, String account) {
         tokenMapper.delete(token, account);
+    }
+
+    /**
+     * get token from account.
+     */
+    public String getTokenFromAccount(String account) {
+        Assert.requireNonEmpty(account, "account is empty");
+
+        //query by account
+        TbToken tbToken = tokenMapper.queryAccount(account);
+        if (Objects.isNull(tbToken)) {
+            log.warn("fail getTokenFromAccount. no related account");
+            return null;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(tbToken.getExpireTime())) {
+            log.warn("fail getTokenFromAccount. token has expire at:{}", tbToken.getExpireTime());
+            //delete token
+            this.deleteToken(null, tbToken.getAccount());
+            return null;
+        }
+
+        updateExpireTime(tbToken.getToken());
+        return tbToken.getToken();
     }
 }

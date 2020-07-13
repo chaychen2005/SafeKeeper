@@ -184,6 +184,6 @@ public class AccountController extends BaseController {
     private String getCurrentAccount(HttpServletRequest request) {
         String token = SafeKeeperTools.getToken(request);
 		log.debug("getCurrentAccount account:{}", token);
-        return tokenService.getValueFromToken(token);
+        return tokenService.getAccountFromToken(token);
     }
 }

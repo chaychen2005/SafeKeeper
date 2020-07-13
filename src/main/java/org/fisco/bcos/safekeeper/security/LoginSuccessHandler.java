@@ -53,11 +53,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.debug("login success");
 
         String accountName = authentication.getName();
+        String token;
         //delete old token and save new
         if (!properties.getWedpr()) {
             tokenService.deleteToken(null, accountName);
+            token = tokenService.createToken(accountName, 1);
+        } else {
+            token = tokenService.getTokenFromAccount(accountName);
+            if (token == null) {
+                token = tokenService.createToken(accountName, 1);
+            }
         }
-        String token = tokenService.createToken(accountName, 1);
 
         // response account info
         TbAccountInfo accountInfo = accountService.queryByAccount(accountName);
