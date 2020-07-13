@@ -46,10 +46,9 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         String token = authentication.getName();
         String account = null;
         try {
-            account = tokenService.getValueFromToken(token);
+            account = tokenService.getAccountFromToken(token);
             tokenService.updateExpireTime(token);
         } catch (SafeKeeperException e) {
-            throw e;
         } catch (Exception e) {
             throw new BadCredentialsException("db");
         }

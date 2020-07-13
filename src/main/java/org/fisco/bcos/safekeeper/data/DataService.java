@@ -18,6 +18,7 @@ package org.fisco.bcos.safekeeper.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.tuple.Pair;
 import org.fisco.bcos.safekeeper.base.code.ConstantCode;
 import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
 import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
@@ -27,6 +28,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -74,6 +78,12 @@ public class DataService {
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
+
+            // check data no exist
+            DataQueryParam dataQueryParam = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataEntityId(),
+                    dataInfo.getDataFieldId());
+            dataNotExist(dataQueryParam);
+
             // add data
             affectRow += dataMapper.addDataRow(dataInfo);
         }
@@ -237,10 +247,11 @@ public class DataService {
     }
 
     @Transactional
-    public List<JsonNode> preAuthorization(String account, long target) {
+    public JsonNode preAuthorization(String account, long target) {
         boolean find = false;
         List<CreditInfo> credits = listOfCreditWithCreditStatus(account, CREDIT_STATUS_AVAILABLE);
         List<String> selected = new ArrayList<>();
+        long retValue = 0;
 
         for (int i = 0; i < credits.size(); i++) {
             CreditInfo credit = credits.get(i);
@@ -252,6 +263,7 @@ public class DataService {
                 Integer count = updateCreditStatus(dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
                 if (count > 0) {
                     selected.add(dataEntityId);
+                    retValue += credit.getValue();
                     find = true;
                     break;
                 }
@@ -293,6 +305,7 @@ public class DataService {
                 if (count > 0) {
                     remain -= credit.getValue();
                     selected.add(dataEntityId);
+                    retValue += credit.getValue();
                     if (remain <= 0) {
                         break;
                     }
@@ -320,8 +333,15 @@ public class DataService {
             listOfData.add(dateNode);
         }
 
-        // TODO: return total of credits
-        return listOfData;
+        PreAuthorizationResult result = new PreAuthorizationResult();
+        result.setCreditList(listOfData);
+        result.setCreditValue(retValue);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = JacksonUtils.objToString(result);
+        JsonNode jsonNode = JacksonUtils.stringToJsonNode(jsonString);
+
+        return jsonNode;
     }
 
     public List<CreditInfo> listOfCreditWithCreditStatus(String account, String status) {
@@ -384,13 +404,20 @@ public class DataService {
     public JsonNode rawDataListToDataNode(List<TbDataInfo> dataInfoList) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
+        LocalDateTime time = null;
         if (dataInfoList.size() > 0) {
             ((ObjectNode) dataNode).put("key", dataInfoList.get(0).getDataEntityId());
+            time = dataInfoList.get(0).getModifyTime();
         }
         for (int i = 0; i < dataInfoList.size(); i++) {
             TbDataInfo dataInfo = dataInfoList.get(i);
             ((ObjectNode) dataNode).put(dataInfo.getDataFieldId(), dataInfo.getDataFieldValue());
+            LocalDateTime tmp = dataInfo.getModifyTime();
+            if (tmp.isAfter(time)) {
+                time = tmp;
+            }
         }
+        ((ObjectNode) dataNode).put("lastModifyTime", time.toString());
         return dataNode;
     }
 

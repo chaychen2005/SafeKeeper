@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS tb_token (
   account varchar(50) NOT NULL COMMENT '用户编号',
   expire_time datetime DEFAULT NULL COMMENT '失效时间',
   create_time datetime DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (token)
+  PRIMARY KEY (token,account)
 ) ENGINE=InnoDB COMMENT='token信息表';
 
 -- ----------------------------

@@ -68,7 +68,7 @@ quit(q)                                  Quit console.
 ---------------------------------------------------------------------------------------------
 ```
 
-管理员新建访客后，用户也可以访客身份启动控制台，并查询访客可使用的命令：
+管理员新建业务员后，用户也可以业务员身份启动控制台，并查询业务员可使用的命令：
 
 ```text
 [app@VM_0_1_centos dist]$ ./start.sh -safekeeper user3 12345678
@@ -106,10 +106,10 @@ Add an admin account "testAdmin" successfully.
 
 ### **addVisitorAccount**
 
-管理员运行addVisitorAccount，新增一个访客子账号。参数：
+管理员运行addVisitorAccount，新增一个业务员子账号。参数：
 
-- 账号名称：新增的访客的账号名称，5-20位字母数字下划线组成，且以字符开头
-- 登录密码：新增的访客的登录密码，6-20位字母数字下划线组成
+- 账号名称：新增的业务员的账号名称，5-20位字母数字下划线组成，且以字符开头
+- 登录密码：新增的业务员的登录密码，6-20位字母数字下划线组成
 
 ```text
 [admin:admin]> addVisitorAccount user1 123456
@@ -156,7 +156,7 @@ Update password successfully.
 
 ### **restoreData**
 
-管理员运行restoreData，恢复其生成的访客托管的核心数据。参数：
+管理员运行restoreData，恢复其生成的业务员托管的核心数据。参数：
 
 - 账号名称：需恢复的数据所有者的账号名称
 - 数据标识：需恢复的数据标识
@@ -169,11 +169,11 @@ The escrow data "ca_crt" of account "user1" has been recorded in data/ca_crt.txt
 
 ### **uploadData**
 
-访客运行uploadData，上传需托管的核心数据。参数：
+业务员运行uploadData，上传需托管的核心数据。参数：
 
 - 数据文件：存储核心数据信息的文件，存储路径为dist/data/目录
-- 加密密码：由访客提供用于对托管的核心数据进行对称加密的密码
-- 数据标识：用于唯一标识该访客下的核心数据
+- 加密密码：由业务员提供用于对托管的核心数据进行对称加密的密码
+- 数据标识：用于唯一标识该业务员下的核心数据
   
 ```text
 [user1:visitor]> uploadData ca.crt 12345678 ca_crt
@@ -193,7 +193,7 @@ encrypt the escrow data by public key of creator fail.
 
 ### **listData**
 
-访客运行listData，显示其托管的数据列表。
+业务员运行listData，显示其托管的数据列表。
   
 ```text
 [user1:visitor]> listData
@@ -207,10 +207,10 @@ The count of escrow data uploaded by "user1" is 2.
 
 ### **exportData**
 
-访客运行exportData，找回其托管的核心数据。参数：
+业务员运行exportData，找回其托管的核心数据。参数：
 
-- 数据标识：用于唯一标识该访客下的核心数据
-- 加密密码：由访客提供用于对托管的核心数据进行对称加密的密码
+- 数据标识：用于唯一标识该业务员下的核心数据
+- 加密密码：由业务员提供用于对托管的核心数据进行对称加密的密码
   
 ```text
 [user1:visitor]> exportData ca_crt 12345678
@@ -219,9 +219,9 @@ The escrow data "ca_crt" has been recorded in data/ca_crt.txt.
 
 ### **deleteData**
 
-访客运行deleteData，删除其托管的核心数据。参数：
+业务员运行deleteData，删除其托管的核心数据。参数：
 
-- 数据标识：用于唯一标识该访客下的核心数据
+- 数据标识：用于唯一标识该业务员下的核心数据
   
 ```text
 [user1:visitor]> deleteData ca_crt
