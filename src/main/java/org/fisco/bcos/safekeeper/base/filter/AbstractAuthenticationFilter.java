@@ -1,25 +1,26 @@
 /**
  * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.base.filter;
+
+import static org.fisco.bcos.safekeeper.base.tools.SafeKeeperTools.TOKEN_HEADER_NAME;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.fisco.bcos.safekeeper.base.tools.SafeKeeperTools;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,21 +29,20 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.fisco.bcos.safekeeper.base.tools.SafeKeeperTools;
-
-import static org.fisco.bcos.safekeeper.base.tools.SafeKeeperTools.TOKEN_HEADER_NAME;
 
 public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter {
-    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource =
+            new WebAuthenticationDetailsSource();
     private AuthenticationManager authenticationManager;
-
 
     public AbstractAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         final String header = request.getHeader(TOKEN_HEADER_NAME);
 
         if (header == null || !header.startsWith(getHeaderPrefix())) {
@@ -59,7 +59,7 @@ public abstract class AbstractAuthenticationFilter extends OncePerRequestFilter 
         } catch (AuthenticationException failed) {
             String errorMessage = failed.getMessage();
             SecurityContextHolder.clearContext();
-            //response exception
+            // response exception
             SafeKeeperTools.responseString(response, errorMessage);
             return;
         }

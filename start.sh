@@ -44,6 +44,7 @@ JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${LOG_DIR}/heap_er
 
 start(){
     echo "try to start server $APP_MAIN"
+    echo "try to start server $APP_MAIN" >> record.log
     checkProcess
     if [ $processStatus == 1 ]; then
         echo "    server $APP_MAIN is running, pid is $processPid."

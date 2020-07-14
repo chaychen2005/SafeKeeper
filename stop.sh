@@ -25,9 +25,10 @@ checkProcess(){
 
 stop(){
 	echo "try to stop server $APP_MAIN"
+	echo "try to stop server $APP_MAIN" >> record.log
 	checkProcess
 	if [ $processPid -ne 0 ]; then
-	    kill -9 $processPid
+	    kill -15 $processPid
 	    if [ $? -eq 0 ]; then
 	        echo "    server $APP_MAIN stop successfully."
 	    else

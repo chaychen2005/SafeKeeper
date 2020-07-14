@@ -1,20 +1,21 @@
 /**
- * Copyright 2014-2020  the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.account;
 
+import java.util.List;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.fisco.bcos.safekeeper.account.entity.AccountInfo;
 import org.fisco.bcos.safekeeper.account.entity.AccountListParam;
 import org.fisco.bcos.safekeeper.account.entity.LoginInfo;
@@ -25,32 +26,24 @@ import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
 import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.fisco.bcos.safekeeper.base.tools.SafeKeeperTools;
 import org.fisco.bcos.safekeeper.role.RoleService;
-import java.util.List;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * services for account data.
- */
+/** services for account data. */
 @Log4j2
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountMapper accountMapper;
-    @Autowired
-    private RoleService roleService;
+    @Autowired private AccountMapper accountMapper;
+    @Autowired private RoleService roleService;
+
     @Qualifier(value = "bCryptPasswordEncoder")
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /**
-     * login.
-     */
+    /** login. */
     public TbAccountInfo login(LoginInfo loginInfo) throws SafeKeeperException {
         log.info("start login. loginInfo:{}", JacksonUtils.objToString(loginInfo));
         String accountStr = loginInfo.getAccount();
@@ -83,11 +76,12 @@ public class AccountService {
         return accountRow;
     }
 
-    /**
-     * add account row.
-     */
+    /** add account row. */
     public void addAccountRow(AccountInfo accountInfo, String creator) throws SafeKeeperException {
-        log.debug("start addAccountRow.  AccountInfo:{}, creator:{} ", JacksonUtils.objToString(accountInfo), creator);
+        log.debug(
+                "start addAccountRow.  AccountInfo:{}, creator:{} ",
+                JacksonUtils.objToString(accountInfo),
+                creator);
 
         String accountStr = accountInfo.getAccount();
         String passwordStr = accountInfo.getAccountPwd();
@@ -116,7 +110,8 @@ public class AccountService {
         // encode password
         String encryptStr = passwordEncoder.encode(passwordStr);
         // add account row
-        TbAccountInfo rowInfo = new TbAccountInfo(accountStr, encryptStr, roleId, null, null, publicKey, creator);
+        TbAccountInfo rowInfo =
+                new TbAccountInfo(accountStr, encryptStr, roleId, null, null, publicKey, creator);
         Integer affectRow = accountMapper.addAccountRow(rowInfo);
 
         // check result
@@ -125,19 +120,21 @@ public class AccountService {
         log.debug("end addAccountRow. affectRow:{}", affectRow);
     }
 
-    /**
-     * update password.
-     */
+    /** update password. */
     public void updatePassword(String targetAccount, String oldAccountPwd, String newAccountPwd)
-        throws SafeKeeperException {
-        log.debug("start updatePassword. targetAccount:{} oldAccountPwd:{} newAccountPwd:{}",
-            targetAccount, oldAccountPwd, newAccountPwd);
+            throws SafeKeeperException {
+        log.debug(
+                "start updatePassword. targetAccount:{} oldAccountPwd:{} newAccountPwd:{}",
+                targetAccount,
+                oldAccountPwd,
+                newAccountPwd);
 
         // query target account info
         TbAccountInfo targetRow = accountMapper.queryByAccount(targetAccount);
         if (targetRow == null) {
-            log.warn("fail updatePassword. not found target account row. targetAccount:{}",
-                targetAccount);
+            log.warn(
+                    "fail updatePassword. not found target account row. targetAccount:{}",
+                    targetAccount);
             throw new SafeKeeperException(ConstantCode.ACCOUNT_NOT_EXISTS);
         }
 
@@ -165,12 +162,9 @@ public class AccountService {
         checkDbAffectRow(affectRow);
 
         log.debug("end updatePassword. affectRow:{}", affectRow);
-
     }
 
-    /**
-     * query account info by acountName.
-     */
+    /** query account info by acountName. */
     public TbAccountInfo queryByAccount(String accountStr) {
         log.debug("start queryByAccount. accountStr:{} ", accountStr);
         TbAccountInfo accountRow = accountMapper.queryByAccount(accountStr);
@@ -178,9 +172,7 @@ public class AccountService {
         return accountRow;
     }
 
-    /**
-     * query count of account.
-     */
+    /** query count of account. */
     public int countOfAccount(String account) {
         log.debug("start countOfAccount. account:{} ", account);
         Integer accountCount = accountMapper.countOfAccount(account);
@@ -189,9 +181,7 @@ public class AccountService {
         return count;
     }
 
-    /**
-     * query account list.
-     */
+    /** query account list. */
     public List<TbAccountInfo> listOfAccount(AccountListParam param) {
         log.debug("start listOfAccount. param:{} ", JacksonUtils.objToString(param));
         List<TbAccountInfo> list = accountMapper.listOfAccount(param);
@@ -199,9 +189,7 @@ public class AccountService {
         return list;
     }
 
-    /**
-     * delete account info.
-     */
+    /** delete account info. */
     public void deleteAccountRow(String account) throws SafeKeeperException {
         log.debug("start deleteAccountRow. account:{} ", account);
 
@@ -215,12 +203,9 @@ public class AccountService {
         checkDbAffectRow(affectRow);
 
         log.debug("end deleteAccountRow. affectRow:{} ", affectRow);
-
     }
 
-    /**
-     * boolean account is exist.
-     */
+    /** boolean account is exist. */
     public void accountExist(String account) throws SafeKeeperException {
         if (StringUtils.isBlank(account)) {
             log.warn("fail isAccountExit. account:{}", account);
@@ -232,9 +217,7 @@ public class AccountService {
         }
     }
 
-    /**
-     * boolean account is not exit.
-     */
+    /** boolean account is not exit. */
     public void accountNotExist(String account) throws SafeKeeperException {
         if (StringUtils.isBlank(account)) {
             log.warn("fail isAccountExit. account:{}", account);
@@ -246,9 +229,7 @@ public class AccountService {
         }
     }
 
-    /**
-     * check db affect row.
-     */
+    /** check db affect row. */
     private void checkDbAffectRow(Integer affectRow) throws SafeKeeperException {
         if (affectRow == 0) {
             log.warn("affect 0 rows of tb_account");

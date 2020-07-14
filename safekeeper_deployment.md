@@ -98,7 +98,7 @@ server:
     key-store: classpath:server.keystore
     key-alias: safekeeper
     enabled: true
-    key-store-password: Abcd1234
+    key-store-password: Abcd1234                # defaultPassword -> Abcd1234
     key-store-type: JKS
   servlet:
     context-path: /SafeKeeper

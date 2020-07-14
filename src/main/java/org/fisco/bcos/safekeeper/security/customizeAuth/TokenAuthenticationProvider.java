@@ -1,16 +1,14 @@
 /**
  * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.security.customizeAuth;
@@ -19,6 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import lombok.extern.log4j.Log4j2;
+import org.fisco.bcos.safekeeper.account.AccountService;
+import org.fisco.bcos.safekeeper.account.entity.TbAccountInfo;
+import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
+import org.fisco.bcos.safekeeper.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -27,22 +30,16 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.fisco.bcos.safekeeper.account.AccountService;
-import org.fisco.bcos.safekeeper.account.entity.TbAccountInfo;
-import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
-import org.fisco.bcos.safekeeper.token.TokenService;
-import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class TokenAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    private TokenService tokenService;
-    @Autowired
-    private AccountService accountService;
+    @Autowired private TokenService tokenService;
+    @Autowired private AccountService accountService;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException {
         String token = authentication.getName();
         String account = null;
         try {
@@ -77,7 +74,8 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
     private AbstractAuthenticationToken buildAuthentication(String account) {
         TbAccountInfo tbAccountInfo = accountService.queryByAccount(account);
         log.debug(tbAccountInfo + "****" + tbAccountInfo.getAccount());
-        return new TokenAuthenticationToken(tbAccountInfo.getAccount(), buildAuthorities(tbAccountInfo));
+        return new TokenAuthenticationToken(
+                tbAccountInfo.getAccount(), buildAuthorities(tbAccountInfo));
     }
 
     private List<String> getUserAuthorities(TbAccountInfo user) {

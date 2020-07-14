@@ -1,23 +1,23 @@
 /**
- * Copyright 2014-2020  the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.base.exception;
 
+import java.util.Optional;
+import lombok.extern.log4j.Log4j2;
 import org.fisco.bcos.safekeeper.base.code.ConstantCode;
 import org.fisco.bcos.safekeeper.base.code.RetCode;
 import org.fisco.bcos.safekeeper.base.entity.BaseResponse;
-import java.util.Optional;
-import lombok.extern.log4j.Log4j2;
 import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,32 +26,28 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * catch an handler exception.
- */
+/** catch an handler exception. */
 @ControllerAdvice
 @Log4j2
 public class ExceptionsHandler {
 
-    /**
-     * catch：SafeKeeperException.
-     */
+    /** catch：SafeKeeperException. */
     @ResponseBody
     @ExceptionHandler(value = SafeKeeperException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public BaseResponse myExceptionHandler(SafeKeeperException nodeMgrException) {
         log.warn("catch business exception", nodeMgrException);
-        RetCode retCode = Optional.ofNullable(nodeMgrException).map(SafeKeeperException::getRetCode)
-            .orElse(ConstantCode.SYSTEM_EXCEPTION);
+        RetCode retCode =
+                Optional.ofNullable(nodeMgrException)
+                        .map(SafeKeeperException::getRetCode)
+                        .orElse(ConstantCode.SYSTEM_EXCEPTION);
 
         BaseResponse bre = new BaseResponse(retCode);
         log.warn("business exception return:{}", JacksonUtils.objToString(bre));
         return bre;
     }
 
-    /**
-     * catch：AccessDeniedException.
-     */
+    /** catch：AccessDeniedException. */
     @ResponseBody
     @ExceptionHandler(value = AccessDeniedException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
@@ -63,25 +59,23 @@ public class ExceptionsHandler {
         return bre;
     }
 
-    /**
-     * catch:paramException
-     */
+    /** catch:paramException */
     @ResponseBody
     @ExceptionHandler(value = ParamException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public BaseResponse paramExceptionHandler(ParamException paramException) {
         log.warn("catch param exception", paramException);
-        RetCode retCode = Optional.ofNullable(paramException).map(ParamException::getRetCode)
-            .orElse(ConstantCode.SYSTEM_EXCEPTION);
+        RetCode retCode =
+                Optional.ofNullable(paramException)
+                        .map(ParamException::getRetCode)
+                        .orElse(ConstantCode.SYSTEM_EXCEPTION);
 
         BaseResponse bre = new BaseResponse(retCode);
         log.warn("param exception return:{}", JacksonUtils.objToString(bre));
         return bre;
     }
 
-    /**
-     * catch：RuntimeException.
-     */
+    /** catch：RuntimeException. */
     @ResponseBody
     @ExceptionHandler(value = RuntimeException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)

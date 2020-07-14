@@ -1,22 +1,18 @@
 /**
- * Copyright 2014-2020  the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.base.tools;
 
-import org.fisco.bcos.safekeeper.base.code.ConstantCode;
-import org.fisco.bcos.safekeeper.base.code.RetCode;
-import org.fisco.bcos.safekeeper.base.entity.BaseResponse;
-import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -28,19 +24,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.fisco.bcos.safekeeper.base.code.ConstantCode;
+import org.fisco.bcos.safekeeper.base.code.RetCode;
+import org.fisco.bcos.safekeeper.base.entity.BaseResponse;
+import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
 
-/**
- * common method.
- */
+/** common method. */
 @Log4j2
 public class SafeKeeperTools {
 
     public static final String TOKEN_HEADER_NAME = "AuthorizationToken";
     private static final String TOKEN_START = "Token";
 
-    /**
-     * convert timestamp to localDateTime.
-     */
+    /** convert timestamp to localDateTime. */
     public static LocalDateTime timestamp2LocalDateTime(Long inputTime) {
         if (inputTime == null) {
             log.warn("timestamp2LocalDateTime fail. inputTime is null");
@@ -51,9 +47,7 @@ public class SafeKeeperTools {
         return LocalDateTime.ofInstant(instant, zone);
     }
 
-    /**
-     * encode String by sha.
-     */
+    /** encode String by sha. */
     public static String shaEncode(String inStr) {
 
         byte[] byteArray = new byte[0];
@@ -75,10 +69,7 @@ public class SafeKeeperTools {
         return hexValue.toString();
     }
 
-    /**
-     * get hash value
-     * type: sha256 or sm3
-     */
+    /** get hash value type: sha256 or sm3 */
     public static byte[] getHashValue(byte[] byteArray) {
         byte[] hashResult;
 
@@ -93,15 +84,13 @@ public class SafeKeeperTools {
         }
     }
 
-    /**
-     * sort list and convert to String.
-     */
+    /** sort list and convert to String. */
     private static String list2SortString(List<String> values) {
         if (values == null) {
             throw new NullPointerException("values is null");
         }
 
-        values.removeAll(Collections.singleton(null));// remove null
+        values.removeAll(Collections.singleton(null)); // remove null
         Collections.sort(values);
 
         StringBuilder sb = new StringBuilder();
@@ -111,9 +100,7 @@ public class SafeKeeperTools {
         return sb.toString();
     }
 
-    /**
-     * response string.
-     */
+    /** response string. */
     public static void responseString(HttpServletResponse response, String str) {
         BaseResponse baseResponse = new BaseResponse(ConstantCode.SYSTEM_EXCEPTION);
         if (StringUtils.isNotBlank(str)) {
@@ -121,7 +108,8 @@ public class SafeKeeperTools {
         }
 
         RetCode retCode;
-        if (JacksonUtils.isJson(str) && (retCode = JacksonUtils.stringToObj(str, RetCode.class)) != null) {
+        if (JacksonUtils.isJson(str)
+                && (retCode = JacksonUtils.stringToObj(str, RetCode.class)) != null) {
             baseResponse = new BaseResponse(retCode);
         }
 
@@ -132,27 +120,23 @@ public class SafeKeeperTools {
         }
     }
 
-    /**
-     * check account format.
-     */
+    /** check account format. */
     public static boolean checkUserName(String userName) {
-        // Begins with a letter, between 5 and 20 in length, and contain only characters, Numbers, and underscores.
+        // Begins with a letter, between 5 and 20 in length, and contain only characters, Numbers,
+        // and
+        // underscores.
         String regExp = "^[a-zA-Z][a-zA-Z0-9_]{4,19}$";
         return userName.matches(regExp);
     }
 
-    /**
-     * check password format.
-     */
+    /** check password format. */
     public static boolean checkPassword(String password) {
         // Between 6 and 20 in length, and contain only characters, Numbers, and underscores.
         String regExp = "^[0-9a-zA-Z_]{6,20}$";
         return password.matches(regExp);
     }
 
-    /**
-     * get token.
-     */
+    /** get token. */
     public static synchronized String getToken(HttpServletRequest request) {
         String header = request.getHeader(TOKEN_HEADER_NAME);
         if (StringUtils.isBlank(header)) {

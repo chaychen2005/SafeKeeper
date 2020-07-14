@@ -1,18 +1,26 @@
 /**
- * Copyright 2014-2020  the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.base.config;
 
+import org.fisco.bcos.safekeeper.base.filter.TokenAuthenticationFilter;
+import org.fisco.bcos.safekeeper.base.properties.ConstantProperties;
+import org.fisco.bcos.safekeeper.security.AccountDetailsService;
+import org.fisco.bcos.safekeeper.security.JsonAccessDeniedHandler;
+import org.fisco.bcos.safekeeper.security.JsonAuthenticationEntryPoint;
+import org.fisco.bcos.safekeeper.security.JsonLogoutSuccessHandler;
+import org.fisco.bcos.safekeeper.security.LoginFailHandler;
+import org.fisco.bcos.safekeeper.security.customizeAuth.TokenAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -29,58 +37,58 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.fisco.bcos.safekeeper.base.filter.TokenAuthenticationFilter;
-import org.fisco.bcos.safekeeper.base.properties.ConstantProperties;
-import org.fisco.bcos.safekeeper.security.AccountDetailsService;
-import org.fisco.bcos.safekeeper.security.JsonAccessDeniedHandler;
-import org.fisco.bcos.safekeeper.security.JsonAuthenticationEntryPoint;
-import org.fisco.bcos.safekeeper.security.JsonLogoutSuccessHandler;
-import org.fisco.bcos.safekeeper.security.LoginFailHandler;
-import org.fisco.bcos.safekeeper.security.customizeAuth.TokenAuthenticationProvider;
 
-/**
- * security config.
- */
+/** security config. */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AccountDetailsService userDetailService;
+    @Autowired private AccountDetailsService userDetailService;
+
     @Qualifier(value = "loginSuccessHandler")
     @Autowired
     private AuthenticationSuccessHandler loginSuccessHandler;
+
     @Qualifier(value = "loginFailHandler")
     @Autowired
     private LoginFailHandler loginfailHandler;
-    @Autowired
-    private JsonAuthenticationEntryPoint jsonAuthenticationEntryPoint;
-    @Autowired
-    private JsonAccessDeniedHandler jsonAccessDeniedHandler;
-    @Autowired
-    private JsonLogoutSuccessHandler jsonLogoutSuccessHandler;
-    @Autowired
-    private ConstantProperties constants;
+
+    @Autowired private JsonAuthenticationEntryPoint jsonAuthenticationEntryPoint;
+    @Autowired private JsonAccessDeniedHandler jsonAccessDeniedHandler;
+    @Autowired private JsonLogoutSuccessHandler jsonLogoutSuccessHandler;
+    @Autowired private ConstantProperties constants;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.exceptionHandling().accessDeniedHandler(jsonAccessDeniedHandler);
-        http.formLogin().loginPage("/login") // login page
-            .loginProcessingUrl("/accounts/v1/login") // login request uri
-            .usernameParameter("account").passwordParameter("accountPwd").permitAll()
-            .successHandler(loginSuccessHandler) // if login success
-            .failureHandler(loginfailHandler) // if login fail
-            .and().authorizeRequests()
-            .antMatchers("/account/login")
-            .permitAll()
-            .anyRequest().authenticated().and().csrf()
-            .disable() // close csrf
-            .addFilterBefore(new TokenAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class)
-            .httpBasic().authenticationEntryPoint(jsonAuthenticationEntryPoint).and().logout()
-            .logoutUrl("/account/logout")
-            .logoutSuccessHandler(jsonLogoutSuccessHandler)
-            .permitAll();
+        http.formLogin()
+                .loginPage("/login") // login page
+                .loginProcessingUrl("/accounts/v1/login") // login request uri
+                .usernameParameter("account")
+                .passwordParameter("accountPwd")
+                .permitAll()
+                .successHandler(loginSuccessHandler) // if login success
+                .failureHandler(loginfailHandler) // if login fail
+                .and()
+                .authorizeRequests()
+                .antMatchers("/account/login")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf()
+                .disable() // close csrf
+                .addFilterBefore(
+                        new TokenAuthenticationFilter(authenticationManager()),
+                        BasicAuthenticationFilter.class)
+                .httpBasic()
+                .authenticationEntryPoint(jsonAuthenticationEntryPoint)
+                .and()
+                .logout()
+                .logoutUrl("/account/logout")
+                .logoutSuccessHandler(jsonLogoutSuccessHandler)
+                .permitAll();
     }
 
     @Override
@@ -97,18 +105,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(tokenAuthenticationProvider());
     }
 
-	@Bean("bCryptPasswordEncoder")
+    @Bean("bCryptPasswordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-	
+
     @Bean
     public AuthenticationProvider tokenAuthenticationProvider() {
         return new TokenAuthenticationProvider();
     }
-    
+
     @Bean
-    public DaoAuthenticationProvider userAuthenticationProvider(){
+    public DaoAuthenticationProvider userAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailService);
         daoAuthenticationProvider.setHideUserNotFoundExceptions(false);

@@ -1,16 +1,14 @@
 /**
- * Copyright 2014-2020  the original author or authors.
+ * Copyright 2014-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.fisco.bcos.safekeeper.data;
@@ -18,44 +16,39 @@ package org.fisco.bcos.safekeeper.data;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang3.tuple.Pair;
+import java.time.LocalDateTime;
+import java.util.*;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.fisco.bcos.safekeeper.base.code.ConstantCode;
 import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
 import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.fisco.bcos.safekeeper.data.entity.*;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
-
-/**
- * services for data.
- */
+/** services for data. */
 @Log4j2
 @Service
 public class DataService {
 
-    @Autowired
-    private DataMapper dataMapper;
+    @Autowired private DataMapper dataMapper;
 
     static final String CREDIT_STATUS_AVAILABLE = "0";
     static final String CREDIT_STATUS_USED = "1";
     static final String CREDIT_STATUS_FROZEN = "2";
 
-    /**
-     * add data row.
-     */
+    /** add data row. */
     public void addDataRow(TbDataInfo dataInfo) throws SafeKeeperException {
         log.debug("start addDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
         // check data
-        DataQueryParam queryParams = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataEntityId(),
-                dataInfo.getDataFieldId());
+        DataQueryParam queryParams =
+                new DataQueryParam(
+                        dataInfo.getAccount(),
+                        dataInfo.getDataEntityId(),
+                        dataInfo.getDataFieldId());
         dataNotExist(queryParams);
 
         // add data row
@@ -67,9 +60,7 @@ public class DataService {
         log.debug("end addDataRow. affectRow:{}", affectRow);
     }
 
-    /**
-     * add data batch.
-     */
+    /** add data batch. */
     @Transactional
     public void addDataBatch(List<TbDataInfo> dataInfoList) throws SafeKeeperException {
         log.debug("start addDataBatch.");
@@ -80,8 +71,11 @@ public class DataService {
             log.debug("data[{}] info:{}", i, JacksonUtils.objToString(dataInfo));
 
             // check data no exist
-            DataQueryParam dataQueryParam = new DataQueryParam(dataInfo.getAccount(), dataInfo.getDataEntityId(),
-                    dataInfo.getDataFieldId());
+            DataQueryParam dataQueryParam =
+                    new DataQueryParam(
+                            dataInfo.getAccount(),
+                            dataInfo.getDataEntityId(),
+                            dataInfo.getDataFieldId());
             dataNotExist(dataQueryParam);
 
             // add data
@@ -94,9 +88,7 @@ public class DataService {
         log.debug("end addDataBatch. affectRow:{}", dataInfoList.size());
     }
 
-    /**
-     * update data row.
-     */
+    /** update data row. */
     public Integer updateDataRow(TbDataInfo dataInfo) throws SafeKeeperException {
         log.debug("start updateDataRow. data info:{}", JacksonUtils.objToString(dataInfo));
 
@@ -108,9 +100,7 @@ public class DataService {
         return affectRow;
     }
 
-    /**
-     * update data batch.
-     */
+    /** update data batch. */
     @Transactional
     public void updateDataBatch(List<TbDataInfo> dataInfoList) throws SafeKeeperException {
         log.debug("start addDataBatch.");
@@ -129,9 +119,7 @@ public class DataService {
         log.debug("end addDataBatch. affectRow:{}", dataInfoList.size());
     }
 
-    /**
-     * query the data.
-     */
+    /** query the data. */
     public List<TbDataInfo> queryData(DataQueryParam queryParams) {
         log.debug("start queryData. query info:{}", JacksonUtils.objToString(queryParams));
         List<TbDataInfo> dataRow = dataMapper.queryData(queryParams);
@@ -139,21 +127,22 @@ public class DataService {
         return dataRow;
     }
 
-    /**
-     * query count of data.
-     */
-    public int countOfData(String account, String dataEntityId, String dataFieldId, int dataStatus) {
-        log.debug("start countOfData. account: {} dataEntityId: {} dataFieldId: {} dataStatus: {} ",
-                account, dataEntityId, dataFieldId, dataStatus);
+    /** query count of data. */
+    public int countOfData(
+            String account, String dataEntityId, String dataFieldId, int dataStatus) {
+        log.debug(
+                "start countOfData. account: {} dataEntityId: {} dataFieldId: {} dataStatus: {} ",
+                account,
+                dataEntityId,
+                dataFieldId,
+                dataStatus);
         Integer dataCount = dataMapper.countOfData(account, dataEntityId, dataFieldId, dataStatus);
         int count = dataCount == null ? 0 : dataCount.intValue();
         log.debug("end countOfData. count: {} ", count);
         return count;
     }
 
-    /**
-     * query data list.
-     */
+    /** query data list. */
     public List<TbDataInfo> listOfData(DataListParam param) {
         log.debug("start listOfData. param:{} ", JacksonUtils.objToString(param));
         List<TbDataInfo> list = dataMapper.listOfData(param);
@@ -161,9 +150,7 @@ public class DataService {
         return list;
     }
 
-    /**
-     * delete data info.
-     */
+    /** delete data info. */
     public void deleteDataRow(DataQueryParam queryParams) throws SafeKeeperException {
         log.debug("start deleteDataRow. delete info:{} ", JacksonUtils.objToString(queryParams));
 
@@ -179,9 +166,7 @@ public class DataService {
         log.debug("end deleteDataRow. affectRow:{} ", affectRow);
     }
 
-    /**
-     * query existence of data.
-     */
+    /** query existence of data. */
     public int existOfData(DataQueryParam queryParams) {
         log.debug("start existOfData. info:{} ", JacksonUtils.objToString(queryParams));
         Integer dataCount = dataMapper.existOfData(queryParams);
@@ -190,9 +175,7 @@ public class DataService {
         return count;
     }
 
-    /**
-     * boolean the data is exist.
-     */
+    /** boolean the data is exist. */
     public void dataExist(DataQueryParam queryParams) throws SafeKeeperException {
         if (StringUtils.isBlank(queryParams.getDataEntityId())) {
             throw new SafeKeeperException(ConstantCode.EMPTY_DATA_ENTITY_ID);
@@ -206,9 +189,7 @@ public class DataService {
         }
     }
 
-    /**
-     * boolean the data is not exist.
-     */
+    /** boolean the data is not exist. */
     public void dataNotExist(DataQueryParam queryParams) throws SafeKeeperException {
         if (StringUtils.isBlank(queryParams.getDataEntityId())) {
             throw new SafeKeeperException(ConstantCode.EMPTY_DATA_ENTITY_ID);
@@ -222,9 +203,7 @@ public class DataService {
         }
     }
 
-    /**
-     * check db affect row.
-     */
+    /** check db affect row. */
     public void checkDbAffectRow(Integer affectRow) throws SafeKeeperException {
         if (affectRow == 0) {
             log.warn("affect 0 rows of tb_data_info");
@@ -260,7 +239,9 @@ public class DataService {
             if (target == credit.getValue()) {
                 String dataEntityId = credit.getKey();
                 DataQueryParam dataQueryParam = new DataQueryParam(account, dataEntityId, "status");
-                Integer count = updateCreditStatus(dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
+                Integer count =
+                        updateCreditStatus(
+                                dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
                 if (count > 0) {
                     selected.add(dataEntityId);
                     retValue += credit.getValue();
@@ -280,7 +261,10 @@ public class DataService {
             }
 
             if (target > totalValue) {
-                log.debug("the account has not sufficient credits. target: {} only: {} ", target, totalValue);
+                log.debug(
+                        "the account has not sufficient credits. target: {} only: {} ",
+                        target,
+                        totalValue);
                 throw new SafeKeeperException(ConstantCode.NOT_SUFFICIENT_CREDITS);
             }
 
@@ -300,7 +284,9 @@ public class DataService {
             for (CreditInfo credit : credits) {
                 String dataEntityId = credit.getKey();
                 DataQueryParam dataQueryParam = new DataQueryParam(account, dataEntityId, "status");
-                Integer count = updateCreditStatus(dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
+                Integer count =
+                        updateCreditStatus(
+                                dataQueryParam, CREDIT_STATUS_AVAILABLE, CREDIT_STATUS_FROZEN);
 
                 if (count > 0) {
                     remain -= credit.getValue();
@@ -314,7 +300,10 @@ public class DataService {
 
             // 多人竞争可能在这里都失败
             if (remain > 0) {
-                log.debug("the account has not sufficient credits. target: {} only: {} ", target , target - remain);
+                log.debug(
+                        "the account has not sufficient credits. target: {} only: {} ",
+                        target,
+                        target - remain);
                 // use @Transactional to roll back
                 /*for (String dataEntityId : selected) {
                     DataQueryParam dataQueryParam = new DataQueryParam(account, dataEntityId, "status");
@@ -362,7 +351,7 @@ public class DataService {
     public JsonNode expenditure(String account) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
-        List<String> spentList = listOfValueWithCreditStatus(account,CREDIT_STATUS_USED);
+        List<String> spentList = listOfValueWithCreditStatus(account, CREDIT_STATUS_USED);
         ((ObjectNode) dataNode).put("expenditure", aggregateBalance(spentList));
         return dataNode;
     }
@@ -382,25 +371,23 @@ public class DataService {
         return balance;
     }
 
-    /**
-     * data request to raw data struct list
-     */
+    /** data request to raw data struct list */
     public List<TbDataInfo> dataJsonToRawDataList(String currentAccount, DataRequestInfo data) {
         List<TbDataInfo> dataInfoList = new ArrayList<>();
 
         String dataEntityId = data.getKey();
-        Iterator<Map.Entry<String,JsonNode>> jsonNodes = data.getValue().fields();
+        Iterator<Map.Entry<String, JsonNode>> jsonNodes = data.getValue().fields();
         while (jsonNodes.hasNext()) {
             Map.Entry<String, JsonNode> node = jsonNodes.next();
-            TbDataInfo dataInfo = new TbDataInfo(currentAccount, dataEntityId, node.getKey(), node.getValue().asText());
+            TbDataInfo dataInfo =
+                    new TbDataInfo(
+                            currentAccount, dataEntityId, node.getKey(), node.getValue().asText());
             dataInfoList.add(dataInfo);
         }
         return dataInfoList;
     }
 
-    /**
-     * raw data struct list to data json object
-     */
+    /** raw data struct list to data json object */
     public JsonNode rawDataListToDataNode(List<TbDataInfo> dataInfoList) {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode dataNode = objectMapper.createObjectNode();
@@ -421,11 +408,20 @@ public class DataService {
         return dataNode;
     }
 
-    private  Integer updateCreditStatus(DataQueryParam accountInfo, String srcDataStatus, String desDataStatus) {
-        log.debug("start updateCreditStatus. accountInfo:{} status:{}->{} ",
-                JacksonUtils.objToString(accountInfo), srcDataStatus, desDataStatus);
-        Integer count = dataMapper.updateCreditStatus(accountInfo.getAccount(), accountInfo.getDataEntityId(),
-                accountInfo.getDataFieldId(), srcDataStatus, desDataStatus);
+    private Integer updateCreditStatus(
+            DataQueryParam accountInfo, String srcDataStatus, String desDataStatus) {
+        log.debug(
+                "start updateCreditStatus. accountInfo:{} status:{}->{} ",
+                JacksonUtils.objToString(accountInfo),
+                srcDataStatus,
+                desDataStatus);
+        Integer count =
+                dataMapper.updateCreditStatus(
+                        accountInfo.getAccount(),
+                        accountInfo.getDataEntityId(),
+                        accountInfo.getDataFieldId(),
+                        srcDataStatus,
+                        desDataStatus);
         log.debug("end updateCreditStatus. count:{} ", count);
         return count;
     }

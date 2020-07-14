@@ -442,7 +442,8 @@
 | 3.4  | creatorCipherText | String        | 否     | 经账号创建者公钥加密的内容 |
 | 3.5  | userCipherText    | String        | 否     | 经账号提供的密码加密的内容 |
 | 3.6  | createTime        | LocalDateTime | 否     | 数据托管时间               |
-| 3.7  | description       | String        | 是     | 数据备注信息               |
+| 3.7  | modifyTime        | LocalDateTime | 否     | 数据修改时间               |
+| 3.8  | description       | String        | 是     | 数据备注信息               |
 
 ### 1.1.3 入参示例
 
@@ -558,7 +559,8 @@
 | 4.1.4 | creatorCipherText | String        | 否     | 经账号创建者公钥加密的内容 |
 | 4.1.5 | userCipherText    | String        | 否     | 经账号提供的密码加密的内容 |
 | 4.1.6 | createTime        | LocalDateTime | 否     | 数据托管时间               |
-| 4.1.7 | description       | String        | 是     | 数据备注信息               |
+| 4.1.7 | modifyTime        | LocalDateTime | 否     | 数据修改时间               |
+| 4.1.8 | description       | String        | 是     | 数据备注信息               |
 
 #### 2.3.3 入参示例
 
@@ -621,7 +623,8 @@
 | 3.4  | creatorCipherText | String        | 否     | 经账号创建者公钥加密       |
 | 3.5  | userCipherText    | String        | 否     | 经账号提供的密码加密       |
 | 3.6  | createTime        | LocalDateTime | 否     | 核心数据托管时间           |
-| 3.7  | description       | String        | 是     | 数据备注信息               |
+| 3.7  | modifyTime        | LocalDateTime | 否     | 数据修改时间               |
+| 3.8  | description       | String        | 是     | 数据备注信息               |
 
 
 #### 2.4.3 入参示例
@@ -693,8 +696,7 @@
         "value":"100",
         "status":"0",
         "orderID":"order_1",
-        "creditCredential":"credit_1",
-        "lastModifyTime": "2020-07-13T19:56:55"
+        "creditCredential":"credit_1"
   	}
 }
 ```
@@ -944,12 +946,13 @@
 | ---- | -------- | ---- | ------ | -------- |
 | 1    | value    | long | 否     | 目标金额 |
 
-| 序号 | 返回body | 类型   | 可为空 | 备注                       |
-| ---- | -------- | ------ | ------ | -------------------------- |
-| 1    | code     | Int    | 否     | 返回码，0：成功 其它：失败 |
-| 2    | message  | String | 否     | 描述                       |
-| 3    | data     | Object | 是     | 信息列表                   |
-| 3.1  |          | Object |        | 信息对象                   |
+| 序号 | 返回body    | 类型   | 可为空 | 备注                       |
+| ---- | ----------- | ------ | ------ | -------------------------- |
+| 1    | code        | Int    | 否     | 返回码，0：成功 其它：失败 |
+| 2    | message     | String | 否     | 描述                       |
+| 3    | data        | Object | 否     | 信息列表                   |
+| 3.1  | creditList  | Array  | 否     | 列表                       |
+| 3.2  | creditValue | long   | 否     | 总额                       |
 
 #### 3.6.3 入参示例
 
