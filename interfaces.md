@@ -815,7 +815,7 @@
         "orderID": "order_1",
         "status": "0",
         "value": "100",
-        "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+        "lastModifyTime": "2020-07-15T06:39:46Z"
     }
 }
 ```
@@ -871,7 +871,7 @@
             "orderID": "order_1",
             "status": "0",
             "value": "100",
-            "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+            "lastModifyTime": "2020-07-15T06:39:46Z"
         },
         {
             "key": "key2",
@@ -879,7 +879,7 @@
             "orderID": "order_2",
             "status": "0",
             "value": "200",
-            "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+            "lastModifyTime": "2020-07-15T06:39:46Z"
         }
     ],
     "totalCount": 2
@@ -973,7 +973,7 @@
                 "orderID": "order_2",
                 "status": "2",
                 "value": "200",
-                "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+                "lastModifyTime": "2020-07-15T06:39:46Z"
             },
             {
                 "key": "key1",
@@ -981,7 +981,7 @@
                 "orderID": "order_1",
                 "status": "2",
                 "value": "100",
-                "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+                "lastModifyTime": "2020-07-15T06:39:46Z"
             }
         ],
         "creditValue": 300
@@ -1201,7 +1201,7 @@
             "orderID": "order_1",
             "status": "1",
             "value": "100",
-            "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+            "lastModifyTime": "2020-07-15T06:39:46Z"
         },
         {
             "key": "key2",
@@ -1209,7 +1209,7 @@
             "orderID": "order_2",
             "status": "1",
             "value": "200",
-            "lastModifyTime": "2020-07-15T06:39:46Z[UTC]"
+            "lastModifyTime": "2020-07-15T06:39:46Z"
         }
     ],
     "totalCount": 2
