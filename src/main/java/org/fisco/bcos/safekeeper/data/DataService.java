@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -404,7 +406,8 @@ public class DataService {
                 time = tmp;
             }
         }
-        ((ObjectNode) dataNode).put("lastModifyTime", time.toString());
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(time, ZoneId.of("UTC"));
+        ((ObjectNode) dataNode).put("lastModifyTime", zonedDateTime.toString());
         return dataNode;
     }
 

@@ -25,7 +25,8 @@ checkProcess(){
 
 stop(){
 	echo "try to stop server $APP_MAIN"
-	echo "try to stop server $APP_MAIN" >> record.log
+    recordTime=`date "+%Y-%m-%d %H:%M:%S"`
+    echo "[ $recordTime ] try to stop server $APP_MAIN" >> record.log
 	checkProcess
 	if [ $processPid -ne 0 ]; then
 	    kill -15 $processPid

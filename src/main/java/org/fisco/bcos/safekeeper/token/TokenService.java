@@ -14,6 +14,7 @@
 package org.fisco.bcos.safekeeper.token;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.log4j.Log4j2;
@@ -46,7 +47,9 @@ public class TokenService {
         tbToken.setToken(token);
         tbToken.setAccount(account);
         if (type == TokenType.USER.getValue()) {
-            tbToken.setExpireTime(LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
+            tbToken.setExpireTime(
+                    LocalDateTime.now(ZoneId.of("UTC"))
+                            .plusSeconds(properties.getAuthTokenMaxAge()));
         } else {
             log.error("fail createToken. type:{} not support", type);
             return null;
@@ -65,7 +68,7 @@ public class TokenService {
             log.warn("fail getAccountFromToken. tbToken is null");
             throw new SafeKeeperException(ConstantCode.INVALID_TOKEN);
         }
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
         if (now.isAfter(tbToken.getExpireTime())) {
             log.warn("fail getAccountFromToken. token has expire at:{}", tbToken.getExpireTime());
             // delete token
@@ -78,7 +81,9 @@ public class TokenService {
     /** update token expire time. */
     public void updateExpireTime(String token) {
         Assert.requireNonEmpty(token, "token is empty");
-        tokenMapper.update(token, LocalDateTime.now().plusSeconds(properties.getAuthTokenMaxAge()));
+        tokenMapper.update(
+                token,
+                LocalDateTime.now(ZoneId.of("UTC")).plusSeconds(properties.getAuthTokenMaxAge()));
     }
 
     /** delete token. */
@@ -96,7 +101,7 @@ public class TokenService {
             log.warn("fail getTokenFromAccount. no related account");
             return null;
         }
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
         if (now.isAfter(tbToken.getExpireTime())) {
             log.warn("fail getTokenFromAccount. token has expire at:{}", tbToken.getExpireTime());
             // delete token

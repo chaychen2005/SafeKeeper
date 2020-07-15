@@ -20,11 +20,11 @@
   <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
     insert into tb_data_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataEntityId},#{dataFieldId},#{dataFieldValue},NOW(),NOW())
+    values(#{account},#{dataEntityId},#{dataFieldId},#{dataFieldValue},UTC_TIMESTAMP(),UTC_TIMESTAMP())
   </insert>
 
   <update id="updateDataRow" parameterType="org.fisco.bcos.safekeeper.data.entity.TbDataInfo">
-    update tb_data_info set modify_time=NOW(),
+    update tb_data_info set modify_time=UTC_TIMESTAMP(),
     <if test="dataStatus != null and dataStatus != 0">
       data_status=#{dataStatus},
     </if>
@@ -147,7 +147,7 @@
   </select>
 
   <update id="updateCreditStatus" parameterType="java.lang.String">
-    update tb_data_info set data_field_value = #{desCreditStatus}, modify_time = NOW()
+    update tb_data_info set data_field_value = #{desCreditStatus}, modify_time = UTC_TIMESTAMP()
     where account = #{account}
     and data_entity_id = #{dataEntityId}
     and data_field_id = #{dataFieldId}

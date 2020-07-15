@@ -11,11 +11,11 @@
     </resultMap>
 
     <insert id="add" parameterType="org.fisco.bcos.safekeeper.token.TbToken">
-         insert into tb_token (token,account,expire_time,create_time)values(#{token},#{account},#{expireTime},now())
+         insert into tb_token (token,account,expire_time,create_time)values(#{token},#{account},#{expireTime},UTC_TIMESTAMP())
    </insert>
 
     <delete id="delete" parameterType="java.lang.String">
-		 delete from tb_token where expire_time &lt;= NOW()
+		 delete from tb_token where expire_time &lt;= UTC_TIMESTAMP()
         <if test="account != null">
             or account = #{account}
         </if>

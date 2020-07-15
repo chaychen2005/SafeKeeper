@@ -21,7 +21,7 @@
   <insert id="addDataRow" parameterType="org.fisco.bcos.safekeeper.dataescrow.entity.TbDataEscrowInfo">
     insert into tb_data_escrow_info
     (<include refid="ROW_COLUMN"/>)
-    values(#{account},#{dataEntityId},#{creatorCipherText},#{userCipherText},NOW(),NOW(),#{description})
+    values(#{account},#{dataEntityId},#{creatorCipherText},#{userCipherText},UTC_TIMESTAMP(),UTC_TIMESTAMP(),#{description})
   </insert>
 
   <select id="queryData" parameterType="java.lang.String" resultMap="dataEscrowMap">

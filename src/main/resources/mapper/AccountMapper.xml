@@ -38,12 +38,12 @@
   <insert id="addAccountRow" parameterType="org.fisco.bcos.safekeeper.account.entity.TbAccountInfo">
     insert into tb_account_info
     <include refid="NEW_ROW_COLUMN"/>
-    values(#{account},#{accountPwd},#{roleId},#{description},#{email},NOW(),NOW(),#{publicKey},#{creator})
+    values(#{account},#{accountPwd},#{roleId},#{description},#{email},UTC_TIMESTAMP(),UTC_TIMESTAMP(),#{publicKey},#{creator})
   </insert>
 
   <update id="updateAccountRow" parameterType="org.fisco.bcos.safekeeper.account.entity.TbAccountInfo">
     update tb_account_info set account_pwd=#{accountPwd},role_id=#{roleId},
-    account_status=#{accountStatus},description=#{description},email=#{email},modify_time=now()
+    account_status=#{accountStatus},description=#{description},email=#{email},modify_time=UTC_TIMESTAMP()
     where account=#{account}
   </update>
 
