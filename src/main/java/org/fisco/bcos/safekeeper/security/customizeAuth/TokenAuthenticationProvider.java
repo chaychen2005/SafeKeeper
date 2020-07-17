@@ -20,7 +20,9 @@ import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import org.fisco.bcos.safekeeper.account.AccountService;
 import org.fisco.bcos.safekeeper.account.entity.TbAccountInfo;
+import org.fisco.bcos.safekeeper.base.code.ConstantCode;
 import org.fisco.bcos.safekeeper.base.exception.SafeKeeperException;
+import org.fisco.bcos.safekeeper.base.tools.JacksonUtils;
 import org.fisco.bcos.safekeeper.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -46,11 +48,13 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             account = tokenService.getAccountFromToken(token);
             tokenService.updateExpireTime(token);
         } catch (SafeKeeperException e) {
+            throw new CredentialsExpiredException(JacksonUtils.objToString(e.getRetCode()));
         } catch (Exception e) {
             throw new BadCredentialsException("db");
         }
         if (null == account) {
-            throw new CredentialsExpiredException("Invalid token");
+            throw new CredentialsExpiredException(
+                    JacksonUtils.objToString(ConstantCode.ACCOUNT_NOT_EXISTS));
         }
         AbstractAuthenticationToken result = buildAuthentication(account);
         result.setDetails(authentication.getDetails());

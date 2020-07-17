@@ -115,6 +115,7 @@ public class SafeKeeperTools {
 
         try {
             response.getWriter().write(JacksonUtils.objToString(baseResponse));
+            log.info("result:{}", JacksonUtils.objToString(baseResponse));
         } catch (IOException e) {
             log.error("fail responseRetCodeException", e);
         }
