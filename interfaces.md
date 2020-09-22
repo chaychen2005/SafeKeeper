@@ -63,7 +63,7 @@
 
 ### 1.1.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/accounts/v1/login`
+`https://127.0.0.1:8160/SafeKeeper/accounts/v1/login`
 
 ```
 {
@@ -136,7 +136,7 @@
 
 ### 1.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/accounts/v1`
+`https://127.0.0.1:8160/SafeKeeper/accounts/v1`
 
 ```
 {
@@ -202,7 +202,7 @@
 
 #### 1.3.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/accounts/v1/user1`
+`https://127.0.0.1:8160/SafeKeeper/accounts/v1/user1`
 
 #### 1.3.4 出参示例
 
@@ -261,7 +261,7 @@
 
 #### 1.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/accounts/v1?pageNumber=1&pageSize=10`
+`https://127.0.0.1:8160/SafeKeeper/accounts/v1?pageNumber=1&pageSize=10`
 
 #### 1.4.4 出参示例
 
@@ -336,7 +336,7 @@
 
 ### 1.5.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/accounts/v1/password`
+`https://127.0.0.1:8160/SafeKeeper/accounts/v1/password`
 
 ```
 {
@@ -386,7 +386,7 @@
 
 ### 1.6.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/accounts/v1/publicKey`
+`https://127.0.0.1:8160/SafeKeeper/accounts/v1/publicKey`
 
 #### 1.6.4 出参示例
 
@@ -447,7 +447,7 @@
 
 ### 1.1.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults`
+`https://127.0.0.1:8160/SafeKeeper/escrow/v1/vaults`
 ```
 {
     "dataEntityId":"data1",
@@ -508,7 +508,7 @@
 
 #### 2.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/data1`
+`https://127.0.0.1:8160/SafeKeeper/escrow/v1/vaults/data1`
 
 #### 2.2.4 出参示例
 
@@ -564,7 +564,7 @@
 
 #### 2.3.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults?pageNumber=1&pageSize=10`
+`https://127.0.0.1:8160/SafeKeeper/escrow/v1/vaults?pageNumber=1&pageSize=10`
 
 #### 2.3.4 出参示例
 
@@ -629,7 +629,7 @@
 
 #### 2.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/escrow/v1/vaults/user1/data1`
+`https://127.0.0.1:8160/SafeKeeper/escrow/v1/vaults/user1/data1`
 
 #### 2.4.4 出参示例
 
@@ -687,7 +687,7 @@
 
 ### 3.1.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/v1`
+`https://127.0.0.1:8160/SafeKeeper/data/v1`
 
 ```json
 {
@@ -746,7 +746,7 @@
 
 ### 3.2.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/v1`
+`https://127.0.0.1:8160/SafeKeeper/data/v1`
 
 ```
 {
@@ -800,7 +800,7 @@
 
 #### 3.3.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/v1/key1`
+`https://127.0.0.1:8160/SafeKeeper/data/v1/key1`
 
 #### 3.3.4 出参示例
 
@@ -855,7 +855,7 @@
 
 #### 3.4.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/v1?pageNumber=1&pageSize=10`
+`https://127.0.0.1:8160/SafeKeeper/data/v1?pageNumber=1&pageSize=10`
 
 #### 3.4.4 出参示例
 
@@ -918,7 +918,7 @@
 
 #### 3.5.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/v1/key1`
+`https://127.0.0.1:8160/SafeKeeper/data/v1/key1`
 
 #### 3.5.4 出参示例
 
@@ -956,7 +956,7 @@
 
 #### 3.6.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/approve?value=240`
+`https://127.0.0.1:8160/SafeKeeper/data/wedpr/vcl/v1/credentials/approve?value=240`
 
 #### 3.6.4 出参示例
 
@@ -1025,7 +1025,7 @@
 
 #### 3.7.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/balance`
+`https://127.0.0.1:8160/SafeKeeper/data/wedpr/vcl/v1/credentials/balance`
 
 #### 3.7.4 出参示例
 
@@ -1069,7 +1069,7 @@
 
 #### 3.8.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/expenditure`
+`https://127.0.0.1:8160/SafeKeeper/data/wedpr/vcl/v1/credentials/expenditure`
 
 #### 3.8.4 出参示例
 
@@ -1119,7 +1119,7 @@
 
 ### 3.9.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials/spend`
+`https://127.0.0.1:8160/SafeKeeper/data/wedpr/vcl/v1/credentials/spend`
 
 ```
 [
@@ -1185,7 +1185,7 @@
 
 #### 3.10.3 入参示例
 
-`https://127.0.0.1:9501/SafeKeeper/data/wedpr/vcl/v1/credentials?pageNumber=1&pageSize=10&credentialStatus=1`
+`https://127.0.0.1:8160/SafeKeeper/data/wedpr/vcl/v1/credentials?pageNumber=1&pageSize=10&credentialStatus=1`
 
 #### 3.10.4 出参示例
 
