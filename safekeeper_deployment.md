@@ -93,7 +93,7 @@ cp -r conf_template conf
 ```text
 #server config
 server:
-  port: 9501                                    # servicePort -> 9501
+  port: 8160                                    # servicePort -> 8160
   ssl:
     key-store: classpath:server.keystore
     key-alias: safekeeper

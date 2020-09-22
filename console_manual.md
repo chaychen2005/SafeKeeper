@@ -39,7 +39,7 @@ cd dist/conf && cp applicationContext-sample.xml applicationContext.xml
 
 ```text
     <bean id="safeKeeperUrl" class="console.data.tools.SafeKeeperUrl">
-        <constructor-arg index="0" value="127.0.0.1:9501" />    # serviceIP:servicePort -> 127.0.0.1:9501
+        <constructor-arg index="0" value="127.0.0.1:8160" />    # serviceIP:servicePort -> 127.0.0.1:8160
         <constructor-arg index="1" value="/SafeKeeper/" />
     </bean>
 ```
@@ -311,8 +311,8 @@ nginx_sk.key nginx_sk.csr nginx_sk.crt
 
 ```text
     upstream tomcats{
-        server 192.168.0.1:9501 weight=1;
-        server 192.168.0.2:9501 weight=1;
+        server 192.168.0.1:8160 weight=1;
+        server 192.168.0.2:8160 weight=1;
     }
 ```
 
