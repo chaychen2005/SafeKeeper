@@ -3,7 +3,7 @@
 dirpath="$(cd "$(dirname "$0")" && pwd)"
 cd $dirpath
 
-APP_MAIN=org.fisco.bcos.safekeeper.Application
+APP_MAIN=org.fisco.bcos.proxy.Application
 CURRENT_DIR=$(pwd)/
 CONF_DIR=${CURRENT_DIR}conf
 
