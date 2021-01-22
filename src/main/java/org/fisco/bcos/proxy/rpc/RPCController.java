@@ -13,7 +13,6 @@
  */
 package org.fisco.bcos.proxy.rpc;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -26,17 +25,11 @@ import org.fisco.bcos.proxy.base.entity.BaseResponse;
 import org.fisco.bcos.proxy.base.exception.BcosNodeProxyException;
 import org.fisco.bcos.proxy.base.tools.JacksonUtils;
 import org.fisco.bcos.proxy.rpc.entity.JsonRpcRequest;
-import org.fisco.bcos.proxy.rpc.entity.JsonRpcResponse;
 import org.fisco.bcos.sdk.BcosSDK;
 import org.fisco.bcos.sdk.BcosSDKException;
 import org.fisco.bcos.sdk.client.Client;
-import org.fisco.bcos.sdk.client.protocol.request.Transaction;
-import org.fisco.bcos.sdk.client.protocol.response.BlockNumber;
-import org.fisco.bcos.sdk.client.protocol.response.Call;
 import org.fisco.bcos.sdk.model.ConstantConfig;
-import org.fisco.bcos.sdk.model.NodeVersion;
-import org.fisco.bcos.sdk.model.TransactionReceipt;
-import org.fisco.bcos.sdk.utils.ObjectMapperFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +37,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "rpc")
 public class RPCController extends BaseController {
+
+    @Autowired private RPCService rpcService;
 
     private Boolean initBcosSDK = false;
     private BcosSDK bcosSDK;
@@ -75,13 +70,13 @@ public class RPCController extends BaseController {
         String method = info.getMethod();
 
         if (method.equals("getClientVersion")) {
-            baseResponse = getClientVersion(info, client);
+            baseResponse = rpcService.getClientVersion(info, client);
         } else if (method.equals("getBlockNumber")) {
-            baseResponse = getBlockNumber(info, client);
+            baseResponse = rpcService.getBlockNumber(info, client);
         } else if (method.equals("sendRawTransaction")) {
-            baseResponse = sendRawTransaction(info, client);
+            baseResponse = rpcService.sendRawTransaction(info, client);
         } else if (method.equals("call")) {
-            baseResponse = call(info, client);
+            baseResponse = rpcService.call(info, client);
         } else {
             log.error("invalid method");
             throw new BcosNodeProxyException(ConstantCode.INVALID_RPC_METHOD);
@@ -115,62 +110,5 @@ public class RPCController extends BaseController {
             }
         }
         return groupToClient.get(groupId);
-    }
-
-    private BaseResponse getClientVersion(JsonRpcRequest info, Client client) {
-        BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
-        NodeVersion nodeVersion = client.getNodeVersion();
-        nodeVersion.setId(info.getId());
-        nodeVersion.setJsonrpc(info.getJsonrpc());
-        baseResponse.setData(nodeVersion);
-        return baseResponse;
-    }
-
-    private BaseResponse getBlockNumber(JsonRpcRequest info, Client client) {
-        BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
-        BlockNumber blockNumber = client.getBlockNumber();
-        blockNumber.setId(info.getId());
-        blockNumber.setJsonrpc(info.getJsonrpc());
-        baseResponse.setData(blockNumber.getResult());
-        return baseResponse;
-    }
-
-    private BaseResponse sendRawTransaction(JsonRpcRequest info, Client client) {
-        List<Object> params = info.getParams();
-        if (params.size() != 2) {
-            log.error("the size of `JsonRpcRequest.params` should be 2");
-            throw new BcosNodeProxyException(ConstantCode.PARAM_EXCEPTION);
-        }
-        BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
-        String data = (String) params.get(1);
-        TransactionReceipt receipt = client.sendRawTransactionAndGetReceipt(data);
-        JsonRpcResponse jsonRpcResponse = new JsonRpcResponse();
-        jsonRpcResponse.setId(info.getId());
-        jsonRpcResponse.setJsonrpc(info.getJsonrpc());
-        jsonRpcResponse.setResult(receipt);
-        baseResponse.setData(jsonRpcResponse);
-        return baseResponse;
-    }
-
-    private BaseResponse call(JsonRpcRequest info, Client client) {
-        List<Object> params = info.getParams();
-        if (params.size() != 2) {
-            log.error("the size of `JsonRpcRequest.params` should be 2");
-            throw new BcosNodeProxyException(ConstantCode.PARAM_EXCEPTION);
-        }
-        BaseResponse baseResponse = new BaseResponse(ConstantCode.SUCCESS);
-        String data = (String) params.get(1);
-        try {
-            Transaction transaction =
-                    ObjectMapperFactory.getObjectMapper().readValue(data, Transaction.class);
-            Call callFuncRet = client.call(transaction);
-            callFuncRet.setId(info.getId());
-            callFuncRet.setJsonrpc(info.getJsonrpc());
-            baseResponse.setData(callFuncRet);
-        } catch (IOException e) {
-            log.error("inside json parser error");
-            throw new BcosNodeProxyException(ConstantCode.INSIDE_JSON_PARSER_ERROR);
-        }
-        return baseResponse;
     }
 }
